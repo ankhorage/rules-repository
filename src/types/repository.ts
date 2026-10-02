@@ -16,6 +16,7 @@ export interface RepositoryDependencyFact {
 
 /*** One source import fact used for current-only package-boundary checks. */
 export interface RepositoryImportFact {
+  readonly escapesRepositoryRoot?: boolean;
   readonly path: string;
   readonly specifier: string;
 }

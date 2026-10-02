@@ -13,6 +13,7 @@ export function createDependencyRules(): readonly Rule<RepositoryRuleContext>[] 
     legacySourceDependencyRule(),
     compatibilityImportRule(),
     legacySourceImportRule(),
+    outsideRootImportRule(),
   ];
 }
 
@@ -116,6 +117,29 @@ function legacySourceImportRule(): Rule<RepositoryRuleContext> {
               repositoryRuleSupport.finding(
                 REPOSITORY_RULE_IDS.legacySourceImport,
                 'Legacy source import is not allowed: ' + sourceImport.specifier + '.',
+                sourceImport.path,
+                { specifier: sourceImport.specifier },
+              ),
+            ]
+          : [],
+      ),
+  );
+}
+
+/*** Reject normalized source imports that escape the standalone repository boundary. */
+function outsideRootImportRule(): Rule<RepositoryRuleContext> {
+  return repositoryRuleSupport.createRule(
+    REPOSITORY_RULE_IDS.importOutsideRoot,
+    'Relative source imports must stay inside the standalone repository root.',
+    ({ imports }) =>
+      imports.flatMap((sourceImport) =>
+        sourceImport.escapesRepositoryRoot === true
+          ? [
+              repositoryRuleSupport.finding(
+                REPOSITORY_RULE_IDS.importOutsideRoot,
+                'Relative import escapes the standalone repository root: ' +
+                  sourceImport.specifier +
+                  '.',
                 sourceImport.path,
                 { specifier: sourceImport.specifier },
               ),
