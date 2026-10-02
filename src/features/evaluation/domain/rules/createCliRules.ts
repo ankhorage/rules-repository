@@ -40,7 +40,10 @@ function cliExportRule(): Rule<RepositoryRuleContext> {
           path === REPOSITORY_RULE_METADATA.cli.sourceRoot ||
           path.startsWith(REPOSITORY_RULE_METADATA.cli.sourceRoot + '/'),
       );
-      return !hasCli || context.packageJson.exports.includes(REPOSITORY_RULE_METADATA.cli.packageExport)
+      return (
+        !hasCli ||
+        context.packageJson.exports.includes(REPOSITORY_RULE_METADATA.cli.packageExport)
+      )
         ? []
         : [
             repositoryRuleSupport.finding(

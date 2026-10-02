@@ -33,7 +33,8 @@ function requiredRepositoryPathRules(): readonly Rule<RepositoryRuleContext>[] {
 
 /*** Reject generic catch-all source directories as repository ownership. */
 function catchAllDirectoryRule(): Rule<RepositoryRuleContext> {
-  const catchAllDirectories: readonly string[] = REPOSITORY_RULE_METADATA.source.catchAllDirectories;
+  const catchAllDirectories: readonly string[] =
+    REPOSITORY_RULE_METADATA.source.catchAllDirectories;
   return repositoryRuleSupport.createRule(
     REPOSITORY_RULE_IDS.catchAllDirectory,
     'Generic catch-all source directories are not allowed.',

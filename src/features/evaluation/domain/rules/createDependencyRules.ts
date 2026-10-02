@@ -23,9 +23,7 @@ function compatibilityDependencyRule(): Rule<RepositoryRuleContext> {
     'Legacy @ankh/* compatibility package dependencies are not allowed.',
     ({ packageJson }) =>
       packageJson.dependencies.flatMap((dependency) =>
-        dependency.name.startsWith(
-          REPOSITORY_RULE_METADATA.dependencies.compatibilityPackagePrefix,
-        )
+        dependency.name.startsWith(REPOSITORY_RULE_METADATA.dependencies.compatibilityPackagePrefix)
           ? [
               repositoryRuleSupport.finding(
                 REPOSITORY_RULE_IDS.compatibilityDependency,

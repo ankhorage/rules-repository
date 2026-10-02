@@ -59,7 +59,6 @@ function hasPath(
   kind?: 'directory' | 'file',
 ): boolean {
   return context.paths.some(
-    (candidate) =>
-      candidate.path === path && (kind === undefined || candidate.kind === kind),
+    (candidate) => candidate.path === path && (kind === undefined || candidate.kind === kind),
   );
 }

@@ -191,11 +191,8 @@ function fieldMatchesKind(
 ): boolean {
   if (kind === 'non-empty-string') return typeof value === 'string' && value.trim() !== '';
   if (kind === 'string-array') {
-    return (
-      Array.isArray(value) &&
-      value.length > 0 &&
-      value.every((entry) => typeof entry === 'string')
-    );
+    if (!Array.isArray(value) || value.length === 0) return false;
+    return value.every((entry) => typeof entry === 'string');
   }
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
