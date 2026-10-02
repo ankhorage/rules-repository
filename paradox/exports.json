@@ -130,7 +130,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 24,
+      "line": 25,
       "column": 1
     },
     "exportPaths": [
@@ -211,7 +211,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 48,
+      "line": 49,
       "column": 1
     },
     "exportPaths": [
@@ -241,7 +241,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 53,
+      "line": 54,
       "column": 1
     },
     "exportPaths": [
@@ -273,6 +273,13 @@
     "signatures": [],
     "members": [
       {
+        "name": "escapesRepositoryRoot",
+        "kind": "property",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": null
+      },
+      {
         "name": "path",
         "kind": "property",
         "type": "string",
@@ -300,7 +307,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 30,
+      "line": 31,
       "column": 1
     },
     "exportPaths": [
@@ -397,7 +404,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 39,
+      "line": 40,
       "column": 1
     },
     "exportPaths": [

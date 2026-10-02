@@ -144,7 +144,7 @@
   </li><li>
     <button class="nav-button" type="button" data-target="src/features/evaluation/domain/rules/createDependencyRules.ts">
       src/features/evaluation/domain/rules/createDependencyRules.ts
-      <small>6 functions</small>
+      <small>7 functions</small>
     </button>
   </li><li>
     <button class="nav-button" type="button" data-target="src/features/evaluation/domain/rules/createPackageRules.ts">
@@ -361,7 +361,7 @@
               <article class="item" id="symbol-repositoryclicommandfact" data-search="RepositoryCliCommandFact  type src/types/repository.ts One normalized public CLI command and its implementation source.">
     <h4>RepositoryCliCommandFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:24:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:25:1</code></p>
     <p>One normalized public CLI command and its implementation source.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -421,7 +421,7 @@
   </article><article class="item" id="symbol-repositoryevaluationoptions" data-search="RepositoryEvaluationOptions  type src/types/repository.ts Optional generic Rules configuration applied to repository rules.">
     <h4>RepositoryEvaluationOptions</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:48:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:49:1</code></p>
     <p>Optional generic Rules configuration applied to repository rules.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -442,7 +442,7 @@
   </article><article class="item" id="symbol-repositoryevaluationresult" data-search="RepositoryEvaluationResult  unknown src/types/repository.ts Generic Rules result produced by repository evaluation.">
     <h4>RepositoryEvaluationResult</h4>
     
-    <p class="muted">unknown • <code>src/types/repository.ts:53:1</code></p>
+    <p class="muted">unknown • <code>src/types/repository.ts:54:1</code></p>
     <p>Generic Rules result produced by repository evaluation.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -462,6 +462,12 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
     <tbody>
       <tr>
+            <td><code>escapesRepositoryRoot</code></td>
+            <td>property</td>
+            <td><code>boolean | undefined</code></td>
+            <td>no</td>
+            <td></td>
+          </tr><tr>
             <td><code>path</code></td>
             <td>property</td>
             <td><code>string</code></td>
@@ -479,7 +485,7 @@
   </article><article class="item" id="symbol-repositorypackagefact" data-search="RepositoryPackageFact  type src/types/repository.ts Portable package.json facts required by repository rules. RepositoryDependencyFact">
     <h4>RepositoryPackageFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:30:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:31:1</code></p>
     <p>Portable package.json facts required by repository rules.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -551,7 +557,7 @@
   </article><article class="item" id="symbol-repositoryrulecontext" data-search="RepositoryRuleContext  type src/types/repository.ts Portable repository facts evaluated independently of filesystem and parser technology. RepositoryCliCommandFact RepositoryImportFact RepositoryPackageFact RepositoryPathFact">
     <h4>RepositoryRuleContext</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:39:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:40:1</code></p>
     <p>Portable repository facts evaluated independently of filesystem and parser technology.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -1014,28 +1020,33 @@
     
   </article><article class="item" data-search="compatibilityDependencyRule src/features/evaluation/domain/rules/createDependencyRules.ts Reject legacy @ankh/* package dependencies.">
     <h3>compatibilityDependencyRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:20:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:21:1</code></p>
     <p>Reject legacy @ankh/* package dependencies.</p>
     
   </article><article class="item" data-search="localProtocolDependencyRule src/features/evaluation/domain/rules/createDependencyRules.ts Reject local and source-control dependency protocols in published packages.">
     <h3>localProtocolDependencyRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:41:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:42:1</code></p>
     <p>Reject local and source-control dependency protocols in published packages.</p>
     
   </article><article class="item" data-search="legacySourceDependencyRule src/features/evaluation/domain/rules/createDependencyRules.ts Reject active dependency values that reference the legacy source tree.">
     <h3>legacySourceDependencyRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:64:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:65:1</code></p>
     <p>Reject active dependency values that reference the legacy source tree.</p>
     
   </article><article class="item" data-search="compatibilityImportRule src/features/evaluation/domain/rules/createDependencyRules.ts Reject legacy @ankh/* source imports.">
     <h3>compatibilityImportRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:85:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:86:1</code></p>
     <p>Reject legacy @ankh/* source imports.</p>
     
   </article><article class="item" data-search="legacySourceImportRule src/features/evaluation/domain/rules/createDependencyRules.ts Reject active imports that reference the legacy source tree.">
     <h3>legacySourceImportRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:108:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:109:1</code></p>
     <p>Reject active imports that reference the legacy source tree.</p>
+    
+  </article><article class="item" data-search="outsideRootImportRule src/features/evaluation/domain/rules/createDependencyRules.ts Reject normalized source imports that escape the standalone repository boundary.">
+    <h3>outsideRootImportRule</h3>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createDependencyRules.ts:130:1</code></p>
+    <p>Reject normalized source imports that escape the standalone repository boundary.</p>
     
   </article>
     </section>
@@ -1189,22 +1200,22 @@
       <h2>src/index.test.ts</h2>
       <article class="item" data-search="createCanonicalContext src/index.test.ts Build one canonical package and repository fact fixture.">
     <h3>createCanonicalContext</h3>
-    <p class="muted"><code>src/index.test.ts:40:1</code></p>
+    <p class="muted"><code>src/index.test.ts:57:1</code></p>
     <p>Build one canonical package and repository fact fixture.</p>
     
   </article><article class="item" data-search="canonicalDependencies src/index.test.ts Build canonical direct dependency facts.">
     <h3>canonicalDependencies</h3>
-    <p class="muted"><code>src/index.test.ts:63:1</code></p>
+    <p class="muted"><code>src/index.test.ts:80:1</code></p>
     <p>Build canonical direct dependency facts.</p>
     
   </article><article class="item" data-search="canonicalFields src/index.test.ts Build canonical required package fields.">
     <h3>canonicalFields</h3>
-    <p class="muted"><code>src/index.test.ts:74:1</code></p>
+    <p class="muted"><code>src/index.test.ts:91:1</code></p>
     <p>Build canonical required package fields.</p>
     
   </article><article class="item" data-search="canonicalScripts src/index.test.ts Build canonical required package scripts.">
     <h3>canonicalScripts</h3>
-    <p class="muted"><code>src/index.test.ts:93:1</code></p>
+    <p class="muted"><code>src/index.test.ts:110:1</code></p>
     <p>Build canonical required package scripts.</p>
     
   </article>
