@@ -9,6 +9,7 @@ export const REPOSITORY_RULE_IDS = {
   cliRootFile: 'package.cli.root-file.disallowed',
   compatibilityDependency: 'package.dependencies.ankh-workspace-alias.disallowed',
   compatibilityImport: 'package.imports.ankh-workspace-alias.disallowed',
+  importOutsideRoot: 'package.imports.outside-root.disallowed',
   dependencyBunTypes: 'package.dependencies.types-bun.required',
   dependencyChangesets: 'package.dependencies.changesets.required',
   dependencyDevtools: 'package.dependencies.devtools.required',

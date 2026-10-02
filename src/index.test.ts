@@ -20,6 +20,23 @@ describe('repository rules', () => {
     });
   });
 
+  test('reports escaped relative imports through the repository-boundary rule', () => {
+    const context = createCanonicalContext();
+    const result = evaluateRepository({
+      ...context,
+      imports: [
+        {
+          escapesRepositoryRoot: true,
+          path: 'src/domain/value.ts',
+          specifier: '../../../sibling/value',
+        },
+      ],
+    });
+    expect(result.findings.map(({ ruleId }) => ruleId)).toContain(
+      'package.imports.outside-root.disallowed',
+    );
+  });
+
   test('reports repository and package violations as generic Rules findings', () => {
     const context = createCanonicalContext();
     const result = evaluateRepository({
