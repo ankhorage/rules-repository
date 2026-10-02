@@ -1,0 +1,47 @@
+graph LR
+  module_src_constants_repository_ts["src/constants/repository.ts"]
+  module_src_constants_repositoryRuleIds_ts["src/constants/repositoryRuleIds.ts"]
+  module_src_features_evaluation_domain_createRepositoryRuleSet_ts["src/features/evaluation/domain/createRepositoryRuleSet.ts"]
+  module_src_features_evaluation_domain_evaluateRepository_ts["src/features/evaluation/domain/evaluateRepository.ts"]
+  module_src_features_evaluation_domain_rules_createCliRules_ts["src/features/evaluation/domain/rules/createCliRules.ts"]
+  module_src_features_evaluation_domain_rules_createDependencyRules_ts["src/features/evaluation/domain/rules/createDependencyRules.ts"]
+  module_src_features_evaluation_domain_rules_createPackageRules_ts["src/features/evaluation/domain/rules/createPackageRules.ts"]
+  module_src_features_evaluation_domain_rules_createPathRules_ts["src/features/evaluation/domain/rules/createPathRules.ts"]
+  module_src_features_evaluation_domain_rules_createRuntimeRules_ts["src/features/evaluation/domain/rules/createRuntimeRules.ts"]
+  module_src_features_evaluation_domain_rules_createScriptRules_ts["src/features/evaluation/domain/rules/createScriptRules.ts"]
+  module_src_features_evaluation_utils_repositoryRuleSupport_ts["src/features/evaluation/utils/repositoryRuleSupport.ts"]
+  module_src_index_test_ts["src/index.test.ts"]
+  module_src_index_ts["src/index.ts"]
+  module_src_types_repository_ts["src/types/repository.ts"]
+  export_createRepositoryRuleSet["createRepositoryRuleSet"]
+  module_src_features_evaluation_domain_createRepositoryRuleSet_ts --> export_createRepositoryRuleSet
+  export_createRepositoryRuleSet -.-> export_RepositoryRuleContext
+  export_evaluateRepository["evaluateRepository"]
+  module_src_features_evaluation_domain_evaluateRepository_ts --> export_evaluateRepository
+  export_evaluateRepository -.-> export_RepositoryEvaluationOptions
+  export_evaluateRepository -.-> export_RepositoryRuleContext
+  export_REPOSITORY_RULE_IDS["REPOSITORY_RULE_IDS"]
+  module_src_constants_repositoryRuleIds_ts --> export_REPOSITORY_RULE_IDS
+  export_REPOSITORY_RULE_METADATA["REPOSITORY_RULE_METADATA"]
+  module_src_constants_repository_ts --> export_REPOSITORY_RULE_METADATA
+  export_RepositoryCliCommandFact["RepositoryCliCommandFact"]
+  module_src_types_repository_ts --> export_RepositoryCliCommandFact
+  export_RepositoryDependencyFact["RepositoryDependencyFact"]
+  module_src_types_repository_ts --> export_RepositoryDependencyFact
+  export_RepositoryEvaluationOptions["RepositoryEvaluationOptions"]
+  module_src_types_repository_ts --> export_RepositoryEvaluationOptions
+  export_RepositoryEvaluationResult["RepositoryEvaluationResult"]
+  module_src_types_repository_ts --> export_RepositoryEvaluationResult
+  export_RepositoryImportFact["RepositoryImportFact"]
+  module_src_types_repository_ts --> export_RepositoryImportFact
+  export_RepositoryPackageFact["RepositoryPackageFact"]
+  module_src_types_repository_ts --> export_RepositoryPackageFact
+  export_RepositoryPackageFact -.-> export_RepositoryDependencyFact
+  export_RepositoryPathFact["RepositoryPathFact"]
+  module_src_types_repository_ts --> export_RepositoryPathFact
+  export_RepositoryRuleContext["RepositoryRuleContext"]
+  module_src_types_repository_ts --> export_RepositoryRuleContext
+  export_RepositoryRuleContext -.-> export_RepositoryCliCommandFact
+  export_RepositoryRuleContext -.-> export_RepositoryImportFact
+  export_RepositoryRuleContext -.-> export_RepositoryPackageFact
+  export_RepositoryRuleContext -.-> export_RepositoryPathFact

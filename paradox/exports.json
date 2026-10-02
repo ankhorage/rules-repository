@@ -1,0 +1,452 @@
+[
+  {
+    "name": "createRepositoryRuleSet",
+    "title": null,
+    "description": "Create canonical repository, package, runtime, dependency, and CLI compliance rules.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "function",
+    "modulePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+    "sourceLocation": {
+      "filePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+      "line": 12,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [
+      "RepositoryRuleContext"
+    ],
+    "signatures": [
+      {
+        "label": "() => RuleSet<RepositoryRuleContext>",
+        "parameters": [],
+        "returnType": "RuleSet<RepositoryRuleContext>",
+        "returnDescription": null
+      }
+    ],
+    "members": [],
+    "structuredRows": []
+  },
+  {
+    "name": "evaluateRepository",
+    "title": null,
+    "description": "Evaluate normalized repository facts through the canonical repository RuleSet.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "function",
+    "modulePath": "src/features/evaluation/domain/evaluateRepository.ts",
+    "sourceLocation": {
+      "filePath": "src/features/evaluation/domain/evaluateRepository.ts",
+      "line": 11,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [
+      "RepositoryEvaluationOptions",
+      "RepositoryRuleContext"
+    ],
+    "signatures": [
+      {
+        "label": "(context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) => import(\"@ankhorage/rules\").RuleEvaluationResult",
+        "parameters": [
+          {
+            "name": "context",
+            "type": "RepositoryRuleContext",
+            "required": true,
+            "description": null
+          },
+          {
+            "name": "options",
+            "type": "RepositoryEvaluationOptions",
+            "required": false,
+            "description": null
+          }
+        ],
+        "returnType": "import(\"@ankhorage/rules\").RuleEvaluationResult",
+        "returnDescription": null
+      }
+    ],
+    "members": [],
+    "structuredRows": []
+  },
+  {
+    "name": "REPOSITORY_RULE_IDS",
+    "title": null,
+    "description": "Stable repository rule identities preserved across the Policy-to-Rules migration.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "value",
+    "modulePath": "src/constants/repositoryRuleIds.ts",
+    "sourceLocation": {
+      "filePath": "src/constants/repositoryRuleIds.ts",
+      "line": 2,
+      "column": 14
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [],
+    "structuredRows": []
+  },
+  {
+    "name": "REPOSITORY_RULE_METADATA",
+    "title": null,
+    "description": "Canonical repository metadata used by validators and managed-file renderers.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "value",
+    "modulePath": "src/constants/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/constants/repository.ts",
+      "line": 4,
+      "column": 14
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryCliCommandFact",
+    "title": null,
+    "description": "One normalized public CLI command and its implementation source.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 24,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [
+      {
+        "name": "commandPath",
+        "kind": "property",
+        "type": "readonly string[]",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "sourcePath",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryDependencyFact",
+    "title": null,
+    "description": "One package dependency fact normalized across dependency sections.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 10,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [
+      {
+        "name": "name",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "section",
+        "kind": "property",
+        "type": "\"dependencies\" | \"devDependencies\" | \"optionalDependencies\" | \"peerDependencies\"",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "value",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryEvaluationOptions",
+    "title": null,
+    "description": "Optional generic Rules configuration applied to repository rules.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 48,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [
+      {
+        "name": "config",
+        "kind": "property",
+        "type": "RulesConfig | undefined",
+        "required": false,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryEvaluationResult",
+    "title": null,
+    "description": "Generic Rules result produced by repository evaluation.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "unknown",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 53,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryImportFact",
+    "title": null,
+    "description": "One source import fact used for current-only package-boundary checks.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 18,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [
+      {
+        "name": "path",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "specifier",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryPackageFact",
+    "title": null,
+    "description": "Portable package.json facts required by repository rules.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 30,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [
+      "RepositoryDependencyFact"
+    ],
+    "signatures": [],
+    "members": [
+      {
+        "name": "dependencies",
+        "kind": "property",
+        "type": "readonly RepositoryDependencyFact[]",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "exports",
+        "kind": "property",
+        "type": "readonly string[]",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "fields",
+        "kind": "property",
+        "type": "Readonly<Record<string, JsonValue | undefined>>",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "packageManager",
+        "kind": "property",
+        "type": "string | undefined",
+        "required": false,
+        "description": null
+      },
+      {
+        "name": "scripts",
+        "kind": "property",
+        "type": "Readonly<Record<string, string>>",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryPathFact",
+    "title": null,
+    "description": "One repository path fact independent of filesystem implementation.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 4,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [
+      {
+        "name": "kind",
+        "kind": "property",
+        "type": "\"directory\" | \"file\"",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "path",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryRuleContext",
+    "title": null,
+    "description": "Portable repository facts evaluated independently of filesystem and parser technology.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 39,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [
+      "RepositoryCliCommandFact",
+      "RepositoryImportFact",
+      "RepositoryPackageFact",
+      "RepositoryPathFact"
+    ],
+    "signatures": [],
+    "members": [
+      {
+        "name": "cliCommands",
+        "kind": "property",
+        "type": "readonly RepositoryCliCommandFact[]",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "imports",
+        "kind": "property",
+        "type": "readonly RepositoryImportFact[]",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "packageJson",
+        "kind": "property",
+        "type": "RepositoryPackageFact",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "paths",
+        "kind": "property",
+        "type": "readonly RepositoryPathFact[]",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "workflowBunVersions",
+        "kind": "property",
+        "type": "Readonly<Record<string, string | undefined>>",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  }
+]

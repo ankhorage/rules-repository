@@ -1,0 +1,1897 @@
+{
+  "packageName": "@ankhorage/rules-repository",
+  "packageId": "@ankhorage/rules-repository",
+  "description": "Repository, package, and tooling rule provider for Ankhorage projects.",
+  "collaborators": null,
+  "donation": null,
+  "badges": [
+    {
+      "id": "license",
+      "label": "license",
+      "value": "MIT",
+      "color": "2563eb"
+    },
+    {
+      "id": "npm",
+      "label": "npm",
+      "value": "v0.1.0",
+      "color": "cb3837"
+    },
+    {
+      "id": "runtime",
+      "label": "runtime",
+      "value": "bun",
+      "color": "f59e0b"
+    },
+    {
+      "id": "typescript",
+      "label": "typescript",
+      "value": "strict",
+      "color": "2563eb"
+    },
+    {
+      "id": "eslint",
+      "label": "eslint",
+      "value": "checked",
+      "color": "0a7f3f"
+    },
+    {
+      "id": "prettier",
+      "label": "prettier",
+      "value": "checked",
+      "color": "0a7f3f"
+    },
+    {
+      "id": "build",
+      "label": "build",
+      "value": "checked",
+      "color": "0a7f3f"
+    },
+    {
+      "id": "tests",
+      "label": "tests",
+      "value": "checked",
+      "color": "0a7f3f"
+    },
+    {
+      "id": "docs",
+      "label": "paradox",
+      "value": "canonical",
+      "color": "0a7f3f"
+    }
+  ],
+  "usage": {
+    "packageName": "@ankhorage/rules-repository",
+    "command": "ankh rules-repository --help"
+  },
+  "usageEntries": [],
+  "exampleCount": 0,
+  "findings": [],
+  "readmeConfig": {
+    "language": "ts",
+    "code": "import { defineParadoxConfig } from '@ankhorage/paradox';\n\nexport default defineParadoxConfig({\n  mode: 'write',\n  docs: {\n    title: '@ankhorage/rules-repository',\n    description: 'Repository, package, and tooling rule provider for Ankhorage projects.',\n  },\n  package: {\n    root: '.',\n    entrypoints: ['src/index.ts'],\n  },\n  output: { dir: './paradox' },\n});",
+    "sourcePath": "paradox.config.ts"
+  },
+  "config": null,
+  "entrypoints": [
+    "src/index.ts"
+  ],
+  "modules": [
+    {
+      "path": "src/constants/repository.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repositoryRuleIds.ts"
+      ],
+      "exports": [
+        "REPOSITORY_RULE_METADATA"
+      ]
+    },
+    {
+      "path": "src/constants/repositoryRuleIds.ts",
+      "isEntrypoint": false,
+      "dependencies": [],
+      "exports": [
+        "REPOSITORY_RULE_IDS"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/features/evaluation/domain/rules/createCliRules.ts",
+        "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "src/features/evaluation/domain/rules/createPathRules.ts",
+        "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createRepositoryRuleSet"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/evaluateRepository.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "evaluateRepository"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/rules/createCliRules.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/constants/repositoryRuleIds.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createCliRules"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/constants/repositoryRuleIds.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createDependencyRules"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/rules/createPackageRules.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/constants/repositoryRuleIds.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createPackageRules"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/rules/createPathRules.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/constants/repositoryRuleIds.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createPathRules"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/constants/repositoryRuleIds.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createRuntimeRules"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/domain/rules/createScriptRules.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createScriptRules"
+      ]
+    },
+    {
+      "path": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "repositoryRuleSupport"
+      ]
+    },
+    {
+      "path": "src/index.test.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/index.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": []
+    },
+    {
+      "path": "src/index.ts",
+      "isEntrypoint": true,
+      "dependencies": [],
+      "exports": [
+        "createRepositoryRuleSet",
+        "evaluateRepository",
+        "REPOSITORY_RULE_IDS",
+        "REPOSITORY_RULE_METADATA",
+        "RepositoryCliCommandFact",
+        "RepositoryDependencyFact",
+        "RepositoryEvaluationOptions",
+        "RepositoryEvaluationResult",
+        "RepositoryImportFact",
+        "RepositoryPackageFact",
+        "RepositoryPathFact",
+        "RepositoryRuleContext"
+      ]
+    },
+    {
+      "path": "src/types/repository.ts",
+      "isEntrypoint": false,
+      "dependencies": [],
+      "exports": [
+        "RepositoryCliCommandFact",
+        "RepositoryDependencyFact",
+        "RepositoryEvaluationOptions",
+        "RepositoryEvaluationResult",
+        "RepositoryImportFact",
+        "RepositoryPackageFact",
+        "RepositoryPathFact",
+        "RepositoryRuleContext"
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "name": "createRepositoryRuleSet",
+      "title": null,
+      "description": "Create canonical repository, package, runtime, dependency, and CLI compliance rules.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "function",
+      "modulePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "line": 12,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [
+        "RepositoryRuleContext"
+      ],
+      "signatures": [
+        {
+          "label": "() => RuleSet<RepositoryRuleContext>",
+          "parameters": [],
+          "returnType": "RuleSet<RepositoryRuleContext>",
+          "returnDescription": null
+        }
+      ],
+      "members": [],
+      "structuredRows": []
+    },
+    {
+      "name": "evaluateRepository",
+      "title": null,
+      "description": "Evaluate normalized repository facts through the canonical repository RuleSet.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "function",
+      "modulePath": "src/features/evaluation/domain/evaluateRepository.ts",
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/evaluateRepository.ts",
+        "line": 11,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [
+        "RepositoryEvaluationOptions",
+        "RepositoryRuleContext"
+      ],
+      "signatures": [
+        {
+          "label": "(context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) => import(\"@ankhorage/rules\").RuleEvaluationResult",
+          "parameters": [
+            {
+              "name": "context",
+              "type": "RepositoryRuleContext",
+              "required": true,
+              "description": null
+            },
+            {
+              "name": "options",
+              "type": "RepositoryEvaluationOptions",
+              "required": false,
+              "description": null
+            }
+          ],
+          "returnType": "import(\"@ankhorage/rules\").RuleEvaluationResult",
+          "returnDescription": null
+        }
+      ],
+      "members": [],
+      "structuredRows": []
+    },
+    {
+      "name": "REPOSITORY_RULE_IDS",
+      "title": null,
+      "description": "Stable repository rule identities preserved across the Policy-to-Rules migration.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "value",
+      "modulePath": "src/constants/repositoryRuleIds.ts",
+      "sourceLocation": {
+        "filePath": "src/constants/repositoryRuleIds.ts",
+        "line": 2,
+        "column": 14
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [],
+      "structuredRows": []
+    },
+    {
+      "name": "REPOSITORY_RULE_METADATA",
+      "title": null,
+      "description": "Canonical repository metadata used by validators and managed-file renderers.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "value",
+      "modulePath": "src/constants/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/constants/repository.ts",
+        "line": 4,
+        "column": 14
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryCliCommandFact",
+      "title": null,
+      "description": "One normalized public CLI command and its implementation source.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 24,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [
+        {
+          "name": "commandPath",
+          "kind": "property",
+          "type": "readonly string[]",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "sourcePath",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryDependencyFact",
+      "title": null,
+      "description": "One package dependency fact normalized across dependency sections.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 10,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [
+        {
+          "name": "name",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "section",
+          "kind": "property",
+          "type": "\"dependencies\" | \"devDependencies\" | \"optionalDependencies\" | \"peerDependencies\"",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "value",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryEvaluationOptions",
+      "title": null,
+      "description": "Optional generic Rules configuration applied to repository rules.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 48,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [
+        {
+          "name": "config",
+          "kind": "property",
+          "type": "RulesConfig | undefined",
+          "required": false,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryEvaluationResult",
+      "title": null,
+      "description": "Generic Rules result produced by repository evaluation.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "unknown",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 53,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryImportFact",
+      "title": null,
+      "description": "One source import fact used for current-only package-boundary checks.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 18,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [
+        {
+          "name": "path",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "specifier",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryPackageFact",
+      "title": null,
+      "description": "Portable package.json facts required by repository rules.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 30,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [
+        "RepositoryDependencyFact"
+      ],
+      "signatures": [],
+      "members": [
+        {
+          "name": "dependencies",
+          "kind": "property",
+          "type": "readonly RepositoryDependencyFact[]",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "exports",
+          "kind": "property",
+          "type": "readonly string[]",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "fields",
+          "kind": "property",
+          "type": "Readonly<Record<string, JsonValue | undefined>>",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "packageManager",
+          "kind": "property",
+          "type": "string | undefined",
+          "required": false,
+          "description": null
+        },
+        {
+          "name": "scripts",
+          "kind": "property",
+          "type": "Readonly<Record<string, string>>",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryPathFact",
+      "title": null,
+      "description": "One repository path fact independent of filesystem implementation.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 4,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [
+        {
+          "name": "kind",
+          "kind": "property",
+          "type": "\"directory\" | \"file\"",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "path",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryRuleContext",
+      "title": null,
+      "description": "Portable repository facts evaluated independently of filesystem and parser technology.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 39,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [
+        "RepositoryCliCommandFact",
+        "RepositoryImportFact",
+        "RepositoryPackageFact",
+        "RepositoryPathFact"
+      ],
+      "signatures": [],
+      "members": [
+        {
+          "name": "cliCommands",
+          "kind": "property",
+          "type": "readonly RepositoryCliCommandFact[]",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "imports",
+          "kind": "property",
+          "type": "readonly RepositoryImportFact[]",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "packageJson",
+          "kind": "property",
+          "type": "RepositoryPackageFact",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "paths",
+          "kind": "property",
+          "type": "readonly RepositoryPathFact[]",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "workflowBunVersions",
+          "kind": "property",
+          "type": "Readonly<Record<string, string | undefined>>",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    }
+  ],
+  "components": [],
+  "sourceFunctions": [
+    {
+      "name": "createRepositoryRuleSet",
+      "description": "Create canonical repository, package, runtime, dependency, and CLI compliance rules.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "line": 12,
+        "column": 1
+      }
+    },
+    {
+      "name": "evaluateRepository",
+      "description": "Evaluate normalized repository facts through the canonical repository RuleSet.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/evaluateRepository.ts",
+        "line": 11,
+        "column": 1
+      }
+    },
+    {
+      "name": "createCliRules",
+      "description": "Create CLI package-layout rules without owning CLI implementation details.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "line": 9,
+        "column": 1
+      }
+    },
+    {
+      "name": "legacyRootRule",
+      "description": "Reject the superseded src/cli.ts root implementation.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "line": 14,
+        "column": 1
+      }
+    },
+    {
+      "name": "cliExportRule",
+      "description": "Require ./cli package export whenever src/cli exists.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "line": 33,
+        "column": 1
+      }
+    },
+    {
+      "name": "cliCommandPathRule",
+      "description": "Require public command implementations to mirror their command path below src/cli/commands.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "line": 59,
+        "column": 1
+      }
+    },
+    {
+      "name": "createDependencyRules",
+      "description": "Create current-only package dependency and source import rules.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "line": 9,
+        "column": 1
+      }
+    },
+    {
+      "name": "compatibilityDependencyRule",
+      "description": "Reject legacy @ankh/* package dependencies.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "line": 20,
+        "column": 1
+      }
+    },
+    {
+      "name": "localProtocolDependencyRule",
+      "description": "Reject local and source-control dependency protocols in published packages.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "line": 41,
+        "column": 1
+      }
+    },
+    {
+      "name": "legacySourceDependencyRule",
+      "description": "Reject active dependency values that reference the legacy source tree.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "line": 64,
+        "column": 1
+      }
+    },
+    {
+      "name": "compatibilityImportRule",
+      "description": "Reject legacy @ankh/* source imports.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "line": 85,
+        "column": 1
+      }
+    },
+    {
+      "name": "legacySourceImportRule",
+      "description": "Reject active imports that reference the legacy source tree.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "line": 108,
+        "column": 1
+      }
+    },
+    {
+      "name": "createPackageRules",
+      "description": "Create public-package metadata and tooling dependency rules.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 9,
+        "column": 1
+      }
+    },
+    {
+      "name": "requiredFieldRules",
+      "description": "Require canonical package metadata field shapes.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 22,
+        "column": 1
+      }
+    },
+    {
+      "name": "packageTypeRule",
+      "description": "Require ESM package type.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 43,
+        "column": 1
+      }
+    },
+    {
+      "name": "publishAccessRule",
+      "description": "Require public npm publish access.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 62,
+        "column": 1
+      }
+    },
+    {
+      "name": "publicPackageRule",
+      "description": "Reject private=true for published packages.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 82,
+        "column": 1
+      }
+    },
+    {
+      "name": "toolingDependencyRules",
+      "description": "Require the shared tooling dependencies owned by the repository contract.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 101,
+        "column": 1
+      }
+    },
+    {
+      "name": "paradoxDependencyRule",
+      "description": "Require Paradox when the package owns a docs script, except for Paradox itself.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 128,
+        "column": 1
+      }
+    },
+    {
+      "name": "changesetsDependencyRule",
+      "description": "Enforce Changesets CLI ownership by Devtools only.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 153,
+        "column": 1
+      }
+    },
+    {
+      "name": "fieldMatchesKind",
+      "description": "Validate one normalized package field against its canonical shape.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "line": 188,
+        "column": 1
+      }
+    },
+    {
+      "name": "createPathRules",
+      "description": "Create repository-path and source-taxonomy rules.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "line": 9,
+        "column": 1
+      }
+    },
+    {
+      "name": "requiredRepositoryPathRules",
+      "description": "Require canonical files and directories for public packages.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "line": 14,
+        "column": 1
+      }
+    },
+    {
+      "name": "catchAllDirectoryRule",
+      "description": "Reject generic catch-all source directories as repository ownership.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "line": 35,
+        "column": 1
+      }
+    },
+    {
+      "name": "createRuntimeRules",
+      "description": "Create canonical Bun runtime and workflow rules.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "line": 9,
+        "column": 1
+      }
+    },
+    {
+      "name": "packageManagerRequiredRule",
+      "description": "Require a packageManager declaration.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "line": 20,
+        "column": 1
+      }
+    },
+    {
+      "name": "packageManagerBunRule",
+      "description": "Require Bun as the declared package manager.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "line": 39,
+        "column": 1
+      }
+    },
+    {
+      "name": "packageManagerExactRule",
+      "description": "Require the exact canonical Bun runtime version.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "line": 58,
+        "column": 1
+      }
+    },
+    {
+      "name": "bunTypesRule",
+      "description": "Require the canonical @types/bun dependency range.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "line": 77,
+        "column": 1
+      }
+    },
+    {
+      "name": "workflowBunRules",
+      "description": "Require canonical Bun versions in managed CI and release workflows.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "line": 98,
+        "column": 1
+      }
+    },
+    {
+      "name": "createScriptRules",
+      "description": "Create required public-package script rules.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "line": 8,
+        "column": 1
+      }
+    },
+    {
+      "name": "createRule",
+      "description": "Build one deterministic error-level repository rule.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "line": 15,
+        "column": 1
+      }
+    },
+    {
+      "name": "finding",
+      "description": "Build one portable repository finding.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "line": 29,
+        "column": 1
+      }
+    },
+    {
+      "name": "hasDependency",
+      "description": "Return whether the normalized package declares one direct dependency.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "line": 40,
+        "column": 1
+      }
+    },
+    {
+      "name": "hasDependencyInSection",
+      "description": "Return whether one dependency is declared in one exact package section.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "line": 45,
+        "column": 1
+      }
+    },
+    {
+      "name": "hasPath",
+      "description": "Return whether one exact path fact exists with the requested kind.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "line": 56,
+        "column": 1
+      }
+    },
+    {
+      "name": "createCanonicalContext",
+      "description": "Build one canonical package and repository fact fixture.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 40,
+        "column": 1
+      }
+    },
+    {
+      "name": "canonicalDependencies",
+      "description": "Build canonical direct dependency facts.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 63,
+        "column": 1
+      }
+    },
+    {
+      "name": "canonicalFields",
+      "description": "Build canonical required package fields.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 74,
+        "column": 1
+      }
+    },
+    {
+      "name": "canonicalScripts",
+      "description": "Build canonical required package scripts.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 93,
+        "column": 1
+      }
+    }
+  ],
+  "sequenceScenarios": [
+    {
+      "kind": "export",
+      "name": "createRepositoryRuleSet",
+      "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+      "symbolName": "createRepositoryRuleSet",
+      "description": "Create canonical repository, package, runtime, dependency, and CLI compliance rules.",
+      "isReadme": false
+    },
+    {
+      "kind": "export",
+      "name": "evaluateRepository",
+      "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts",
+      "symbolName": "evaluateRepository",
+      "description": "Evaluate normalized repository facts through the canonical repository RuleSet.",
+      "isReadme": false
+    }
+  ],
+  "graphs": {
+    "imports": [
+      {
+        "fromPath": "src/index.test.ts",
+        "toPath": "src/index.ts",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromPath": "src/index.test.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
+        "toPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
+        "toPath": "src/features/evaluation/domain/evaluateRepository.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/constants/repository.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/constants/repository.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "toPath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "toPath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "toPath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "toPath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "toPath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "toPath": "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/evaluateRepository.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/evaluateRepository.ts",
+        "toPath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/utils/repositoryRuleSupport.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createScriptRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createScriptRules.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/evaluation/domain/rules/createScriptRules.ts"
+      }
+    ],
+    "calls": [
+      {
+        "fromSymbol": "src/index.test.ts",
+        "toSymbol": "describe",
+        "callExpression": "describe",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "src/index.test.ts",
+        "toSymbol": "test",
+        "callExpression": "test",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "src/index.test.ts",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "src/index.test.ts",
+        "toSymbol": "evaluateRepository",
+        "callExpression": "evaluateRepository",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "src/index.test.ts",
+        "toSymbol": "createCanonicalContext",
+        "callExpression": "createCanonicalContext",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "createCanonicalContext",
+        "toSymbol": "canonicalDependencies",
+        "callExpression": "canonicalDependencies",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "createCanonicalContext",
+        "toSymbol": "canonicalFields",
+        "callExpression": "canonicalFields",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "createCanonicalContext",
+        "toSymbol": "canonicalScripts",
+        "callExpression": "canonicalScripts",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toSymbol": "createRuntimeRules",
+        "callExpression": "createRuntimeRules",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toSymbol": "createPathRules",
+        "callExpression": "createPathRules",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toSymbol": "createScriptRules",
+        "callExpression": "createScriptRules",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toSymbol": "createPackageRules",
+        "callExpression": "createPackageRules",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toSymbol": "createDependencyRules",
+        "callExpression": "createDependencyRules",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toSymbol": "createCliRules",
+        "callExpression": "createCliRules",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepository",
+        "toSymbol": "createRepositoryRuleSet",
+        "callExpression": "createRepositoryRuleSet",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepository",
+        "toSymbol": "evaluateRules",
+        "callExpression": "evaluateRules",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepository",
+        "toSymbol": "evaluateConfiguredRules",
+        "callExpression": "evaluateConfiguredRules",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepository",
+        "toSymbol": "createRuleRegistry",
+        "callExpression": "createRuleRegistry",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "evaluate",
+        "toSymbol": "evaluate",
+        "callExpression": "evaluate",
+        "sourcePath": "src/features/evaluation/utils/repositoryRuleSupport.ts"
+      },
+      {
+        "fromSymbol": "createCliRules",
+        "toSymbol": "legacyRootRule",
+        "callExpression": "legacyRootRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "createCliRules",
+        "toSymbol": "cliExportRule",
+        "callExpression": "cliExportRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "createCliRules",
+        "toSymbol": "cliCommandPathRule",
+        "callExpression": "cliCommandPathRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "legacyRootRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "toSymbol": "hasPath",
+        "callExpression": "repositoryRuleSupport.hasPath",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createCliRules.ts",
+        "toSymbol": "finding",
+        "callExpression": "repositoryRuleSupport.finding",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "cliExportRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "cliCommandPathRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
+      },
+      {
+        "fromSymbol": "createDependencyRules",
+        "toSymbol": "compatibilityDependencyRule",
+        "callExpression": "compatibilityDependencyRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "createDependencyRules",
+        "toSymbol": "localProtocolDependencyRule",
+        "callExpression": "localProtocolDependencyRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "createDependencyRules",
+        "toSymbol": "legacySourceDependencyRule",
+        "callExpression": "legacySourceDependencyRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "createDependencyRules",
+        "toSymbol": "compatibilityImportRule",
+        "callExpression": "compatibilityImportRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "createDependencyRules",
+        "toSymbol": "legacySourceImportRule",
+        "callExpression": "legacySourceImportRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "compatibilityDependencyRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createDependencyRules.ts",
+        "toSymbol": "finding",
+        "callExpression": "repositoryRuleSupport.finding",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "localProtocolDependencyRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "legacySourceDependencyRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "compatibilityImportRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "legacySourceImportRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createDependencyRules.ts"
+      },
+      {
+        "fromSymbol": "createPackageRules",
+        "toSymbol": "requiredFieldRules",
+        "callExpression": "requiredFieldRules",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "createPackageRules",
+        "toSymbol": "packageTypeRule",
+        "callExpression": "packageTypeRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "createPackageRules",
+        "toSymbol": "publishAccessRule",
+        "callExpression": "publishAccessRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "createPackageRules",
+        "toSymbol": "publicPackageRule",
+        "callExpression": "publicPackageRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "createPackageRules",
+        "toSymbol": "toolingDependencyRules",
+        "callExpression": "toolingDependencyRules",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "createPackageRules",
+        "toSymbol": "paradoxDependencyRule",
+        "callExpression": "paradoxDependencyRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "createPackageRules",
+        "toSymbol": "changesetsDependencyRule",
+        "callExpression": "changesetsDependencyRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toSymbol": "fieldMatchesKind",
+        "callExpression": "fieldMatchesKind",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toSymbol": "finding",
+        "callExpression": "repositoryRuleSupport.finding",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "packageTypeRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "publishAccessRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "publicPackageRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toSymbol": "hasDependency",
+        "callExpression": "repositoryRuleSupport.hasDependency",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "paradoxDependencyRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "changesetsDependencyRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPackageRules.ts",
+        "toSymbol": "hasDependencyInSection",
+        "callExpression": "repositoryRuleSupport.hasDependencyInSection",
+        "sourcePath": "src/features/evaluation/domain/rules/createPackageRules.ts"
+      },
+      {
+        "fromSymbol": "createPathRules",
+        "toSymbol": "requiredRepositoryPathRules",
+        "callExpression": "requiredRepositoryPathRules",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromSymbol": "createPathRules",
+        "toSymbol": "catchAllDirectoryRule",
+        "callExpression": "catchAllDirectoryRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "toSymbol": "hasPath",
+        "callExpression": "repositoryRuleSupport.hasPath",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createPathRules.ts",
+        "toSymbol": "finding",
+        "callExpression": "repositoryRuleSupport.finding",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromSymbol": "catchAllDirectoryRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createPathRules.ts"
+      },
+      {
+        "fromSymbol": "createRuntimeRules",
+        "toSymbol": "packageManagerRequiredRule",
+        "callExpression": "packageManagerRequiredRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "createRuntimeRules",
+        "toSymbol": "packageManagerBunRule",
+        "callExpression": "packageManagerBunRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "createRuntimeRules",
+        "toSymbol": "packageManagerExactRule",
+        "callExpression": "packageManagerExactRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "createRuntimeRules",
+        "toSymbol": "bunTypesRule",
+        "callExpression": "bunTypesRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "createRuntimeRules",
+        "toSymbol": "workflowBunRules",
+        "callExpression": "workflowBunRules",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "packageManagerRequiredRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "toSymbol": "finding",
+        "callExpression": "repositoryRuleSupport.finding",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "packageManagerBunRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "packageManagerExactRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "bunTypesRule",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "toSymbol": "createRule",
+        "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createScriptRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createScriptRules.ts",
+        "toSymbol": "finding",
+        "callExpression": "repositoryRuleSupport.finding",
+        "sourcePath": "src/features/evaluation/domain/rules/createScriptRules.ts"
+      }
+    ],
+    "typeReferences": [
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toType": "RepositoryRuleContext",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryRuleSet",
+        "toType": "RuleSet",
+        "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepository",
+        "toType": "RepositoryEvaluationOptions",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepository",
+        "toType": "RepositoryRuleContext",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepository",
+        "toType": "RuleEvaluationResult",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryEvaluationOptions",
+        "toType": "RulesConfig",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryPackageFact",
+        "toType": "JsonValue",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryPackageFact",
+        "toType": "Readonly",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryPackageFact",
+        "toType": "RepositoryDependencyFact",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryRuleContext",
+        "toType": "Readonly",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryRuleContext",
+        "toType": "RepositoryCliCommandFact",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryRuleContext",
+        "toType": "RepositoryImportFact",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryRuleContext",
+        "toType": "RepositoryPackageFact",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryRuleContext",
+        "toType": "RepositoryPathFact",
+        "sourcePath": "src/types/repository.ts"
+      }
+    ],
+    "componentComposition": []
+  }
+}
