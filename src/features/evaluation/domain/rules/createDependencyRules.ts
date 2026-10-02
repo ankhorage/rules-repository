@@ -23,7 +23,9 @@ function compatibilityDependencyRule(): Rule<RepositoryRuleContext> {
     'Legacy @ankh/* compatibility package dependencies are not allowed.',
     ({ packageJson }) =>
       packageJson.dependencies.flatMap((dependency) =>
-        dependency.name.startsWith(REPOSITORY_RULE_METADATA.dependencies.compatibilityPackagePrefix)
+        dependency.name.startsWith(
+          REPOSITORY_RULE_METADATA.dependencies.compatibilityPackagePrefix,
+        )
           ? [
               repositoryRuleSupport.finding(
                 REPOSITORY_RULE_IDS.compatibilityDependency,
@@ -88,7 +90,9 @@ function compatibilityImportRule(): Rule<RepositoryRuleContext> {
     'Legacy @ankh/* compatibility imports are not allowed.',
     ({ imports }) =>
       imports.flatMap((sourceImport) =>
-        sourceImport.specifier.startsWith(REPOSITORY_RULE_METADATA.dependencies.compatibilityPackagePrefix)
+        sourceImport.specifier.startsWith(
+          REPOSITORY_RULE_METADATA.dependencies.compatibilityPackagePrefix,
+        )
           ? [
               repositoryRuleSupport.finding(
                 REPOSITORY_RULE_IDS.compatibilityImport,

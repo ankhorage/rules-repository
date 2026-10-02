@@ -65,7 +65,9 @@ function packageManagerExactRule(): Rule<RepositoryRuleContext> {
         : [
             repositoryRuleSupport.finding(
               REPOSITORY_RULE_IDS.bunPackageManager,
-              'packageManager must be ' + REPOSITORY_RULE_METADATA.runtime.bun.packageManager + '.',
+              'packageManager must be ' +
+                REPOSITORY_RULE_METADATA.runtime.bun.packageManager +
+                '.',
               'package.json',
               { actual: packageJson.packageManager ?? '' },
             ),
@@ -106,7 +108,10 @@ function workflowBunRules(): readonly Rule<RepositoryRuleContext>[] {
           : [
               repositoryRuleSupport.finding(
                 target.ruleId,
-                target.path + ' must use Bun ' + REPOSITORY_RULE_METADATA.runtime.bun.version + '.',
+                target.path +
+                  ' must use Bun ' +
+                  REPOSITORY_RULE_METADATA.runtime.bun.version +
+                  '.',
                 target.path,
                 { actual: workflowBunVersions[target.path] ?? '' },
               ),

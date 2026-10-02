@@ -10,10 +10,7 @@ export interface RepositoryPathFact {
 export interface RepositoryDependencyFact {
   readonly name: string;
   readonly section:
-    | 'dependencies'
-    | 'devDependencies'
-    | 'optionalDependencies'
-    | 'peerDependencies';
+    'dependencies' | 'devDependencies' | 'optionalDependencies' | 'peerDependencies';
   readonly value: string;
 }
 

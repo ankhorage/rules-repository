@@ -64,7 +64,8 @@ function publishAccessRule(): Rule<RepositoryRuleContext> {
     REPOSITORY_RULE_IDS.packagePublishPublic,
     'Public packages require publishConfig.access=public.',
     ({ packageJson }) =>
-      packageJson.fields.publishConfigAccess === REPOSITORY_RULE_METADATA.publicPackage.publishAccess.value
+      packageJson.fields.publishConfigAccess ===
+      REPOSITORY_RULE_METADATA.publicPackage.publishAccess.value
         ? []
         : [
             repositoryRuleSupport.finding(
@@ -105,17 +106,20 @@ function toolingDependencyRules(): readonly Rule<RepositoryRuleContext>[] {
     ['@ankhorage/devtools', REPOSITORY_RULE_IDS.dependencyDevtools],
   ] as const;
   return requirements.map(([name, ruleId]) =>
-    repositoryRuleSupport.createRule(ruleId, 'Repository requires shared tooling.', ({ packageJson }) =>
-      repositoryRuleSupport.hasDependency(packageJson, name)
-        ? []
-        : [
-            repositoryRuleSupport.finding(
-              ruleId,
-              'Missing required dependency: ' + name + '.',
-              'package.json',
-              { name },
-            ),
-          ],
+    repositoryRuleSupport.createRule(
+      ruleId,
+      'Repository requires shared tooling.',
+      ({ packageJson }) =>
+        repositoryRuleSupport.hasDependency(packageJson, name)
+          ? []
+          : [
+              repositoryRuleSupport.finding(
+                ruleId,
+                'Missing required dependency: ' + name + '.',
+                'package.json',
+                { name },
+              ),
+            ],
     ),
   );
 }
@@ -129,7 +133,9 @@ function paradoxDependencyRule(): Rule<RepositoryRuleContext> {
       const packageName = packageJson.fields.name;
       const ownsDocs = typeof packageJson.scripts.docs === 'string';
       const exempt = packageName === '@ankhorage/paradox';
-      return !ownsDocs || exempt || repositoryRuleSupport.hasDependency(packageJson, '@ankhorage/paradox')
+      return !ownsDocs ||
+        exempt ||
+        repositoryRuleSupport.hasDependency(packageJson, '@ankhorage/paradox')
         ? []
         : [
             repositoryRuleSupport.finding(
@@ -160,9 +166,10 @@ function changesetsDependencyRule(): Rule<RepositoryRuleContext> {
         '@changesets/cli',
         'devDependencies',
       );
-      const valid = packageName === '@ankhorage/devtools'
-        ? dependency && !devDependency
-        : !dependency && !devDependency;
+      const valid =
+        packageName === '@ankhorage/devtools'
+          ? dependency && !devDependency
+          : !dependency && !devDependency;
       return valid
         ? []
         : [
@@ -184,7 +191,11 @@ function fieldMatchesKind(
 ): boolean {
   if (kind === 'non-empty-string') return typeof value === 'string' && value.trim() !== '';
   if (kind === 'string-array') {
-    return Array.isArray(value) && value.length > 0 && value.every((entry) => typeof entry === 'string');
+    return (
+      Array.isArray(value) &&
+      value.length > 0 &&
+      value.every((entry) => typeof entry === 'string')
+    );
   }
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
