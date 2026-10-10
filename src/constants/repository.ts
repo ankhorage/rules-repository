@@ -36,9 +36,10 @@ export const REPOSITORY_RULE_METADATA = {
     artifactName: 'atlas-audit',
     artifactPath: 'src/atlas-audit.json',
     command:
-      'cd src && bunx @ankhorage/atlas --out atlas-audit.json --rule cyclic-dependencies=block',
-    rule: 'cyclic-dependencies=block',
+      'cd src && bunx @ankhorage/atlas@0.12.1 --out atlas-audit.json --rule cyclic-dependencies=block',
     packageName: '@ankhorage/atlas',
+    rule: 'cyclic-dependencies=block',
+    toolVersion: '0.12.1',
   },
   publicPackage: {
     dependencyRules: {
