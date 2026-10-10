@@ -13,6 +13,8 @@ describe('repository rules', () => {
     expect(REPOSITORY_RULE_METADATA.runtime.node.major).toBe(24);
   });
 
+  test('publishes the Atlas cyclic-dependency audit contract', assertAtlasAuditContract);
+
   test('accepts a canonical public package repository', () => {
     expect(evaluateRepository(createCanonicalContext())).toEqual({
       diagnostics: [],
@@ -52,6 +54,19 @@ describe('repository rules', () => {
     expect(ids).toContain('package.imports.ankh-workspace-alias.disallowed');
   });
 });
+
+/*** Verify that generated consumers receive only the canonical Atlas audit metadata. */
+function assertAtlasAuditContract(): void {
+  expect(REPOSITORY_RULE_METADATA.atlasAudit).toEqual({
+    artifactName: 'atlas-audit',
+    artifactPath: 'src/atlas-audit.json',
+    command:
+      'cd src && bunx @ankhorage/atlas --out atlas-audit.json --rule cyclic-dependencies=block',
+    packageName: '@ankhorage/atlas',
+    rule: 'cyclic-dependencies=block',
+  });
+  expect('pkgvizAudit' in REPOSITORY_RULE_METADATA).toBe(false);
+}
 
 /*** Build one canonical package and repository fact fixture. */
 function createCanonicalContext(): RepositoryRuleContext {

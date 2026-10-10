@@ -32,12 +32,13 @@ export const REPOSITORY_RULE_METADATA = {
     legacySourceMarker: 'ankhorage4',
     localProtocolPrefixes: ['file:', 'link:', 'workspace:', 'github:', 'git:', 'git+'],
   },
-  pkgvizAudit: {
-    artifactName: 'pkgviz-audit',
-    artifactPath: 'src/pkgviz-audit.json',
-    command: 'cd src && bunx pkgviz@0.8.1 --out pkgviz-audit.json --rule cyclic-dependencies=block',
+  atlasAudit: {
+    artifactName: 'atlas-audit',
+    artifactPath: 'src/atlas-audit.json',
+    command:
+      'cd src && bunx @ankhorage/atlas --out atlas-audit.json --rule cyclic-dependencies=block',
     rule: 'cyclic-dependencies=block',
-    toolVersion: '0.8.1',
+    packageName: '@ankhorage/atlas',
   },
   publicPackage: {
     dependencyRules: {
