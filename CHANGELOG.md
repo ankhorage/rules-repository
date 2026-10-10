@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.2.1
+
+### Patch Changes
+
+- f028ada: refactor(audit): rename the canonical repository audit metadata to Atlas
+
 ## 0.2.0
 
 ### Minor Changes
