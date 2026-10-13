@@ -95,7 +95,11 @@ function canonicalDependencies(): RepositoryRuleContext['packageJson']['dependen
   return [
     { name: '@ankhorage/devtools', section: 'devDependencies', value: '^2.0.13' },
     { name: '@ankhorage/paradox', section: 'devDependencies', value: '^0.2.6' },
-    { name: '@types/bun', section: 'devDependencies', value: REPOSITORY_RULE_METADATA.runtime.bun.typesRange },
+    {
+      name: '@types/bun',
+      section: 'devDependencies',
+      value: REPOSITORY_RULE_METADATA.runtime.bun.typesRange,
+    },
     { name: '@types/node', section: 'devDependencies', value: '^26.6.2' },
     { name: 'typescript', section: 'devDependencies', value: '~6.0.3' },
   ];
