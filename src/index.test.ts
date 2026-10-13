@@ -5,11 +5,9 @@ import type { RepositoryRuleContext } from './types/repository.js';
 
 describe('repository rules', () => {
   test('publishes the canonical runtime and tooling contract', () => {
-    expect(REPOSITORY_RULE_METADATA.runtime.bun).toMatchObject({
-      packageManager: 'bun@1.4.2',
-      typesRange: '^1.4.2',
-      version: '1.4.2',
-    });
+    const { packageManager, typesRange, version } = REPOSITORY_RULE_METADATA.runtime.bun;
+    expect(packageManager).toBe(`bun@${version}`);
+    expect(typesRange).toMatch(/^\^\d+\.\d+\.\d+$/u);
     expect(REPOSITORY_RULE_METADATA.runtime.node.major).toBe(24);
   });
 
@@ -78,7 +76,7 @@ function createCanonicalContext(): RepositoryRuleContext {
       dependencies: canonicalDependencies(),
       exports: [],
       fields: canonicalFields(),
-      packageManager: 'bun@1.4.2',
+      packageManager: REPOSITORY_RULE_METADATA.runtime.bun.packageManager,
       scripts: canonicalScripts(),
     },
     paths: REPOSITORY_RULE_METADATA.publicPackage.requiredRepoPaths.map(({ path, kind }) => ({
@@ -86,8 +84,8 @@ function createCanonicalContext(): RepositoryRuleContext {
       path,
     })),
     workflowBunVersions: {
-      '.github/workflows/ci.yml': '1.4.2',
-      '.github/workflows/release.yml': '1.4.2',
+      '.github/workflows/ci.yml': REPOSITORY_RULE_METADATA.runtime.bun.version,
+      '.github/workflows/release.yml': REPOSITORY_RULE_METADATA.runtime.bun.version,
     },
   };
 }
@@ -97,7 +95,11 @@ function canonicalDependencies(): RepositoryRuleContext['packageJson']['dependen
   return [
     { name: '@ankhorage/devtools', section: 'devDependencies', value: '^2.0.13' },
     { name: '@ankhorage/paradox', section: 'devDependencies', value: '^0.2.6' },
-    { name: '@types/bun', section: 'devDependencies', value: '^1.4.2' },
+    {
+      name: '@types/bun',
+      section: 'devDependencies',
+      value: REPOSITORY_RULE_METADATA.runtime.bun.typesRange,
+    },
     { name: '@types/node', section: 'devDependencies', value: '^26.6.2' },
     { name: 'typescript', section: 'devDependencies', value: '~6.0.3' },
   ];

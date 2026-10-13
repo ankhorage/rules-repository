@@ -1,5 +1,8 @@
 import { REPOSITORY_RULE_IDS as rules } from './repositoryRuleIds.js';
 
+const BUN_VERSION = '1.4.2';
+const BUN_TYPES_VERSION = '1.4.2';
+
 /*** Canonical repository metadata used by validators and managed-file renderers. */
 export const REPOSITORY_RULE_METADATA = {
   changesets: {
@@ -95,9 +98,9 @@ export const REPOSITORY_RULE_METADATA = {
   },
   runtime: {
     bun: {
-      packageManager: 'bun@1.4.2',
-      typesRange: '^1.4.2',
-      version: '1.4.2',
+      packageManager: `bun@${BUN_VERSION}`,
+      typesRange: `^${BUN_TYPES_VERSION}`,
+      version: BUN_VERSION,
       workflowTargets: [
         { path: '.github/workflows/ci.yml', ruleId: rules.ciBun },
         { path: '.github/workflows/release.yml', ruleId: rules.releaseBun },
