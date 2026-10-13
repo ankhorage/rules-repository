@@ -14,7 +14,7 @@
     {
       "id": "npm",
       "label": "npm",
-      "value": "v0.2.1",
+      "value": "v0.2.2",
       "color": "cb3837"
     },
     {
@@ -363,7 +363,7 @@
       "modulePath": "src/constants/repository.ts",
       "sourceLocation": {
         "filePath": "src/constants/repository.ts",
-        "line": 4,
+        "line": 7,
         "column": 14
       },
       "exportPaths": [
@@ -1128,7 +1128,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 59,
+        "line": 57,
         "column": 1
       }
     },
@@ -1139,7 +1139,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 73,
+        "line": 71,
         "column": 1
       }
     },
@@ -1150,7 +1150,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 96,
+        "line": 94,
         "column": 1
       }
     },
@@ -1161,7 +1161,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 107,
+        "line": 109,
         "column": 1
       }
     },
@@ -1172,7 +1172,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 126,
+        "line": 128,
         "column": 1
       }
     }

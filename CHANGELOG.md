@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.2.2
+
+### Patch Changes
+
+- 85f7d6b: Derive the canonical Bun runtime and package-manager values from one source for managed updates.
+
 ## 0.2.1
 
 ### Patch Changes

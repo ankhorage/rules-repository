@@ -40,7 +40,7 @@ Stable repository rule identities preserved across the Policy-to-Rules migration
 
 Kind: `value`
 Module: `src/constants/repository.ts`
-Source: `src/constants/repository.ts:4:14`
+Source: `src/constants/repository.ts:7:14`
 
 Canonical repository metadata used by validators and managed-file renderers.
 
