@@ -59,10 +59,10 @@ function assertAtlasAuditContract(): void {
     artifactName: 'atlas-audit',
     artifactPath: 'src/atlas-audit.json',
     command:
-      'cd src && bunx @ankhorage/atlas@0.12.1 --out atlas-audit.json --rule cyclic-dependencies=block',
+      'cd src && bunx @ankhorage/atlas@0.14.1 --out atlas-audit.json --rule cyclic-dependencies=block',
     packageName: '@ankhorage/atlas',
     rule: 'cyclic-dependencies=block',
-    toolVersion: '0.12.1',
+    toolVersion: '0.14.1',
   });
   expect('pkgvizAudit' in REPOSITORY_RULE_METADATA).toBe(false);
 }
