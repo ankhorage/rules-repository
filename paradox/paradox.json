@@ -14,7 +14,7 @@
     {
       "id": "npm",
       "label": "npm",
-      "value": "v0.2.2",
+      "value": "v0.2.3",
       "color": "cb3837"
     },
     {
@@ -77,6 +77,14 @@
     "src/index.ts"
   ],
   "modules": [
+    {
+      "path": "src/atlasAuditConsumer.test.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/index.ts"
+      ],
+      "exports": []
+    },
     {
       "path": "src/constants/repository.ts",
       "isEntrypoint": false,
@@ -715,6 +723,72 @@
   "components": [],
   "sourceFunctions": [
     {
+      "name": "runContractAsync",
+      "description": "Run the canonical published Atlas command in one isolated fixture copy.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/atlasAuditConsumer.test.ts",
+        "line": 50,
+        "column": 1
+      }
+    },
+    {
+      "name": "runCommandAsync",
+      "description": "Run one CLI command without masking its process status or output artifact behavior.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/atlasAuditConsumer.test.ts",
+        "line": 55,
+        "column": 1
+      }
+    },
+    {
+      "name": "readAuditAsync",
+      "description": "Read the artifact from the exact path owned by the published metadata contract.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/atlasAuditConsumer.test.ts",
+        "line": 62,
+        "column": 1
+      }
+    },
+    {
+      "name": "copyFixtureAsync",
+      "description": "Copy one immutable fixture into a disposable published-consumer working directory.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/atlasAuditConsumer.test.ts",
+        "line": 71,
+        "column": 1
+      }
+    },
+    {
+      "name": "readCyclicDependenciesRule",
+      "description": "Read the only cyclic-dependency rule from the persisted audit contract.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/atlasAuditConsumer.test.ts",
+        "line": 81,
+        "column": 1
+      }
+    },
+    {
+      "name": "assertBlockingCyclicDependenciesRule",
+      "description": "Verify the explicit managed blocking policy recorded for cyclic dependencies.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/atlasAuditConsumer.test.ts",
+        "line": 88,
+        "column": 1
+      }
+    },
+    {
       "name": "createRepositoryRuleSet",
       "description": "Create canonical repository, package, runtime, dependency, and CLI compliance rules.",
       "see": [],
@@ -1198,6 +1272,11 @@
   "graphs": {
     "imports": [
       {
+        "fromPath": "src/atlasAuditConsumer.test.ts",
+        "toPath": "src/index.ts",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
         "fromPath": "src/index.test.ts",
         "toPath": "src/index.ts",
         "sourcePath": "src/index.test.ts"
@@ -1404,6 +1483,126 @@
       }
     ],
     "calls": [
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "afterEach",
+        "callExpression": "afterEach",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "rm",
+        "callExpression": "rm",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "describe",
+        "callExpression": "describe",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "test",
+        "callExpression": "test",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "copyFixtureAsync",
+        "callExpression": "copyFixtureAsync",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "runContractAsync",
+        "callExpression": "runContractAsync",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "readAuditAsync",
+        "callExpression": "readAuditAsync",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "assertBlockingCyclicDependenciesRule",
+        "callExpression": "assertBlockingCyclicDependenciesRule",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/atlasAuditConsumer.test.ts",
+        "toSymbol": "runCommandAsync",
+        "callExpression": "runCommandAsync",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "runContractAsync",
+        "toSymbol": "runCommandAsync",
+        "callExpression": "runCommandAsync",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "readAuditAsync",
+        "toSymbol": "readFile",
+        "callExpression": "readFile",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "readAuditAsync",
+        "toSymbol": "join",
+        "callExpression": "join",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "copyFixtureAsync",
+        "toSymbol": "mkdtemp",
+        "callExpression": "mkdtemp",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "copyFixtureAsync",
+        "toSymbol": "join",
+        "callExpression": "join",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "copyFixtureAsync",
+        "toSymbol": "tmpdir",
+        "callExpression": "tmpdir",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "copyFixtureAsync",
+        "toSymbol": "cp",
+        "callExpression": "cp",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "copyFixtureAsync",
+        "toSymbol": "resolve",
+        "callExpression": "resolve",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "assertBlockingCyclicDependenciesRule",
+        "toSymbol": "readCyclicDependenciesRule",
+        "callExpression": "readCyclicDependenciesRule",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "assertBlockingCyclicDependenciesRule",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/atlasAuditConsumer.test.ts"
+      },
       {
         "fromSymbol": "src/index.test.ts",
         "toSymbol": "describe",

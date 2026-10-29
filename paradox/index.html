@@ -127,6 +127,11 @@
               </button>
             </li>
             <li>
+    <button class="nav-button" type="button" data-target="src/atlasAuditConsumer.test.ts">
+      src/atlasAuditConsumer.test.ts
+      <small>6 functions</small>
+    </button>
+  </li><li>
     <button class="nav-button" type="button" data-target="src/features/evaluation/domain/createRepositoryRuleSet.ts">
       src/features/evaluation/domain/createRepositoryRuleSet.ts
       <small>1 function</small>
@@ -188,7 +193,7 @@
       <div class="summary">
         <div><strong>12</strong><span class="muted">public exports</span></div>
         <div><strong>0</strong><span class="muted">components</span></div>
-        <div><strong>14</strong><span class="muted">modules</span></div>
+        <div><strong>15</strong><span class="muted">modules</span></div>
         <div><strong>1</strong><span class="muted">entrypoints</span></div>
       </div>
       <h3>Entrypoints</h3>
@@ -200,7 +205,12 @@
     <section class="panel"><h2>Policy</h2><p>No documentation findings.</p></section>
     <section class="panel">
       <h2>Modules</h2>
-      <article class="item" data-search="src/constants/repository.ts src/constants/repositoryRuleIds.ts REPOSITORY_RULE_METADATA">
+      <article class="item" data-search="src/atlasAuditConsumer.test.ts src/index.ts">
+    <h3>src/atlasAuditConsumer.test.ts</h3>
+    <p class="muted">Referenced module</p>
+    <p><strong>Dependencies:</strong> <code>src/index.ts</code></p>
+    <p><strong>Exports:</strong> <span class="empty">None</span></p>
+  </article><article class="item" data-search="src/constants/repository.ts src/constants/repositoryRuleIds.ts REPOSITORY_RULE_METADATA">
     <h3>src/constants/repository.ts</h3>
     <p class="muted">Referenced module</p>
     <p><strong>Dependencies:</strong> <code>src/constants/repositoryRuleIds.ts</code></p>
@@ -615,6 +625,9 @@
   package__ankhorage_rules_repository[&quot;@ankhorage/rules-repository&quot;]
   entrypoint_src_index_ts[&quot;src/index.ts&quot;]
   package__ankhorage_rules_repository --&gt; entrypoint_src_index_ts
+  module_src_atlasAuditConsumer_test_ts[&quot;src/atlasAuditConsumer.test.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_atlasAuditConsumer_test_ts
+  module_src_atlasAuditConsumer_test_ts --&gt; module_src_index_ts
   module_src_constants_repository_ts[&quot;src/constants/repository.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_constants_repository_ts
   module_src_constants_repository_ts --&gt; module_src_constants_repositoryRuleIds_ts
@@ -685,6 +698,9 @@
   package__ankhorage_rules_repository[&quot;@ankhorage/rules-repository&quot;]
   entrypoint_src_index_ts[&quot;src/index.ts&quot;]
   package__ankhorage_rules_repository --&gt; entrypoint_src_index_ts
+  module_src_atlasAuditConsumer_test_ts[&quot;src/atlasAuditConsumer.test.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_atlasAuditConsumer_test_ts
+  module_src_atlasAuditConsumer_test_ts --&gt; module_src_index_ts
   module_src_constants_repository_ts[&quot;src/constants/repository.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_constants_repository_ts
   module_src_constants_repository_ts --&gt; module_src_constants_repositoryRuleIds_ts
@@ -754,6 +770,7 @@
     <h3>Module relationships</h3>
     <p class="muted"><code>diagrams/module-relationships.mmd</code></p>
     <div class="mermaid">graph LR
+  module_src_atlasAuditConsumer_test_ts[&quot;src/atlasAuditConsumer.test.ts&quot;]
   module_src_constants_repository_ts[&quot;src/constants/repository.ts&quot;]
   module_src_constants_repositoryRuleIds_ts[&quot;src/constants/repositoryRuleIds.ts&quot;]
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts[&quot;src/features/evaluation/domain/createRepositoryRuleSet.ts&quot;]
@@ -768,6 +785,7 @@
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   module_src_index_ts[&quot;src/index.ts&quot;]
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
+  module_src_atlasAuditConsumer_test_ts --&gt; module_src_index_ts
   module_src_constants_repository_ts --&gt; module_src_constants_repositoryRuleIds_ts
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_features_evaluation_domain_rules_createCliRules_ts
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_features_evaluation_domain_rules_createDependencyRules_ts
@@ -808,6 +826,7 @@
     <details>
       <summary>View Mermaid source</summary>
       <pre>graph LR
+  module_src_atlasAuditConsumer_test_ts[&quot;src/atlasAuditConsumer.test.ts&quot;]
   module_src_constants_repository_ts[&quot;src/constants/repository.ts&quot;]
   module_src_constants_repositoryRuleIds_ts[&quot;src/constants/repositoryRuleIds.ts&quot;]
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts[&quot;src/features/evaluation/domain/createRepositoryRuleSet.ts&quot;]
@@ -822,6 +841,7 @@
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   module_src_index_ts[&quot;src/index.ts&quot;]
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
+  module_src_atlasAuditConsumer_test_ts --&gt; module_src_index_ts
   module_src_constants_repository_ts --&gt; module_src_constants_repositoryRuleIds_ts
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_features_evaluation_domain_rules_createCliRules_ts
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_features_evaluation_domain_rules_createDependencyRules_ts
@@ -864,6 +884,7 @@
     <h3>Export graph</h3>
     <p class="muted"><code>diagrams/export-graph.mmd</code></p>
     <div class="mermaid">graph LR
+  module_src_atlasAuditConsumer_test_ts[&quot;src/atlasAuditConsumer.test.ts&quot;]
   module_src_constants_repository_ts[&quot;src/constants/repository.ts&quot;]
   module_src_constants_repositoryRuleIds_ts[&quot;src/constants/repositoryRuleIds.ts&quot;]
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts[&quot;src/features/evaluation/domain/createRepositoryRuleSet.ts&quot;]
@@ -914,6 +935,7 @@
     <details>
       <summary>View Mermaid source</summary>
       <pre>graph LR
+  module_src_atlasAuditConsumer_test_ts[&quot;src/atlasAuditConsumer.test.ts&quot;]
   module_src_constants_repository_ts[&quot;src/constants/repository.ts&quot;]
   module_src_constants_repositoryRuleIds_ts[&quot;src/constants/repositoryRuleIds.ts&quot;]
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts[&quot;src/features/evaluation/domain/createRepositoryRuleSet.ts&quot;]
@@ -965,7 +987,42 @@
   </article>
     </section>
         </section>
-        <section id="view-src-features-evaluation-domain-createrepositoryruleset-ts" class="view" data-view="src/features/evaluation/domain/createRepositoryRuleSet.ts" hidden>
+        <section id="view-src-atlasauditconsumer-test-ts" class="view" data-view="src/atlasAuditConsumer.test.ts" hidden>
+    <section class="panel">
+      <h2>src/atlasAuditConsumer.test.ts</h2>
+      <article class="item" data-search="runContractAsync src/atlasAuditConsumer.test.ts Run the canonical published Atlas command in one isolated fixture copy.">
+    <h3>runContractAsync</h3>
+    <p class="muted"><code>src/atlasAuditConsumer.test.ts:50:1</code></p>
+    <p>Run the canonical published Atlas command in one isolated fixture copy.</p>
+    
+  </article><article class="item" data-search="runCommandAsync src/atlasAuditConsumer.test.ts Run one CLI command without masking its process status or output artifact behavior.">
+    <h3>runCommandAsync</h3>
+    <p class="muted"><code>src/atlasAuditConsumer.test.ts:55:1</code></p>
+    <p>Run one CLI command without masking its process status or output artifact behavior.</p>
+    
+  </article><article class="item" data-search="readAuditAsync src/atlasAuditConsumer.test.ts Read the artifact from the exact path owned by the published metadata contract.">
+    <h3>readAuditAsync</h3>
+    <p class="muted"><code>src/atlasAuditConsumer.test.ts:62:1</code></p>
+    <p>Read the artifact from the exact path owned by the published metadata contract.</p>
+    
+  </article><article class="item" data-search="copyFixtureAsync src/atlasAuditConsumer.test.ts Copy one immutable fixture into a disposable published-consumer working directory.">
+    <h3>copyFixtureAsync</h3>
+    <p class="muted"><code>src/atlasAuditConsumer.test.ts:71:1</code></p>
+    <p>Copy one immutable fixture into a disposable published-consumer working directory.</p>
+    
+  </article><article class="item" data-search="readCyclicDependenciesRule src/atlasAuditConsumer.test.ts Read the only cyclic-dependency rule from the persisted audit contract.">
+    <h3>readCyclicDependenciesRule</h3>
+    <p class="muted"><code>src/atlasAuditConsumer.test.ts:81:1</code></p>
+    <p>Read the only cyclic-dependency rule from the persisted audit contract.</p>
+    
+  </article><article class="item" data-search="assertBlockingCyclicDependenciesRule src/atlasAuditConsumer.test.ts Verify the explicit managed blocking policy recorded for cyclic dependencies.">
+    <h3>assertBlockingCyclicDependenciesRule</h3>
+    <p class="muted"><code>src/atlasAuditConsumer.test.ts:88:1</code></p>
+    <p>Verify the explicit managed blocking policy recorded for cyclic dependencies.</p>
+    
+  </article>
+    </section>
+  </section><section id="view-src-features-evaluation-domain-createrepositoryruleset-ts" class="view" data-view="src/features/evaluation/domain/createRepositoryRuleSet.ts" hidden>
     <section class="panel">
       <h2>src/features/evaluation/domain/createRepositoryRuleSet.ts</h2>
       <article class="item" data-search="createRepositoryRuleSet src/features/evaluation/domain/createRepositoryRuleSet.ts Create canonical repository, package, runtime, dependency, and CLI compliance rules.">

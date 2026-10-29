@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.2.3
+
+### Patch Changes
+
+- b33adad: Pin the managed Atlas cyclic-dependency audit to published Atlas 0.14.1.
+
 ## 0.2.2
 
 ### Patch Changes
