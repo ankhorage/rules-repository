@@ -174,12 +174,12 @@
   </li><li>
     <button class="nav-button" type="button" data-target="src/features/evaluation/utils/repositoryRuleSupport.ts">
       src/features/evaluation/utils/repositoryRuleSupport.ts
-      <small>5 functions</small>
+      <small>6 functions</small>
     </button>
   </li><li>
     <button class="nav-button" type="button" data-target="src/index.test.ts">
       src/index.test.ts
-      <small>5 functions</small>
+      <small>6 functions</small>
     </button>
   </li>
           </ul>
@@ -225,10 +225,10 @@
     <p class="muted">Referenced module</p>
     <p><strong>Dependencies:</strong> <code>src/features/evaluation/domain/rules/createCliRules.ts</code>, <code>src/features/evaluation/domain/rules/createDependencyRules.ts</code>, <code>src/features/evaluation/domain/rules/createPackageRules.ts</code>, <code>src/features/evaluation/domain/rules/createPathRules.ts</code>, <code>src/features/evaluation/domain/rules/createRuntimeRules.ts</code>, <code>src/features/evaluation/domain/rules/createScriptRules.ts</code>, <code>src/types/repository.ts</code></p>
     <p><strong>Exports:</strong> <code>createRepositoryRuleSet</code></p>
-  </article><article class="item" data-search="src/features/evaluation/domain/evaluateRepository.ts src/features/evaluation/domain/createRepositoryRuleSet.ts src/types/repository.ts evaluateRepository">
+  </article><article class="item" data-search="src/features/evaluation/domain/evaluateRepository.ts src/features/evaluation/domain/createRepositoryRuleSet.ts src/features/evaluation/utils/repositoryRuleSupport.ts src/types/repository.ts evaluateRepository">
     <h3>src/features/evaluation/domain/evaluateRepository.ts</h3>
     <p class="muted">Referenced module</p>
-    <p><strong>Dependencies:</strong> <code>src/features/evaluation/domain/createRepositoryRuleSet.ts</code>, <code>src/types/repository.ts</code></p>
+    <p><strong>Dependencies:</strong> <code>src/features/evaluation/domain/createRepositoryRuleSet.ts</code>, <code>src/features/evaluation/utils/repositoryRuleSupport.ts</code>, <code>src/types/repository.ts</code></p>
     <p><strong>Exports:</strong> <code>evaluateRepository</code></p>
   </article><article class="item" data-search="src/features/evaluation/domain/rules/createCliRules.ts src/constants/repository.ts src/constants/repositoryRuleIds.ts src/features/evaluation/utils/repositoryRuleSupport.ts src/types/repository.ts createCliRules">
     <h3>src/features/evaluation/domain/rules/createCliRules.ts</h3>
@@ -337,7 +337,7 @@
               <article class="item" id="symbol-evaluaterepository" data-search="evaluateRepository  function src/features/evaluation/domain/evaluateRepository.ts Evaluate normalized repository facts through the canonical repository RuleSet. RepositoryEvaluationOptions RepositoryRuleContext (context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) =&gt; import(&quot;@ankhorage/rules&quot;).RuleEvaluationResult">
     <h4>evaluateRepository</h4>
     
-    <p class="muted">function • <code>src/features/evaluation/domain/evaluateRepository.ts:11:1</code></p>
+    <p class="muted">function • <code>src/features/evaluation/domain/evaluateRepository.ts:12:1</code></p>
     <p>Evaluate normalized repository facts through the canonical repository RuleSet.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -371,7 +371,7 @@
               <article class="item" id="symbol-repositoryclicommandfact" data-search="RepositoryCliCommandFact  type src/types/repository.ts One normalized public CLI command and its implementation source.">
     <h4>RepositoryCliCommandFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:25:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:30:1</code></p>
     <p>One normalized public CLI command and its implementation source.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -398,7 +398,7 @@
   </article><article class="item" id="symbol-repositorydependencyfact" data-search="RepositoryDependencyFact  type src/types/repository.ts One package dependency fact normalized across dependency sections.">
     <h4>RepositoryDependencyFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:10:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:15:1</code></p>
     <p>One package dependency fact normalized across dependency sections.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -431,7 +431,7 @@
   </article><article class="item" id="symbol-repositoryevaluationoptions" data-search="RepositoryEvaluationOptions  type src/types/repository.ts Optional generic Rules configuration applied to repository rules.">
     <h4>RepositoryEvaluationOptions</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:49:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:54:1</code></p>
     <p>Optional generic Rules configuration applied to repository rules.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -441,6 +441,12 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
     <tbody>
       <tr>
+            <td><code>capabilities</code></td>
+            <td>property</td>
+            <td><code>readonly string[] | undefined</code></td>
+            <td>no</td>
+            <td></td>
+          </tr><tr>
             <td><code>config</code></td>
             <td>property</td>
             <td><code>RulesConfig | undefined</code></td>
@@ -452,7 +458,7 @@
   </article><article class="item" id="symbol-repositoryevaluationresult" data-search="RepositoryEvaluationResult  unknown src/types/repository.ts Generic Rules result produced by repository evaluation.">
     <h4>RepositoryEvaluationResult</h4>
     
-    <p class="muted">unknown • <code>src/types/repository.ts:54:1</code></p>
+    <p class="muted">unknown • <code>src/types/repository.ts:61:1</code></p>
     <p>Generic Rules result produced by repository evaluation.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -462,7 +468,7 @@
   </article><article class="item" id="symbol-repositoryimportfact" data-search="RepositoryImportFact  type src/types/repository.ts One source import fact used for current-only package-boundary checks.">
     <h4>RepositoryImportFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:18:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:23:1</code></p>
     <p>One source import fact used for current-only package-boundary checks.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -495,7 +501,7 @@
   </article><article class="item" id="symbol-repositorypackagefact" data-search="RepositoryPackageFact  type src/types/repository.ts Portable package.json facts required by repository rules. RepositoryDependencyFact">
     <h4>RepositoryPackageFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:31:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:36:1</code></p>
     <p>Portable package.json facts required by repository rules.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -540,7 +546,7 @@
   </article><article class="item" id="symbol-repositorypathfact" data-search="RepositoryPathFact  type src/types/repository.ts One repository path fact independent of filesystem implementation.">
     <h4>RepositoryPathFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:4:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:9:1</code></p>
     <p>One repository path fact independent of filesystem implementation.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -567,7 +573,7 @@
   </article><article class="item" id="symbol-repositoryrulecontext" data-search="RepositoryRuleContext  type src/types/repository.ts Portable repository facts evaluated independently of filesystem and parser technology. RepositoryCliCommandFact RepositoryImportFact RepositoryPackageFact RepositoryPathFact">
     <h4>RepositoryRuleContext</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:40:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:45:1</code></p>
     <p>Portable repository facts evaluated independently of filesystem and parser technology.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -645,6 +651,7 @@
   module_src_features_evaluation_domain_evaluateRepository_ts[&quot;src/features/evaluation/domain/evaluateRepository.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_features_evaluation_domain_evaluateRepository_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_domain_createRepositoryRuleSet_ts
+  module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_domain_rules_createCliRules_ts[&quot;src/features/evaluation/domain/rules/createCliRules.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_features_evaluation_domain_rules_createCliRules_ts
@@ -718,6 +725,7 @@
   module_src_features_evaluation_domain_evaluateRepository_ts[&quot;src/features/evaluation/domain/evaluateRepository.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_features_evaluation_domain_evaluateRepository_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_domain_createRepositoryRuleSet_ts
+  module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_domain_rules_createCliRules_ts[&quot;src/features/evaluation/domain/rules/createCliRules.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_features_evaluation_domain_rules_createCliRules_ts
@@ -795,6 +803,7 @@
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_features_evaluation_domain_rules_createScriptRules_ts
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_domain_createRepositoryRuleSet_ts
+  module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_domain_rules_createCliRules_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_domain_rules_createCliRules_ts --&gt; module_src_constants_repositoryRuleIds_ts
@@ -851,6 +860,7 @@
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_features_evaluation_domain_rules_createScriptRules_ts
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_domain_createRepositoryRuleSet_ts
+  module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_domain_rules_createCliRules_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_domain_rules_createCliRules_ts --&gt; module_src_constants_repositoryRuleIds_ts
@@ -1037,7 +1047,7 @@
       <h2>src/features/evaluation/domain/evaluateRepository.ts</h2>
       <article class="item" data-search="evaluateRepository src/features/evaluation/domain/evaluateRepository.ts Evaluate normalized repository facts through the canonical repository RuleSet.">
     <h3>evaluateRepository</h3>
-    <p class="muted"><code>src/features/evaluation/domain/evaluateRepository.ts:11:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/evaluateRepository.ts:12:1</code></p>
     <p>Evaluate normalized repository facts through the canonical repository RuleSet.</p>
     
   </article>
@@ -1227,27 +1237,32 @@
       <h2>src/features/evaluation/utils/repositoryRuleSupport.ts</h2>
       <article class="item" data-search="createRule src/features/evaluation/utils/repositoryRuleSupport.ts Build one deterministic error-level repository rule.">
     <h3>createRule</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:15:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:16:1</code></p>
     <p>Build one deterministic error-level repository rule.</p>
+    
+  </article><article class="item" data-search="outcome src/features/evaluation/utils/repositoryRuleSupport.ts Translate deterministic provider findings into the generic evaluator outcome contract.">
+    <h3>outcome</h3>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:32:1</code></p>
+    <p>Translate deterministic provider findings into the generic evaluator outcome contract.</p>
     
   </article><article class="item" data-search="finding src/features/evaluation/utils/repositoryRuleSupport.ts Build one portable repository finding.">
     <h3>finding</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:29:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:37:1</code></p>
     <p>Build one portable repository finding.</p>
     
   </article><article class="item" data-search="hasDependency src/features/evaluation/utils/repositoryRuleSupport.ts Return whether the normalized package declares one direct dependency.">
     <h3>hasDependency</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:40:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:48:1</code></p>
     <p>Return whether the normalized package declares one direct dependency.</p>
     
   </article><article class="item" data-search="hasDependencyInSection src/features/evaluation/utils/repositoryRuleSupport.ts Return whether one dependency is declared in one exact package section.">
     <h3>hasDependencyInSection</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:45:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:53:1</code></p>
     <p>Return whether one dependency is declared in one exact package section.</p>
     
   </article><article class="item" data-search="hasPath src/features/evaluation/utils/repositoryRuleSupport.ts Return whether one exact path fact exists with the requested kind.">
     <h3>hasPath</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:56:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:64:1</code></p>
     <p>Return whether one exact path fact exists with the requested kind.</p>
     
   </article>
@@ -1257,27 +1272,32 @@
       <h2>src/index.test.ts</h2>
       <article class="item" data-search="assertAtlasAuditContract src/index.test.ts Verify that generated consumers receive only the canonical Atlas audit metadata.">
     <h3>assertAtlasAuditContract</h3>
-    <p class="muted"><code>src/index.test.ts:57:1</code></p>
+    <p class="muted"><code>src/index.test.ts:59:1</code></p>
     <p>Verify that generated consumers receive only the canonical Atlas audit metadata.</p>
+    
+  </article><article class="item" data-search="assertMissingFacts src/index.test.ts Verify the generic evaluator fails closed without repository facts.">
+    <h3>assertMissingFacts</h3>
+    <p class="muted"><code>src/index.test.ts:73:1</code></p>
+    <p>Verify the generic evaluator fails closed without repository facts.</p>
     
   </article><article class="item" data-search="createCanonicalContext src/index.test.ts Build one canonical package and repository fact fixture.">
     <h3>createCanonicalContext</h3>
-    <p class="muted"><code>src/index.test.ts:71:1</code></p>
+    <p class="muted"><code>src/index.test.ts:82:1</code></p>
     <p>Build one canonical package and repository fact fixture.</p>
     
   </article><article class="item" data-search="canonicalDependencies src/index.test.ts Build canonical direct dependency facts.">
     <h3>canonicalDependencies</h3>
-    <p class="muted"><code>src/index.test.ts:94:1</code></p>
+    <p class="muted"><code>src/index.test.ts:105:1</code></p>
     <p>Build canonical direct dependency facts.</p>
     
   </article><article class="item" data-search="canonicalFields src/index.test.ts Build canonical required package fields.">
     <h3>canonicalFields</h3>
-    <p class="muted"><code>src/index.test.ts:109:1</code></p>
+    <p class="muted"><code>src/index.test.ts:120:1</code></p>
     <p>Build canonical required package fields.</p>
     
   </article><article class="item" data-search="canonicalScripts src/index.test.ts Build canonical required package scripts.">
     <h3>canonicalScripts</h3>
-    <p class="muted"><code>src/index.test.ts:128:1</code></p>
+    <p class="muted"><code>src/index.test.ts:139:1</code></p>
     <p>Build canonical required package scripts.</p>
     
   </article>

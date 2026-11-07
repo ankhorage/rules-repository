@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.3.0
+
+### Minor Changes
+
+- 007bf68: Evaluate repository rules through the released composable Rules DAG API.
+
 ## 0.2.3
 
 ### Patch Changes

@@ -14,7 +14,7 @@
     {
       "id": "npm",
       "label": "npm",
-      "value": "v0.2.3",
+      "value": "v0.3.0",
       "color": "cb3837"
     },
     {
@@ -124,6 +124,7 @@
       "isEntrypoint": false,
       "dependencies": [
         "src/features/evaluation/domain/createRepositoryRuleSet.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
         "src/types/repository.ts"
       ],
       "exports": [
@@ -304,7 +305,7 @@
       "modulePath": "src/features/evaluation/domain/evaluateRepository.ts",
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/evaluateRepository.ts",
-        "line": 11,
+        "line": 12,
         "column": 1
       },
       "exportPaths": [
@@ -393,7 +394,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 25,
+        "line": 30,
         "column": 1
       },
       "exportPaths": [
@@ -430,7 +431,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 10,
+        "line": 15,
         "column": 1
       },
       "exportPaths": [
@@ -474,7 +475,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 49,
+        "line": 54,
         "column": 1
       },
       "exportPaths": [
@@ -483,6 +484,13 @@
       "relatedSymbols": [],
       "signatures": [],
       "members": [
+        {
+          "name": "capabilities",
+          "kind": "property",
+          "type": "readonly string[] | undefined",
+          "required": false,
+          "description": null
+        },
         {
           "name": "config",
           "kind": "property",
@@ -504,7 +512,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 54,
+        "line": 61,
         "column": 1
       },
       "exportPaths": [
@@ -526,7 +534,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 18,
+        "line": 23,
         "column": 1
       },
       "exportPaths": [
@@ -570,7 +578,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 31,
+        "line": 36,
         "column": 1
       },
       "exportPaths": [
@@ -630,7 +638,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 4,
+        "line": 9,
         "column": 1
       },
       "exportPaths": [
@@ -667,7 +675,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 40,
+        "line": 45,
         "column": 1
       },
       "exportPaths": [
@@ -806,7 +814,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/evaluateRepository.ts",
-        "line": 11,
+        "line": 12,
         "column": 1
       }
     },
@@ -1147,7 +1155,18 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 15,
+        "line": 16,
+        "column": 1
+      }
+    },
+    {
+      "name": "outcome",
+      "description": "Translate deterministic provider findings into the generic evaluator outcome contract.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "line": 32,
         "column": 1
       }
     },
@@ -1158,7 +1177,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 29,
+        "line": 37,
         "column": 1
       }
     },
@@ -1169,7 +1188,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 40,
+        "line": 48,
         "column": 1
       }
     },
@@ -1180,7 +1199,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 45,
+        "line": 53,
         "column": 1
       }
     },
@@ -1191,7 +1210,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 56,
+        "line": 64,
         "column": 1
       }
     },
@@ -1202,7 +1221,18 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 57,
+        "line": 59,
+        "column": 1
+      }
+    },
+    {
+      "name": "assertMissingFacts",
+      "description": "Verify the generic evaluator fails closed without repository facts.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 73,
         "column": 1
       }
     },
@@ -1213,7 +1243,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 71,
+        "line": 82,
         "column": 1
       }
     },
@@ -1224,7 +1254,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 94,
+        "line": 105,
         "column": 1
       }
     },
@@ -1235,7 +1265,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 109,
+        "line": 120,
         "column": 1
       }
     },
@@ -1246,7 +1276,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 128,
+        "line": 139,
         "column": 1
       }
     }
@@ -1354,6 +1384,11 @@
       {
         "fromPath": "src/features/evaluation/domain/evaluateRepository.ts",
         "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/domain/evaluateRepository.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
         "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
       },
       {
@@ -1640,6 +1675,24 @@
         "sourcePath": "src/index.test.ts"
       },
       {
+        "fromSymbol": "assertMissingFacts",
+        "toSymbol": "evaluateRepository",
+        "callExpression": "evaluateRepository",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "assertMissingFacts",
+        "toSymbol": "createCanonicalContext",
+        "callExpression": "createCanonicalContext",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "assertMissingFacts",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
         "fromSymbol": "createCanonicalContext",
         "toSymbol": "canonicalDependencies",
         "callExpression": "canonicalDependencies",
@@ -1716,6 +1769,12 @@
         "toSymbol": "createRuleRegistry",
         "callExpression": "createRuleRegistry",
         "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
+      },
+      {
+        "fromSymbol": "evaluate",
+        "toSymbol": "outcome",
+        "callExpression": "outcome",
+        "sourcePath": "src/features/evaluation/utils/repositoryRuleSupport.ts"
       },
       {
         "fromSymbol": "evaluate",

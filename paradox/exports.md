@@ -17,7 +17,7 @@ Create canonical repository, package, runtime, dependency, and CLI compliance ru
 
 Kind: `function`
 Module: `src/features/evaluation/domain/evaluateRepository.ts`
-Source: `src/features/evaluation/domain/evaluateRepository.ts:11:1`
+Source: `src/features/evaluation/domain/evaluateRepository.ts:12:1`
 
 Evaluate normalized repository facts through the canonical repository RuleSet.
 
@@ -48,7 +48,7 @@ Canonical repository metadata used by validators and managed-file renderers.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:25:1`
+Source: `src/types/repository.ts:30:1`
 
 One normalized public CLI command and its implementation source.
 
@@ -63,7 +63,7 @@ One normalized public CLI command and its implementation source.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:10:1`
+Source: `src/types/repository.ts:15:1`
 
 One package dependency fact normalized across dependency sections.
 
@@ -79,7 +79,7 @@ One package dependency fact normalized across dependency sections.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:49:1`
+Source: `src/types/repository.ts:54:1`
 
 Optional generic Rules configuration applied to repository rules.
 
@@ -87,13 +87,14 @@ Optional generic Rules configuration applied to repository rules.
 
 | Name | Kind | Type | Required | Description |
 | --- | --- | --- | --- | --- |
+| capabilities | property | `readonly string[] \| undefined` | no |  |
 | config | property | `RulesConfig \| undefined` | no |  |
 
 ## RepositoryEvaluationResult
 
 Kind: `unknown`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:54:1`
+Source: `src/types/repository.ts:61:1`
 
 Generic Rules result produced by repository evaluation.
 
@@ -101,7 +102,7 @@ Generic Rules result produced by repository evaluation.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:18:1`
+Source: `src/types/repository.ts:23:1`
 
 One source import fact used for current-only package-boundary checks.
 
@@ -117,7 +118,7 @@ One source import fact used for current-only package-boundary checks.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:31:1`
+Source: `src/types/repository.ts:36:1`
 
 Portable package.json facts required by repository rules.
 
@@ -135,7 +136,7 @@ Portable package.json facts required by repository rules.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:4:1`
+Source: `src/types/repository.ts:9:1`
 
 One repository path fact independent of filesystem implementation.
 
@@ -150,7 +151,7 @@ One repository path fact independent of filesystem implementation.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:40:1`
+Source: `src/types/repository.ts:45:1`
 
 Portable repository facts evaluated independently of filesystem and parser technology.
 
