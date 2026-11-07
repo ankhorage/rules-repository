@@ -14,11 +14,13 @@ describe('repository rules', () => {
   test('publishes the Atlas cyclic-dependency audit contract', assertAtlasAuditContract);
 
   test('accepts a canonical public package repository', () => {
-    expect(evaluateRepository(createCanonicalContext())).toEqual({
-      diagnostics: [],
-      findings: [],
-    });
+    const result = evaluateRepository(createCanonicalContext());
+    expect(result.diagnostics).toEqual([]);
+    expect(result.findings).toEqual([]);
+    expect(result.results.every(({ status }) => status === 'PASS')).toBe(true);
   });
+
+  test('reports incomplete results when repository facts are unavailable', assertMissingFacts);
 
   test('reports escaped relative imports through the repository-boundary rule', () => {
     const context = createCanonicalContext();
@@ -65,6 +67,15 @@ function assertAtlasAuditContract(): void {
     toolVersion: '0.14.1',
   });
   expect('pkgvizAudit' in REPOSITORY_RULE_METADATA).toBe(false);
+}
+
+/*** Verify the generic evaluator fails closed without repository facts. */
+function assertMissingFacts(): void {
+  const result = evaluateRepository(createCanonicalContext(), { capabilities: [] });
+
+  expect(result.findings).toEqual([]);
+  expect(result.results.every(({ status }) => status === 'INCOMPLETE')).toBe(true);
+  expect(result.diagnostics.some(({ code }) => code === 'missing-capability')).toBe(true);
 }
 
 /*** Build one canonical package and repository fact fixture. */

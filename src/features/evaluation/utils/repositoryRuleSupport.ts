@@ -1,9 +1,10 @@
-import type { JsonValue, Rule, RuleFinding } from '@ankhorage/rules';
+import type { JsonValue, Rule, RuleEvaluationOutcome, RuleFinding } from '@ankhorage/rules';
 
 import type { RepositoryPackageFact, RepositoryRuleContext } from '../../../types/repository.js';
 
 /*** Shared feature-local primitives for deterministic repository rules. */
 export const repositoryRuleSupport = {
+  capabilities: { facts: 'repository.facts' },
   createRule,
   finding,
   hasDependency,
@@ -19,10 +20,17 @@ function createRule(
 ): Rule<RepositoryRuleContext> {
   return {
     defaultSeverity: 'error',
-    evaluate: ({ context }) => evaluate(context),
-    id,
+    dependencies: [],
+    evaluate: ({ context }) => outcome(evaluate(context)),
+    identity: { id, version: '1' },
+    requiredCapabilities: [repositoryRuleSupport.capabilities.facts],
     summary,
   };
+}
+
+/*** Translate deterministic provider findings into the generic evaluator outcome contract. */
+function outcome(findings: readonly RuleFinding[]): RuleEvaluationOutcome {
+  return { findings, status: findings.length === 0 ? 'PASS' : 'FAIL' };
 }
 
 /*** Build one portable repository finding. */

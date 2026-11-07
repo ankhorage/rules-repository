@@ -39,7 +39,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@ankhorage/rules": "^0.2.0"
+    "@ankhorage/rules": "^0.6.0"
   },
   "devDependencies": {
     "@ankhorage/devtools": "^2.3.38",
