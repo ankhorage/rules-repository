@@ -1,4 +1,9 @@
-import type { JsonValue, RuleEvaluationResult, RulesConfig } from '@ankhorage/rules';
+import type {
+  JsonValue,
+  RuleCapability,
+  RuleEvaluationResult,
+  RulesConfig,
+} from '@ankhorage/rules';
 
 /*** One repository path fact independent of filesystem implementation. */
 export interface RepositoryPathFact {
@@ -47,6 +52,8 @@ export interface RepositoryRuleContext {
 
 /*** Optional generic Rules configuration applied to repository rules. */
 export interface RepositoryEvaluationOptions {
+  /** Available repository fact capabilities supplied by the fact-acquisition host. */
+  readonly capabilities?: readonly RuleCapability[];
   readonly config?: RulesConfig;
 }
 
