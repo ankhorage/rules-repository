@@ -35,6 +35,17 @@ export const REPOSITORY_RULE_METADATA = {
     legacySourceMarker: 'ankhorage4',
     localProtocolPrefixes: ['file:', 'link:', 'workspace:', 'github:', 'git:', 'git+'],
   },
+  metadata: {
+    capability: 'repository.metadata-facts',
+    enforcement: {
+      defaultMode: 'report-only',
+      doctorActivation: 'reserved-for-doctor-after-inventory',
+    },
+    profiles: {
+      nonSource: { canonicalPath: 'metadata/repository.json' },
+      source: { canonicalPath: 'src/metadata/repository.json' },
+    },
+  },
   atlasAudit: {
     artifactName: 'atlas-audit',
     artifactPath: 'src/atlas-audit.json',

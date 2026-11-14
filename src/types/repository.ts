@@ -1,3 +1,4 @@
+import type { RepositoryMetadata } from '@ankhorage/contracts/metadata';
 import type {
   JsonValue,
   RuleCapability,
@@ -32,6 +33,20 @@ export interface RepositoryCliCommandFact {
   readonly sourcePath: string;
 }
 
+/** The host-acquired repository metadata fact evaluated only by the explicit preflight. */
+export interface RepositoryMetadataFact {
+  /** Whether this repository is in the managed Ankhorage rollout population. */
+  readonly managed: boolean;
+  /** The profile that determines the canonical metadata path without inventing a source directory. */
+  readonly profile: 'non-source' | 'source';
+  /** The reason metadata is applicable or deliberately exempt from the rollout. */
+  readonly eligibility: 'applicable' | 'archived' | 'legacy' | 'third-party';
+  /** The discovered path of the authored JSON document, when it exists. */
+  readonly path?: string;
+  /** The parsed portable contract document, when it exists and was structurally readable. */
+  readonly document?: RepositoryMetadata;
+}
+
 /*** Portable package.json facts required by repository rules. */
 export interface RepositoryPackageFact {
   readonly dependencies: readonly RepositoryDependencyFact[];
@@ -45,6 +60,7 @@ export interface RepositoryPackageFact {
 export interface RepositoryRuleContext {
   readonly cliCommands: readonly RepositoryCliCommandFact[];
   readonly imports: readonly RepositoryImportFact[];
+  readonly metadata?: RepositoryMetadataFact;
   readonly packageJson: RepositoryPackageFact;
   readonly paths: readonly RepositoryPathFact[];
   readonly workflowBunVersions: Readonly<Record<string, string | undefined>>;
