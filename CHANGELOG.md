@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.4.1
+
+### Patch Changes
+
+- f63a9d0: Add the repository metadata document used by repository tooling and generated documentation.
+
 ## 0.4.0
 
 ### Minor Changes
