@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "kind": "library",
+  "title": "Ankhorage Repository Rules",
+  "summary": "Provides reusable rules and metadata preflight evaluation for Ankhorage repositories.",
+  "purpose": "Centralize repository policy so tooling can evaluate consistent repository facts without embedding policy in every consumer.",
+  "domain": "repository policy",
+  "responsibilities": [
+    "Define reusable repository, package, and tooling validation rules.",
+    "Expose advisory metadata preflight rules for inventory and authoring.",
+    "Provide canonical repository-policy facts to rule consumers."
+  ],
+  "boundaries": [
+    "Does not acquire repository filesystem, network, or package-manager facts.",
+    "Does not make metadata preflight findings a default repository RuleSet gate.",
+    "Does not own authored metadata documents for other repositories."
+  ],
+  "audience": [
+    "Repository tooling maintainers.",
+    "Rule runners that evaluate normalized repository facts."
+  ],
+  "useCases": [
+    "Evaluate package and repository policy from host-acquired facts.",
+    "Preflight repository metadata during the organization inventory rollout."
+  ],
+  "architecture": {
+    "role": "A policy library that evaluates portable repository facts supplied by its host.",
+    "invariants": [
+      "Metadata preflight is advisory and explicitly separate from the default repository RuleSet.",
+      "Rule evaluation remains independent of filesystem and parser implementations."
+    ]
+  },
+  "constraints": {
+    "limitations": [
+      "Callers must acquire and normalize repository facts before evaluation.",
+      "Doctor activation remains reserved until the verified organization inventory is complete."
+    ]
+  }
+}
