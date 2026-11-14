@@ -1,5 +1,36 @@
 [
   {
+    "name": "createRepositoryMetadataPreflightRuleSet",
+    "title": null,
+    "description": "Create the report-only repository metadata RuleSet for organization inventory preflight.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "function",
+    "modulePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+    "sourceLocation": {
+      "filePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+      "line": 7,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [
+      "RepositoryRuleContext"
+    ],
+    "signatures": [
+      {
+        "label": "() => RuleSet<RepositoryRuleContext>",
+        "parameters": [],
+        "returnType": "RuleSet<RepositoryRuleContext>",
+        "returnDescription": null
+      }
+    ],
+    "members": [],
+    "structuredRows": []
+  },
+  {
     "name": "createRepositoryRuleSet",
     "title": null,
     "description": "Create canonical repository, package, runtime, dependency, and CLI compliance rules.",
@@ -41,6 +72,51 @@
     "modulePath": "src/features/evaluation/domain/evaluateRepository.ts",
     "sourceLocation": {
       "filePath": "src/features/evaluation/domain/evaluateRepository.ts",
+      "line": 12,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [
+      "RepositoryEvaluationOptions",
+      "RepositoryRuleContext"
+    ],
+    "signatures": [
+      {
+        "label": "(context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) => import(\"@ankhorage/rules\").RuleEvaluationResult",
+        "parameters": [
+          {
+            "name": "context",
+            "type": "RepositoryRuleContext",
+            "required": true,
+            "description": null
+          },
+          {
+            "name": "options",
+            "type": "RepositoryEvaluationOptions",
+            "required": false,
+            "description": null
+          }
+        ],
+        "returnType": "import(\"@ankhorage/rules\").RuleEvaluationResult",
+        "returnDescription": null
+      }
+    ],
+    "members": [],
+    "structuredRows": []
+  },
+  {
+    "name": "evaluateRepositoryMetadataPreflight",
+    "title": null,
+    "description": "Evaluate advisory repository metadata facts without adding a global repository enforcement rule.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "function",
+    "modulePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+    "sourceLocation": {
+      "filePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
       "line": 12,
       "column": 1
     },
@@ -130,7 +206,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 30,
+      "line": 31,
       "column": 1
     },
     "exportPaths": [
@@ -167,7 +243,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 15,
+      "line": 16,
       "column": 1
     },
     "exportPaths": [
@@ -211,7 +287,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 54,
+      "line": 70,
       "column": 1
     },
     "exportPaths": [
@@ -248,7 +324,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 61,
+      "line": 77,
       "column": 1
     },
     "exportPaths": [
@@ -270,7 +346,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 23,
+      "line": 24,
       "column": 1
     },
     "exportPaths": [
@@ -304,6 +380,64 @@
     "structuredRows": []
   },
   {
+    "name": "RepositoryMetadataFact",
+    "title": null,
+    "description": null,
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 37,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [
+      {
+        "name": "document",
+        "kind": "property",
+        "type": "RepositoryMetadata | undefined",
+        "required": false,
+        "description": null
+      },
+      {
+        "name": "eligibility",
+        "kind": "property",
+        "type": "\"applicable\" | \"archived\" | \"legacy\" | \"third-party\"",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "managed",
+        "kind": "property",
+        "type": "boolean",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "path",
+        "kind": "property",
+        "type": "string | undefined",
+        "required": false,
+        "description": null
+      },
+      {
+        "name": "profile",
+        "kind": "property",
+        "type": "\"non-source\" | \"source\"",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
     "name": "RepositoryPackageFact",
     "title": null,
     "description": "Portable package.json facts required by repository rules.",
@@ -314,7 +448,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 36,
+      "line": 51,
       "column": 1
     },
     "exportPaths": [
@@ -374,7 +508,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 9,
+      "line": 10,
       "column": 1
     },
     "exportPaths": [
@@ -411,7 +545,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 45,
+      "line": 60,
       "column": 1
     },
     "exportPaths": [
@@ -420,6 +554,7 @@
     "relatedSymbols": [
       "RepositoryCliCommandFact",
       "RepositoryImportFact",
+      "RepositoryMetadataFact",
       "RepositoryPackageFact",
       "RepositoryPathFact"
     ],
@@ -437,6 +572,13 @@
         "kind": "property",
         "type": "readonly RepositoryImportFact[]",
         "required": true,
+        "description": null
+      },
+      {
+        "name": "metadata",
+        "kind": "property",
+        "type": "RepositoryMetadataFact | undefined",
+        "required": false,
         "description": null
       },
       {

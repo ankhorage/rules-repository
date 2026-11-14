@@ -11,9 +11,17 @@ graph LR
   module_src_features_evaluation_domain_rules_createRuntimeRules_ts["src/features/evaluation/domain/rules/createRuntimeRules.ts"]
   module_src_features_evaluation_domain_rules_createScriptRules_ts["src/features/evaluation/domain/rules/createScriptRules.ts"]
   module_src_features_evaluation_utils_repositoryRuleSupport_ts["src/features/evaluation/utils/repositoryRuleSupport.ts"]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts["src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts["src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"]
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts["src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"]
   module_src_index_test_ts["src/index.test.ts"]
   module_src_index_ts["src/index.ts"]
+  module_src_metadataPreflight_test_ts["src/metadataPreflight.test.ts"]
+  module_src_metadataPreflightPackedConsumer_test_ts["src/metadataPreflightPackedConsumer.test.ts"]
   module_src_types_repository_ts["src/types/repository.ts"]
+  export_createRepositoryMetadataPreflightRuleSet["createRepositoryMetadataPreflightRuleSet"]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --> export_createRepositoryMetadataPreflightRuleSet
+  export_createRepositoryMetadataPreflightRuleSet -.-> export_RepositoryRuleContext
   export_createRepositoryRuleSet["createRepositoryRuleSet"]
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --> export_createRepositoryRuleSet
   export_createRepositoryRuleSet -.-> export_RepositoryRuleContext
@@ -21,6 +29,10 @@ graph LR
   module_src_features_evaluation_domain_evaluateRepository_ts --> export_evaluateRepository
   export_evaluateRepository -.-> export_RepositoryEvaluationOptions
   export_evaluateRepository -.-> export_RepositoryRuleContext
+  export_evaluateRepositoryMetadataPreflight["evaluateRepositoryMetadataPreflight"]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --> export_evaluateRepositoryMetadataPreflight
+  export_evaluateRepositoryMetadataPreflight -.-> export_RepositoryEvaluationOptions
+  export_evaluateRepositoryMetadataPreflight -.-> export_RepositoryRuleContext
   export_REPOSITORY_RULE_IDS["REPOSITORY_RULE_IDS"]
   module_src_constants_repositoryRuleIds_ts --> export_REPOSITORY_RULE_IDS
   export_REPOSITORY_RULE_METADATA["REPOSITORY_RULE_METADATA"]
@@ -35,6 +47,8 @@ graph LR
   module_src_types_repository_ts --> export_RepositoryEvaluationResult
   export_RepositoryImportFact["RepositoryImportFact"]
   module_src_types_repository_ts --> export_RepositoryImportFact
+  export_RepositoryMetadataFact["RepositoryMetadataFact"]
+  module_src_types_repository_ts --> export_RepositoryMetadataFact
   export_RepositoryPackageFact["RepositoryPackageFact"]
   module_src_types_repository_ts --> export_RepositoryPackageFact
   export_RepositoryPackageFact -.-> export_RepositoryDependencyFact
@@ -44,5 +58,6 @@ graph LR
   module_src_types_repository_ts --> export_RepositoryRuleContext
   export_RepositoryRuleContext -.-> export_RepositoryCliCommandFact
   export_RepositoryRuleContext -.-> export_RepositoryImportFact
+  export_RepositoryRuleContext -.-> export_RepositoryMetadataFact
   export_RepositoryRuleContext -.-> export_RepositoryPackageFact
   export_RepositoryRuleContext -.-> export_RepositoryPathFact

@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.4.0
+
+### Minor Changes
+
+- c2caa73: Add advisory, profile-aware repository metadata preflight rules backed by the published Contracts metadata contract.
+
 ## 0.3.0
 
 ### Minor Changes

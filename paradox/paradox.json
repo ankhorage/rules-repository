@@ -14,7 +14,7 @@
     {
       "id": "npm",
       "label": "npm",
-      "value": "v0.3.0",
+      "value": "v0.4.0",
       "color": "cb3837"
     },
     {
@@ -212,10 +212,47 @@
       "path": "src/features/evaluation/utils/repositoryRuleSupport.ts",
       "isEntrypoint": false,
       "dependencies": [
+        "src/constants/repository.ts",
         "src/types/repository.ts"
       ],
       "exports": [
         "repositoryRuleSupport"
+      ]
+    },
+    {
+      "path": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createRepositoryMetadataPreflightRuleSet"
+      ]
+    },
+    {
+      "path": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "evaluateRepositoryMetadataPreflight"
+      ]
+    },
+    {
+      "path": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/constants/repository.ts",
+        "src/constants/repositoryRuleIds.ts",
+        "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "createRepositoryMetadataRules"
       ]
     },
     {
@@ -232,8 +269,10 @@
       "isEntrypoint": true,
       "dependencies": [],
       "exports": [
+        "createRepositoryMetadataPreflightRuleSet",
         "createRepositoryRuleSet",
         "evaluateRepository",
+        "evaluateRepositoryMetadataPreflight",
         "REPOSITORY_RULE_IDS",
         "REPOSITORY_RULE_METADATA",
         "RepositoryCliCommandFact",
@@ -241,10 +280,26 @@
         "RepositoryEvaluationOptions",
         "RepositoryEvaluationResult",
         "RepositoryImportFact",
+        "RepositoryMetadataFact",
         "RepositoryPackageFact",
         "RepositoryPathFact",
         "RepositoryRuleContext"
       ]
+    },
+    {
+      "path": "src/metadataPreflight.test.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/index.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": []
+    },
+    {
+      "path": "src/metadataPreflightPackedConsumer.test.ts",
+      "isEntrypoint": false,
+      "dependencies": [],
+      "exports": []
     },
     {
       "path": "src/types/repository.ts",
@@ -256,6 +311,7 @@
         "RepositoryEvaluationOptions",
         "RepositoryEvaluationResult",
         "RepositoryImportFact",
+        "RepositoryMetadataFact",
         "RepositoryPackageFact",
         "RepositoryPathFact",
         "RepositoryRuleContext"
@@ -263,6 +319,37 @@
     }
   ],
   "exports": [
+    {
+      "name": "createRepositoryMetadataPreflightRuleSet",
+      "title": null,
+      "description": "Create the report-only repository metadata RuleSet for organization inventory preflight.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "function",
+      "modulePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+        "line": 7,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [
+        "RepositoryRuleContext"
+      ],
+      "signatures": [
+        {
+          "label": "() => RuleSet<RepositoryRuleContext>",
+          "parameters": [],
+          "returnType": "RuleSet<RepositoryRuleContext>",
+          "returnDescription": null
+        }
+      ],
+      "members": [],
+      "structuredRows": []
+    },
     {
       "name": "createRepositoryRuleSet",
       "title": null,
@@ -305,6 +392,51 @@
       "modulePath": "src/features/evaluation/domain/evaluateRepository.ts",
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/evaluateRepository.ts",
+        "line": 12,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [
+        "RepositoryEvaluationOptions",
+        "RepositoryRuleContext"
+      ],
+      "signatures": [
+        {
+          "label": "(context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) => import(\"@ankhorage/rules\").RuleEvaluationResult",
+          "parameters": [
+            {
+              "name": "context",
+              "type": "RepositoryRuleContext",
+              "required": true,
+              "description": null
+            },
+            {
+              "name": "options",
+              "type": "RepositoryEvaluationOptions",
+              "required": false,
+              "description": null
+            }
+          ],
+          "returnType": "import(\"@ankhorage/rules\").RuleEvaluationResult",
+          "returnDescription": null
+        }
+      ],
+      "members": [],
+      "structuredRows": []
+    },
+    {
+      "name": "evaluateRepositoryMetadataPreflight",
+      "title": null,
+      "description": "Evaluate advisory repository metadata facts without adding a global repository enforcement rule.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "function",
+      "modulePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
         "line": 12,
         "column": 1
       },
@@ -394,7 +526,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 30,
+        "line": 31,
         "column": 1
       },
       "exportPaths": [
@@ -431,7 +563,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 15,
+        "line": 16,
         "column": 1
       },
       "exportPaths": [
@@ -475,7 +607,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 54,
+        "line": 70,
         "column": 1
       },
       "exportPaths": [
@@ -512,7 +644,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 61,
+        "line": 77,
         "column": 1
       },
       "exportPaths": [
@@ -534,7 +666,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 23,
+        "line": 24,
         "column": 1
       },
       "exportPaths": [
@@ -568,6 +700,64 @@
       "structuredRows": []
     },
     {
+      "name": "RepositoryMetadataFact",
+      "title": null,
+      "description": null,
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 37,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [
+        {
+          "name": "document",
+          "kind": "property",
+          "type": "RepositoryMetadata | undefined",
+          "required": false,
+          "description": null
+        },
+        {
+          "name": "eligibility",
+          "kind": "property",
+          "type": "\"applicable\" | \"archived\" | \"legacy\" | \"third-party\"",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "managed",
+          "kind": "property",
+          "type": "boolean",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "path",
+          "kind": "property",
+          "type": "string | undefined",
+          "required": false,
+          "description": null
+        },
+        {
+          "name": "profile",
+          "kind": "property",
+          "type": "\"non-source\" | \"source\"",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
       "name": "RepositoryPackageFact",
       "title": null,
       "description": "Portable package.json facts required by repository rules.",
@@ -578,7 +768,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 36,
+        "line": 51,
         "column": 1
       },
       "exportPaths": [
@@ -638,7 +828,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 9,
+        "line": 10,
         "column": 1
       },
       "exportPaths": [
@@ -675,7 +865,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 45,
+        "line": 60,
         "column": 1
       },
       "exportPaths": [
@@ -684,6 +874,7 @@
       "relatedSymbols": [
         "RepositoryCliCommandFact",
         "RepositoryImportFact",
+        "RepositoryMetadataFact",
         "RepositoryPackageFact",
         "RepositoryPathFact"
       ],
@@ -701,6 +892,13 @@
           "kind": "property",
           "type": "readonly RepositoryImportFact[]",
           "required": true,
+          "description": null
+        },
+        {
+          "name": "metadata",
+          "kind": "property",
+          "type": "RepositoryMetadataFact | undefined",
+          "required": false,
           "description": null
         },
         {
@@ -1155,7 +1353,18 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 16,
+        "line": 18,
+        "column": 1
+      }
+    },
+    {
+      "name": "createWarningRule",
+      "description": "Build one deterministic warning-level preflight rule.\n\nMetadata rollout findings are intentionally advisory until Doctor activates the separate\nenforcement policy after organization-wide authoring is complete.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "line": 38,
         "column": 1
       }
     },
@@ -1166,7 +1375,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 32,
+        "line": 54,
         "column": 1
       }
     },
@@ -1177,7 +1386,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 37,
+        "line": 59,
         "column": 1
       }
     },
@@ -1188,7 +1397,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 48,
+        "line": 70,
         "column": 1
       }
     },
@@ -1199,7 +1408,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 53,
+        "line": 75,
         "column": 1
       }
     },
@@ -1210,7 +1419,161 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
-        "line": 64,
+        "line": 86,
+        "column": 1
+      }
+    },
+    {
+      "name": "createRepositoryMetadataPreflightRuleSet",
+      "description": "Create the report-only repository metadata RuleSet for organization inventory preflight.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+        "line": 7,
+        "column": 1
+      }
+    },
+    {
+      "name": "evaluateRepositoryMetadataPreflight",
+      "description": "Evaluate advisory repository metadata facts without adding a global repository enforcement rule.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+        "line": 12,
+        "column": 1
+      }
+    },
+    {
+      "name": "createRepositoryMetadataRules",
+      "description": "Create advisory repository-metadata rules for organization inventory and authoring.\n\nThese rules are intentionally excluded from the default repository RuleSet. They can produce\ndeterministic preflight findings but cannot become a global CI gate until Doctor explicitly\nselects them through its separately approved enforcement policy.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 21,
+        "column": 1
+      }
+    },
+    {
+      "name": "metadataDocumentRule",
+      "description": "Report a missing metadata document only for managed repositories eligible for this rollout.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 31,
+        "column": 1
+      }
+    },
+    {
+      "name": "metadataLocationRule",
+      "description": "Report a document that was found outside its profile-owned canonical path.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 52,
+        "column": 1
+      }
+    },
+    {
+      "name": "metadataTextRule",
+      "description": "Reject blank and placeholder authoring while keeping conditional metadata fields optional.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 76,
+        "column": 1
+      }
+    },
+    {
+      "name": "metadataImplementsRule",
+      "description": "Keep explicit implementation relations complete without conflating them with dependencies.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 101,
+        "column": 1
+      }
+    },
+    {
+      "name": "isApplicableMetadata",
+      "description": "Return whether metadata policy applies to this exact repository fact.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 127,
+        "column": 1
+      }
+    },
+    {
+      "name": "canonicalPath",
+      "description": "Resolve the canonical metadata path from the explicit repository profile.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 134,
+        "column": 1
+      }
+    },
+    {
+      "name": "textEntries",
+      "description": "Return all required and conditionally authored textual metadata values with JSON-pointer paths.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 141,
+        "column": 1
+      }
+    },
+    {
+      "name": "arrayTextEntries",
+      "description": "Return individual JSON-pointer entries for one optional array of authored text.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 163,
+        "column": 1
+      }
+    },
+    {
+      "name": "isMeaningfulText",
+      "description": "Return whether one authored string contains more than a common placeholder token.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 171,
+        "column": 1
+      }
+    },
+    {
+      "name": "isImplementationReference",
+      "description": "Verify one explicit implementation reference without inspecting dependencies or consumers.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 177,
+        "column": 1
+      }
+    },
+    {
+      "name": "finding",
+      "description": "Create one advisory preflight finding with serializable metadata evidence.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "line": 188,
         "column": 1
       }
     },
@@ -1279,9 +1642,127 @@
         "line": 139,
         "column": 1
       }
+    },
+    {
+      "name": "validMetadataScenario",
+      "description": "Verify valid metadata produces no preflight finding.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflight.test.ts",
+        "line": 34,
+        "column": 1
+      }
+    },
+    {
+      "name": "missingMetadataScenario",
+      "description": "Verify missing eligible metadata produces only an advisory preflight finding.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflight.test.ts",
+        "line": 42,
+        "column": 1
+      }
+    },
+    {
+      "name": "noGlobalGateScenario",
+      "description": "Verify the default repository evaluator remains free of metadata enforcement.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflight.test.ts",
+        "line": 58,
+        "column": 1
+      }
+    },
+    {
+      "name": "invalidMetadataScenario",
+      "description": "Verify malformed authored values receive actionable advisory diagnostics.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflight.test.ts",
+        "line": 72,
+        "column": 1
+      }
+    },
+    {
+      "name": "exemptionScenario",
+      "description": "Verify exempt repositories remain outside metadata authoring requirements.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflight.test.ts",
+        "line": 100,
+        "column": 1
+      }
+    },
+    {
+      "name": "contextWithMetadata",
+      "description": "Create the minimum repository facts needed to isolate metadata preflight behavior.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflight.test.ts",
+        "line": 112,
+        "column": 1
+      }
+    },
+    {
+      "name": "writeConsumerFiles",
+      "description": "Write an isolated JavaScript consumer that exercises the public metadata preflight export.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflightPackedConsumer.test.ts",
+        "line": 29,
+        "column": 1
+      }
+    },
+    {
+      "name": "packAndInstall",
+      "description": "Pack the current package and install it without using sibling source files.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflightPackedConsumer.test.ts",
+        "line": 45,
+        "column": 1
+      }
+    },
+    {
+      "name": "verifyConsumer",
+      "description": "Run the public consumer with both Node ESM and Bun.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflightPackedConsumer.test.ts",
+        "line": 61,
+        "column": 1
+      }
+    },
+    {
+      "name": "runCommand",
+      "description": "Run one isolated command while preserving useful failure output.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/metadataPreflightPackedConsumer.test.ts",
+        "line": 67,
+        "column": 1
+      }
     }
   ],
   "sequenceScenarios": [
+    {
+      "kind": "export",
+      "name": "createRepositoryMetadataPreflightRuleSet",
+      "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+      "symbolName": "createRepositoryMetadataPreflightRuleSet",
+      "description": "Create the report-only repository metadata RuleSet for organization inventory preflight.",
+      "isReadme": false
+    },
     {
       "kind": "export",
       "name": "createRepositoryRuleSet",
@@ -1296,6 +1777,14 @@
       "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts",
       "symbolName": "evaluateRepository",
       "description": "Evaluate normalized repository facts through the canonical repository RuleSet.",
+      "isReadme": false
+    },
+    {
+      "kind": "export",
+      "name": "evaluateRepositoryMetadataPreflight",
+      "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+      "symbolName": "evaluateRepositoryMetadataPreflight",
+      "description": "Evaluate advisory repository metadata facts without adding a global repository enforcement rule.",
       "isReadme": false
     }
   ],
@@ -1338,8 +1827,28 @@
       },
       {
         "fromPath": "src/index.ts",
+        "toPath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
+        "toPath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
         "toPath": "src/types/repository.ts",
         "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/metadataPreflight.test.ts",
+        "toPath": "src/index.ts",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromPath": "src/metadataPreflight.test.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/metadataPreflight.test.ts"
       },
       {
         "fromPath": "src/constants/repository.ts",
@@ -1398,10 +1907,40 @@
       },
       {
         "fromPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/evaluation/utils/repositoryRuleSupport.ts"
+      },
+      {
+        "fromPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
         "toPath": "src/types/repository.ts",
         "sourcePath": "src/features/evaluation/utils/repositoryRuleSupport.ts"
       },
       {
+        "fromPath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+        "toPath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
+        "toPath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
         "fromPath": "src/features/evaluation/domain/rules/createCliRules.ts",
         "toPath": "src/constants/repository.ts",
         "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
@@ -1515,6 +2054,26 @@
         "fromPath": "src/features/evaluation/domain/rules/createScriptRules.ts",
         "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
         "sourcePath": "src/features/evaluation/domain/rules/createScriptRules.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toPath": "src/constants/repository.ts",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toPath": "src/constants/repositoryRuleIds.ts",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
       }
     ],
     "calls": [
@@ -1711,6 +2270,216 @@
         "sourcePath": "src/index.test.ts"
       },
       {
+        "fromSymbol": "src/metadataPreflight.test.ts",
+        "toSymbol": "describe",
+        "callExpression": "describe",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflight.test.ts",
+        "toSymbol": "test",
+        "callExpression": "test",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "validMetadataScenario",
+        "toSymbol": "evaluateRepositoryMetadataPreflight",
+        "callExpression": "evaluateRepositoryMetadataPreflight",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "validMetadataScenario",
+        "toSymbol": "contextWithMetadata",
+        "callExpression": "contextWithMetadata",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "validMetadataScenario",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "missingMetadataScenario",
+        "toSymbol": "evaluateRepositoryMetadataPreflight",
+        "callExpression": "evaluateRepositoryMetadataPreflight",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "missingMetadataScenario",
+        "toSymbol": "contextWithMetadata",
+        "callExpression": "contextWithMetadata",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "missingMetadataScenario",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "noGlobalGateScenario",
+        "toSymbol": "contextWithMetadata",
+        "callExpression": "contextWithMetadata",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "noGlobalGateScenario",
+        "toSymbol": "evaluateRepository",
+        "callExpression": "evaluateRepository",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "noGlobalGateScenario",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "invalidMetadataScenario",
+        "toSymbol": "evaluateRepositoryMetadataPreflight",
+        "callExpression": "evaluateRepositoryMetadataPreflight",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "invalidMetadataScenario",
+        "toSymbol": "contextWithMetadata",
+        "callExpression": "contextWithMetadata",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "invalidMetadataScenario",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "exemptionScenario",
+        "toSymbol": "evaluateRepositoryMetadataPreflight",
+        "callExpression": "evaluateRepositoryMetadataPreflight",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "exemptionScenario",
+        "toSymbol": "contextWithMetadata",
+        "callExpression": "contextWithMetadata",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "exemptionScenario",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "join",
+        "callExpression": "join",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "tmpdir",
+        "callExpression": "tmpdir",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "describe",
+        "callExpression": "describe",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "test",
+        "callExpression": "test",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "mkdtempSync",
+        "callExpression": "mkdtempSync",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "mkdirSync",
+        "callExpression": "mkdirSync",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "writeConsumerFiles",
+        "callExpression": "writeConsumerFiles",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "packAndInstall",
+        "callExpression": "packAndInstall",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "verifyConsumer",
+        "callExpression": "verifyConsumer",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "src/metadataPreflightPackedConsumer.test.ts",
+        "toSymbol": "rmSync",
+        "callExpression": "rmSync",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "writeConsumerFiles",
+        "toSymbol": "writeFileSync",
+        "callExpression": "writeFileSync",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "writeConsumerFiles",
+        "toSymbol": "join",
+        "callExpression": "join",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "packAndInstall",
+        "toSymbol": "runCommand",
+        "callExpression": "runCommand",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "packAndInstall",
+        "toSymbol": "readdirSync",
+        "callExpression": "readdirSync",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "packAndInstall",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "packAndInstall",
+        "toSymbol": "join",
+        "callExpression": "join",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "verifyConsumer",
+        "toSymbol": "runCommand",
+        "callExpression": "runCommand",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
+        "fromSymbol": "runCommand",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
+      },
+      {
         "fromSymbol": "createRepositoryRuleSet",
         "toSymbol": "createRuntimeRules",
         "callExpression": "createRuntimeRules",
@@ -1781,6 +2550,36 @@
         "toSymbol": "evaluate",
         "callExpression": "evaluate",
         "sourcePath": "src/features/evaluation/utils/repositoryRuleSupport.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryMetadataPreflightRuleSet",
+        "toSymbol": "createRepositoryMetadataRules",
+        "callExpression": "createRepositoryMetadataRules",
+        "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepositoryMetadataPreflight",
+        "toSymbol": "createRepositoryMetadataPreflightRuleSet",
+        "callExpression": "createRepositoryMetadataPreflightRuleSet",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepositoryMetadataPreflight",
+        "toSymbol": "evaluateRules",
+        "callExpression": "evaluateRules",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepositoryMetadataPreflight",
+        "toSymbol": "evaluateConfiguredRules",
+        "callExpression": "evaluateConfiguredRules",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepositoryMetadataPreflight",
+        "toSymbol": "createRuleRegistry",
+        "callExpression": "createRuleRegistry",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
       },
       {
         "fromSymbol": "createCliRules",
@@ -2123,6 +2922,108 @@
         "toSymbol": "finding",
         "callExpression": "repositoryRuleSupport.finding",
         "sourcePath": "src/features/evaluation/domain/rules/createScriptRules.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryMetadataRules",
+        "toSymbol": "metadataDocumentRule",
+        "callExpression": "metadataDocumentRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryMetadataRules",
+        "toSymbol": "metadataLocationRule",
+        "callExpression": "metadataLocationRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryMetadataRules",
+        "toSymbol": "metadataTextRule",
+        "callExpression": "metadataTextRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryMetadataRules",
+        "toSymbol": "metadataImplementsRule",
+        "callExpression": "metadataImplementsRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "metadataDocumentRule",
+        "toSymbol": "createWarningRule",
+        "callExpression": "repositoryRuleSupport.createWarningRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toSymbol": "isApplicableMetadata",
+        "callExpression": "isApplicableMetadata",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toSymbol": "finding",
+        "callExpression": "finding",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toSymbol": "canonicalPath",
+        "callExpression": "canonicalPath",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "metadataLocationRule",
+        "toSymbol": "createWarningRule",
+        "callExpression": "repositoryRuleSupport.createWarningRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "metadataTextRule",
+        "toSymbol": "createWarningRule",
+        "callExpression": "repositoryRuleSupport.createWarningRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toSymbol": "textEntries",
+        "callExpression": "textEntries",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toSymbol": "isMeaningfulText",
+        "callExpression": "isMeaningfulText",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "metadataImplementsRule",
+        "toSymbol": "createWarningRule",
+        "callExpression": "repositoryRuleSupport.createWarningRule",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toSymbol": "isImplementationReference",
+        "callExpression": "isImplementationReference",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "textEntries",
+        "toSymbol": "arrayTextEntries",
+        "callExpression": "arrayTextEntries",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "isImplementationReference",
+        "toSymbol": "isMeaningfulText",
+        "callExpression": "isMeaningfulText",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "finding",
+        "toSymbol": "finding",
+        "callExpression": "repositoryRuleSupport.finding",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
       }
     ],
     "typeReferences": [
@@ -2152,8 +3053,38 @@
         "sourcePath": "src/features/evaluation/domain/evaluateRepository.ts"
       },
       {
+        "fromSymbol": "createRepositoryMetadataPreflightRuleSet",
+        "toType": "RepositoryRuleContext",
+        "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
+      },
+      {
+        "fromSymbol": "createRepositoryMetadataPreflightRuleSet",
+        "toType": "RuleSet",
+        "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepositoryMetadataPreflight",
+        "toType": "RepositoryEvaluationOptions",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepositoryMetadataPreflight",
+        "toType": "RepositoryRuleContext",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromSymbol": "evaluateRepositoryMetadataPreflight",
+        "toType": "RuleEvaluationResult",
+        "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
         "fromSymbol": "RepositoryEvaluationOptions",
         "toType": "RulesConfig",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryMetadataFact",
+        "toType": "RepositoryMetadata",
         "sourcePath": "src/types/repository.ts"
       },
       {
@@ -2184,6 +3115,11 @@
       {
         "fromSymbol": "RepositoryRuleContext",
         "toType": "RepositoryImportFact",
+        "sourcePath": "src/types/repository.ts"
+      },
+      {
+        "fromSymbol": "RepositoryRuleContext",
+        "toType": "RepositoryMetadataFact",
         "sourcePath": "src/types/repository.ts"
       },
       {

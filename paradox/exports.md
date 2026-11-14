@@ -1,5 +1,18 @@
 # Public API
 
+## createRepositoryMetadataPreflightRuleSet
+
+Kind: `function`
+Module: `src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts`
+Source: `src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts:7:1`
+
+Create the report-only repository metadata RuleSet for organization inventory preflight.
+
+### Signatures
+
+- `() => RuleSet<RepositoryRuleContext>`
+  - returns: `RuleSet<RepositoryRuleContext>`
+
 ## createRepositoryRuleSet
 
 Kind: `function`
@@ -28,6 +41,21 @@ Evaluate normalized repository facts through the canonical repository RuleSet.
   - options: `RepositoryEvaluationOptions` (optional)
   - returns: `import("@ankhorage/rules").RuleEvaluationResult`
 
+## evaluateRepositoryMetadataPreflight
+
+Kind: `function`
+Module: `src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts`
+Source: `src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts:12:1`
+
+Evaluate advisory repository metadata facts without adding a global repository enforcement rule.
+
+### Signatures
+
+- `(context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) => import("@ankhorage/rules").RuleEvaluationResult`
+  - context: `RepositoryRuleContext`
+  - options: `RepositoryEvaluationOptions` (optional)
+  - returns: `import("@ankhorage/rules").RuleEvaluationResult`
+
 ## REPOSITORY_RULE_IDS
 
 Kind: `value`
@@ -48,7 +76,7 @@ Canonical repository metadata used by validators and managed-file renderers.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:30:1`
+Source: `src/types/repository.ts:31:1`
 
 One normalized public CLI command and its implementation source.
 
@@ -63,7 +91,7 @@ One normalized public CLI command and its implementation source.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:15:1`
+Source: `src/types/repository.ts:16:1`
 
 One package dependency fact normalized across dependency sections.
 
@@ -79,7 +107,7 @@ One package dependency fact normalized across dependency sections.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:54:1`
+Source: `src/types/repository.ts:70:1`
 
 Optional generic Rules configuration applied to repository rules.
 
@@ -94,7 +122,7 @@ Optional generic Rules configuration applied to repository rules.
 
 Kind: `unknown`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:61:1`
+Source: `src/types/repository.ts:77:1`
 
 Generic Rules result produced by repository evaluation.
 
@@ -102,7 +130,7 @@ Generic Rules result produced by repository evaluation.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:23:1`
+Source: `src/types/repository.ts:24:1`
 
 One source import fact used for current-only package-boundary checks.
 
@@ -114,11 +142,27 @@ One source import fact used for current-only package-boundary checks.
 | path | property | `string` | yes |  |
 | specifier | property | `string` | yes |  |
 
+## RepositoryMetadataFact
+
+Kind: `type`
+Module: `src/types/repository.ts`
+Source: `src/types/repository.ts:37:1`
+
+### Members
+
+| Name | Kind | Type | Required | Description |
+| --- | --- | --- | --- | --- |
+| document | property | `RepositoryMetadata \| undefined` | no |  |
+| eligibility | property | `"applicable" \| "archived" \| "legacy" \| "third-party"` | yes |  |
+| managed | property | `boolean` | yes |  |
+| path | property | `string \| undefined` | no |  |
+| profile | property | `"non-source" \| "source"` | yes |  |
+
 ## RepositoryPackageFact
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:36:1`
+Source: `src/types/repository.ts:51:1`
 
 Portable package.json facts required by repository rules.
 
@@ -136,7 +180,7 @@ Portable package.json facts required by repository rules.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:9:1`
+Source: `src/types/repository.ts:10:1`
 
 One repository path fact independent of filesystem implementation.
 
@@ -151,7 +195,7 @@ One repository path fact independent of filesystem implementation.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:45:1`
+Source: `src/types/repository.ts:60:1`
 
 Portable repository facts evaluated independently of filesystem and parser technology.
 
@@ -161,6 +205,7 @@ Portable repository facts evaluated independently of filesystem and parser techn
 | --- | --- | --- | --- | --- |
 | cliCommands | property | `readonly RepositoryCliCommandFact[]` | yes |  |
 | imports | property | `readonly RepositoryImportFact[]` | yes |  |
+| metadata | property | `RepositoryMetadataFact \| undefined` | no |  |
 | packageJson | property | `RepositoryPackageFact` | yes |  |
 | paths | property | `readonly RepositoryPathFact[]` | yes |  |
 | workflowBunVersions | property | `Readonly<Record<string, string \| undefined>>` | yes |  |

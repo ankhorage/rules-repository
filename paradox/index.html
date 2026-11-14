@@ -174,12 +174,37 @@
   </li><li>
     <button class="nav-button" type="button" data-target="src/features/evaluation/utils/repositoryRuleSupport.ts">
       src/features/evaluation/utils/repositoryRuleSupport.ts
-      <small>6 functions</small>
+      <small>7 functions</small>
+    </button>
+  </li><li>
+    <button class="nav-button" type="button" data-target="src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts">
+      src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts
+      <small>1 function</small>
+    </button>
+  </li><li>
+    <button class="nav-button" type="button" data-target="src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts">
+      src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts
+      <small>1 function</small>
+    </button>
+  </li><li>
+    <button class="nav-button" type="button" data-target="src/features/metadata/domain/rules/createRepositoryMetadataRules.ts">
+      src/features/metadata/domain/rules/createRepositoryMetadataRules.ts
+      <small>12 functions</small>
     </button>
   </li><li>
     <button class="nav-button" type="button" data-target="src/index.test.ts">
       src/index.test.ts
       <small>6 functions</small>
+    </button>
+  </li><li>
+    <button class="nav-button" type="button" data-target="src/metadataPreflight.test.ts">
+      src/metadataPreflight.test.ts
+      <small>6 functions</small>
+    </button>
+  </li><li>
+    <button class="nav-button" type="button" data-target="src/metadataPreflightPackedConsumer.test.ts">
+      src/metadataPreflightPackedConsumer.test.ts
+      <small>4 functions</small>
     </button>
   </li>
           </ul>
@@ -191,9 +216,9 @@
     <section class="panel">
       <h2>Package overview</h2>
       <div class="summary">
-        <div><strong>12</strong><span class="muted">public exports</span></div>
+        <div><strong>15</strong><span class="muted">public exports</span></div>
         <div><strong>0</strong><span class="muted">components</span></div>
-        <div><strong>15</strong><span class="muted">modules</span></div>
+        <div><strong>20</strong><span class="muted">modules</span></div>
         <div><strong>1</strong><span class="muted">entrypoints</span></div>
       </div>
       <h3>Entrypoints</h3>
@@ -260,26 +285,51 @@
     <p class="muted">Referenced module</p>
     <p><strong>Dependencies:</strong> <code>src/constants/repository.ts</code>, <code>src/features/evaluation/utils/repositoryRuleSupport.ts</code>, <code>src/types/repository.ts</code></p>
     <p><strong>Exports:</strong> <code>createScriptRules</code></p>
-  </article><article class="item" data-search="src/features/evaluation/utils/repositoryRuleSupport.ts src/types/repository.ts repositoryRuleSupport">
+  </article><article class="item" data-search="src/features/evaluation/utils/repositoryRuleSupport.ts src/constants/repository.ts src/types/repository.ts repositoryRuleSupport">
     <h3>src/features/evaluation/utils/repositoryRuleSupport.ts</h3>
     <p class="muted">Referenced module</p>
-    <p><strong>Dependencies:</strong> <code>src/types/repository.ts</code></p>
+    <p><strong>Dependencies:</strong> <code>src/constants/repository.ts</code>, <code>src/types/repository.ts</code></p>
     <p><strong>Exports:</strong> <code>repositoryRuleSupport</code></p>
+  </article><article class="item" data-search="src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts src/features/metadata/domain/rules/createRepositoryMetadataRules.ts src/types/repository.ts createRepositoryMetadataPreflightRuleSet">
+    <h3>src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts</h3>
+    <p class="muted">Referenced module</p>
+    <p><strong>Dependencies:</strong> <code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts</code>, <code>src/types/repository.ts</code></p>
+    <p><strong>Exports:</strong> <code>createRepositoryMetadataPreflightRuleSet</code></p>
+  </article><article class="item" data-search="src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts src/constants/repository.ts src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts src/types/repository.ts evaluateRepositoryMetadataPreflight">
+    <h3>src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts</h3>
+    <p class="muted">Referenced module</p>
+    <p><strong>Dependencies:</strong> <code>src/constants/repository.ts</code>, <code>src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts</code>, <code>src/types/repository.ts</code></p>
+    <p><strong>Exports:</strong> <code>evaluateRepositoryMetadataPreflight</code></p>
+  </article><article class="item" data-search="src/features/metadata/domain/rules/createRepositoryMetadataRules.ts src/constants/repository.ts src/constants/repositoryRuleIds.ts src/features/evaluation/utils/repositoryRuleSupport.ts src/types/repository.ts createRepositoryMetadataRules">
+    <h3>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts</h3>
+    <p class="muted">Referenced module</p>
+    <p><strong>Dependencies:</strong> <code>src/constants/repository.ts</code>, <code>src/constants/repositoryRuleIds.ts</code>, <code>src/features/evaluation/utils/repositoryRuleSupport.ts</code>, <code>src/types/repository.ts</code></p>
+    <p><strong>Exports:</strong> <code>createRepositoryMetadataRules</code></p>
   </article><article class="item" data-search="src/index.test.ts src/index.ts src/types/repository.ts">
     <h3>src/index.test.ts</h3>
     <p class="muted">Referenced module</p>
     <p><strong>Dependencies:</strong> <code>src/index.ts</code>, <code>src/types/repository.ts</code></p>
     <p><strong>Exports:</strong> <span class="empty">None</span></p>
-  </article><article class="item" data-search="src/index.ts createRepositoryRuleSet evaluateRepository REPOSITORY_RULE_IDS REPOSITORY_RULE_METADATA RepositoryCliCommandFact RepositoryDependencyFact RepositoryEvaluationOptions RepositoryEvaluationResult RepositoryImportFact RepositoryPackageFact RepositoryPathFact RepositoryRuleContext">
+  </article><article class="item" data-search="src/index.ts createRepositoryMetadataPreflightRuleSet createRepositoryRuleSet evaluateRepository evaluateRepositoryMetadataPreflight REPOSITORY_RULE_IDS REPOSITORY_RULE_METADATA RepositoryCliCommandFact RepositoryDependencyFact RepositoryEvaluationOptions RepositoryEvaluationResult RepositoryImportFact RepositoryMetadataFact RepositoryPackageFact RepositoryPathFact RepositoryRuleContext">
     <h3>src/index.ts</h3>
     <p class="muted">Configured entrypoint</p>
     <p><strong>Dependencies:</strong> <span class="empty">None</span></p>
-    <p><strong>Exports:</strong> <code>createRepositoryRuleSet</code>, <code>evaluateRepository</code>, <code>REPOSITORY_RULE_IDS</code>, <code>REPOSITORY_RULE_METADATA</code>, <code>RepositoryCliCommandFact</code>, <code>RepositoryDependencyFact</code>, <code>RepositoryEvaluationOptions</code>, <code>RepositoryEvaluationResult</code>, <code>RepositoryImportFact</code>, <code>RepositoryPackageFact</code>, <code>RepositoryPathFact</code>, <code>RepositoryRuleContext</code></p>
-  </article><article class="item" data-search="src/types/repository.ts RepositoryCliCommandFact RepositoryDependencyFact RepositoryEvaluationOptions RepositoryEvaluationResult RepositoryImportFact RepositoryPackageFact RepositoryPathFact RepositoryRuleContext">
+    <p><strong>Exports:</strong> <code>createRepositoryMetadataPreflightRuleSet</code>, <code>createRepositoryRuleSet</code>, <code>evaluateRepository</code>, <code>evaluateRepositoryMetadataPreflight</code>, <code>REPOSITORY_RULE_IDS</code>, <code>REPOSITORY_RULE_METADATA</code>, <code>RepositoryCliCommandFact</code>, <code>RepositoryDependencyFact</code>, <code>RepositoryEvaluationOptions</code>, <code>RepositoryEvaluationResult</code>, <code>RepositoryImportFact</code>, <code>RepositoryMetadataFact</code>, <code>RepositoryPackageFact</code>, <code>RepositoryPathFact</code>, <code>RepositoryRuleContext</code></p>
+  </article><article class="item" data-search="src/metadataPreflight.test.ts src/index.ts src/types/repository.ts">
+    <h3>src/metadataPreflight.test.ts</h3>
+    <p class="muted">Referenced module</p>
+    <p><strong>Dependencies:</strong> <code>src/index.ts</code>, <code>src/types/repository.ts</code></p>
+    <p><strong>Exports:</strong> <span class="empty">None</span></p>
+  </article><article class="item" data-search="src/metadataPreflightPackedConsumer.test.ts">
+    <h3>src/metadataPreflightPackedConsumer.test.ts</h3>
+    <p class="muted">Referenced module</p>
+    <p><strong>Dependencies:</strong> <span class="empty">None</span></p>
+    <p><strong>Exports:</strong> <span class="empty">None</span></p>
+  </article><article class="item" data-search="src/types/repository.ts RepositoryCliCommandFact RepositoryDependencyFact RepositoryEvaluationOptions RepositoryEvaluationResult RepositoryImportFact RepositoryMetadataFact RepositoryPackageFact RepositoryPathFact RepositoryRuleContext">
     <h3>src/types/repository.ts</h3>
     <p class="muted">Referenced module</p>
     <p><strong>Dependencies:</strong> <span class="empty">None</span></p>
-    <p><strong>Exports:</strong> <code>RepositoryCliCommandFact</code>, <code>RepositoryDependencyFact</code>, <code>RepositoryEvaluationOptions</code>, <code>RepositoryEvaluationResult</code>, <code>RepositoryImportFact</code>, <code>RepositoryPackageFact</code>, <code>RepositoryPathFact</code>, <code>RepositoryRuleContext</code></p>
+    <p><strong>Exports:</strong> <code>RepositoryCliCommandFact</code>, <code>RepositoryDependencyFact</code>, <code>RepositoryEvaluationOptions</code>, <code>RepositoryEvaluationResult</code>, <code>RepositoryImportFact</code>, <code>RepositoryMetadataFact</code>, <code>RepositoryPackageFact</code>, <code>RepositoryPathFact</code>, <code>RepositoryRuleContext</code></p>
   </article>
     </section>
     <section class="panel">
@@ -367,11 +417,64 @@
   </article>
             </section>
             <section>
+              <h3>src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts</h3>
+              <article class="item" id="symbol-createrepositorymetadatapreflightruleset" data-search="createRepositoryMetadataPreflightRuleSet  function src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts Create the report-only repository metadata RuleSet for organization inventory preflight. RepositoryRuleContext () =&gt; RuleSet&lt;RepositoryRuleContext&gt;">
+    <h4>createRepositoryMetadataPreflightRuleSet</h4>
+    
+    <p class="muted">function • <code>src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts:7:1</code></p>
+    <p>Create the report-only repository metadata RuleSet for organization inventory preflight.</p>
+    
+    <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
+    <div><strong>Related symbols:</strong> <ul class="chips"><li class="chip">RepositoryRuleContext</li></ul></div>
+    <div>
+        <h5>Signature</h5>
+        <pre>() =&gt; RuleSet&lt;RepositoryRuleContext&gt;</pre>
+        
+        <p><strong>Returns:</strong> <code>RuleSet&lt;RepositoryRuleContext&gt;</code></p>
+      </div>
+    
+  </article>
+            </section>
+            <section>
+              <h3>src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts</h3>
+              <article class="item" id="symbol-evaluaterepositorymetadatapreflight" data-search="evaluateRepositoryMetadataPreflight  function src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts Evaluate advisory repository metadata facts without adding a global repository enforcement rule. RepositoryEvaluationOptions RepositoryRuleContext (context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) =&gt; import(&quot;@ankhorage/rules&quot;).RuleEvaluationResult">
+    <h4>evaluateRepositoryMetadataPreflight</h4>
+    
+    <p class="muted">function • <code>src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts:12:1</code></p>
+    <p>Evaluate advisory repository metadata facts without adding a global repository enforcement rule.</p>
+    
+    <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
+    <div><strong>Related symbols:</strong> <ul class="chips"><li class="chip">RepositoryEvaluationOptions</li><li class="chip">RepositoryRuleContext</li></ul></div>
+    <div>
+        <h5>Signature</h5>
+        <pre>(context: RepositoryRuleContext, options?: RepositoryEvaluationOptions) =&gt; import(&quot;@ankhorage/rules&quot;).RuleEvaluationResult</pre>
+        <table>
+                <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr>
+                        <td><code>context</code></td>
+                        <td><code>RepositoryRuleContext</code></td>
+                        <td>yes</td>
+                        <td></td>
+                      </tr><tr>
+                        <td><code>options</code></td>
+                        <td><code>RepositoryEvaluationOptions</code></td>
+                        <td>no</td>
+                        <td></td>
+                      </tr>
+                </tbody>
+              </table>
+        <p><strong>Returns:</strong> <code>import(&quot;@ankhorage/rules&quot;).RuleEvaluationResult</code></p>
+      </div>
+    
+  </article>
+            </section>
+            <section>
               <h3>src/types/repository.ts</h3>
               <article class="item" id="symbol-repositoryclicommandfact" data-search="RepositoryCliCommandFact  type src/types/repository.ts One normalized public CLI command and its implementation source.">
     <h4>RepositoryCliCommandFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:30:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:31:1</code></p>
     <p>One normalized public CLI command and its implementation source.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -398,7 +501,7 @@
   </article><article class="item" id="symbol-repositorydependencyfact" data-search="RepositoryDependencyFact  type src/types/repository.ts One package dependency fact normalized across dependency sections.">
     <h4>RepositoryDependencyFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:15:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:16:1</code></p>
     <p>One package dependency fact normalized across dependency sections.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -431,7 +534,7 @@
   </article><article class="item" id="symbol-repositoryevaluationoptions" data-search="RepositoryEvaluationOptions  type src/types/repository.ts Optional generic Rules configuration applied to repository rules.">
     <h4>RepositoryEvaluationOptions</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:54:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:70:1</code></p>
     <p>Optional generic Rules configuration applied to repository rules.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -458,7 +561,7 @@
   </article><article class="item" id="symbol-repositoryevaluationresult" data-search="RepositoryEvaluationResult  unknown src/types/repository.ts Generic Rules result produced by repository evaluation.">
     <h4>RepositoryEvaluationResult</h4>
     
-    <p class="muted">unknown • <code>src/types/repository.ts:61:1</code></p>
+    <p class="muted">unknown • <code>src/types/repository.ts:77:1</code></p>
     <p>Generic Rules result produced by repository evaluation.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -468,7 +571,7 @@
   </article><article class="item" id="symbol-repositoryimportfact" data-search="RepositoryImportFact  type src/types/repository.ts One source import fact used for current-only package-boundary checks.">
     <h4>RepositoryImportFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:23:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:24:1</code></p>
     <p>One source import fact used for current-only package-boundary checks.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -498,10 +601,55 @@
           </tr>
     </tbody>
   </table>
+  </article><article class="item" id="symbol-repositorymetadatafact" data-search="RepositoryMetadataFact  type src/types/repository.ts ">
+    <h4>RepositoryMetadataFact</h4>
+    
+    <p class="muted">type • <code>src/types/repository.ts:37:1</code></p>
+    
+    
+    <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
+    <div><strong>Related symbols:</strong> <span class="empty">None</span></div>
+    
+    <table>
+    <thead><tr><th>Member</th><th>Kind</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr>
+            <td><code>document</code></td>
+            <td>property</td>
+            <td><code>RepositoryMetadata | undefined</code></td>
+            <td>no</td>
+            <td></td>
+          </tr><tr>
+            <td><code>eligibility</code></td>
+            <td>property</td>
+            <td><code>&quot;applicable&quot; | &quot;archived&quot; | &quot;legacy&quot; | &quot;third-party&quot;</code></td>
+            <td>yes</td>
+            <td></td>
+          </tr><tr>
+            <td><code>managed</code></td>
+            <td>property</td>
+            <td><code>boolean</code></td>
+            <td>yes</td>
+            <td></td>
+          </tr><tr>
+            <td><code>path</code></td>
+            <td>property</td>
+            <td><code>string | undefined</code></td>
+            <td>no</td>
+            <td></td>
+          </tr><tr>
+            <td><code>profile</code></td>
+            <td>property</td>
+            <td><code>&quot;non-source&quot; | &quot;source&quot;</code></td>
+            <td>yes</td>
+            <td></td>
+          </tr>
+    </tbody>
+  </table>
   </article><article class="item" id="symbol-repositorypackagefact" data-search="RepositoryPackageFact  type src/types/repository.ts Portable package.json facts required by repository rules. RepositoryDependencyFact">
     <h4>RepositoryPackageFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:36:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:51:1</code></p>
     <p>Portable package.json facts required by repository rules.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -546,7 +694,7 @@
   </article><article class="item" id="symbol-repositorypathfact" data-search="RepositoryPathFact  type src/types/repository.ts One repository path fact independent of filesystem implementation.">
     <h4>RepositoryPathFact</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:9:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:10:1</code></p>
     <p>One repository path fact independent of filesystem implementation.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
@@ -570,14 +718,14 @@
           </tr>
     </tbody>
   </table>
-  </article><article class="item" id="symbol-repositoryrulecontext" data-search="RepositoryRuleContext  type src/types/repository.ts Portable repository facts evaluated independently of filesystem and parser technology. RepositoryCliCommandFact RepositoryImportFact RepositoryPackageFact RepositoryPathFact">
+  </article><article class="item" id="symbol-repositoryrulecontext" data-search="RepositoryRuleContext  type src/types/repository.ts Portable repository facts evaluated independently of filesystem and parser technology. RepositoryCliCommandFact RepositoryImportFact RepositoryMetadataFact RepositoryPackageFact RepositoryPathFact">
     <h4>RepositoryRuleContext</h4>
     
-    <p class="muted">type • <code>src/types/repository.ts:45:1</code></p>
+    <p class="muted">type • <code>src/types/repository.ts:60:1</code></p>
     <p>Portable repository facts evaluated independently of filesystem and parser technology.</p>
     
     <p><strong>Export paths:</strong> <code>src/index.ts</code></p>
-    <div><strong>Related symbols:</strong> <ul class="chips"><li class="chip">RepositoryCliCommandFact</li><li class="chip">RepositoryImportFact</li><li class="chip">RepositoryPackageFact</li><li class="chip">RepositoryPathFact</li></ul></div>
+    <div><strong>Related symbols:</strong> <ul class="chips"><li class="chip">RepositoryCliCommandFact</li><li class="chip">RepositoryImportFact</li><li class="chip">RepositoryMetadataFact</li><li class="chip">RepositoryPackageFact</li><li class="chip">RepositoryPathFact</li></ul></div>
     
     <table>
     <thead><tr><th>Member</th><th>Kind</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
@@ -593,6 +741,12 @@
             <td>property</td>
             <td><code>readonly RepositoryImportFact[]</code></td>
             <td>yes</td>
+            <td></td>
+          </tr><tr>
+            <td><code>metadata</code></td>
+            <td>property</td>
+            <td><code>RepositoryMetadataFact | undefined</code></td>
+            <td>no</td>
             <td></td>
           </tr><tr>
             <td><code>packageJson</code></td>
@@ -690,12 +844,34 @@
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_utils_repositoryRuleSupport_ts[&quot;src/features/evaluation/utils/repositoryRuleSupport.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
+  module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts[&quot;src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts[&quot;src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts[&quot;src/features/metadata/domain/rules/createRepositoryMetadataRules.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repositoryRuleIds_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_types_repository_ts
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_index_test_ts
   module_src_index_test_ts --&gt; module_src_index_ts
   module_src_index_test_ts --&gt; module_src_types_repository_ts
   module_src_index_ts[&quot;src/index.ts&quot;]
+  module_src_metadataPreflight_test_ts[&quot;src/metadataPreflight.test.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_metadataPreflight_test_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_index_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_types_repository_ts
+  module_src_metadataPreflightPackedConsumer_test_ts[&quot;src/metadataPreflightPackedConsumer.test.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_metadataPreflightPackedConsumer_test_ts
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_types_repository_ts
 </div>
@@ -764,12 +940,34 @@
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_types_repository_ts
   module_src_features_evaluation_utils_repositoryRuleSupport_ts[&quot;src/features/evaluation/utils/repositoryRuleSupport.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
+  module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts[&quot;src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts[&quot;src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts[&quot;src/features/metadata/domain/rules/createRepositoryMetadataRules.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repositoryRuleIds_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_types_repository_ts
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_index_test_ts
   module_src_index_test_ts --&gt; module_src_index_ts
   module_src_index_test_ts --&gt; module_src_types_repository_ts
   module_src_index_ts[&quot;src/index.ts&quot;]
+  module_src_metadataPreflight_test_ts[&quot;src/metadataPreflight.test.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_metadataPreflight_test_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_index_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_types_repository_ts
+  module_src_metadataPreflightPackedConsumer_test_ts[&quot;src/metadataPreflightPackedConsumer.test.ts&quot;]
+  package__ankhorage_rules_repository -.-&gt; module_src_metadataPreflightPackedConsumer_test_ts
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
   package__ankhorage_rules_repository -.-&gt; module_src_types_repository_ts
 </pre>
@@ -790,8 +988,13 @@
   module_src_features_evaluation_domain_rules_createRuntimeRules_ts[&quot;src/features/evaluation/domain/rules/createRuntimeRules.ts&quot;]
   module_src_features_evaluation_domain_rules_createScriptRules_ts[&quot;src/features/evaluation/domain/rules/createScriptRules.ts&quot;]
   module_src_features_evaluation_utils_repositoryRuleSupport_ts[&quot;src/features/evaluation/utils/repositoryRuleSupport.ts&quot;]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts[&quot;src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts&quot;]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts[&quot;src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts&quot;]
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts[&quot;src/features/metadata/domain/rules/createRepositoryMetadataRules.ts&quot;]
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   module_src_index_ts[&quot;src/index.ts&quot;]
+  module_src_metadataPreflight_test_ts[&quot;src/metadataPreflight.test.ts&quot;]
+  module_src_metadataPreflightPackedConsumer_test_ts[&quot;src/metadataPreflightPackedConsumer.test.ts&quot;]
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
   module_src_atlasAuditConsumer_test_ts --&gt; module_src_index_ts
   module_src_constants_repository_ts --&gt; module_src_constants_repositoryRuleIds_ts
@@ -828,9 +1031,21 @@
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_types_repository_ts
+  module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repositoryRuleIds_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_types_repository_ts
   module_src_index_test_ts --&gt; module_src_index_ts
   module_src_index_test_ts --&gt; module_src_types_repository_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_index_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_types_repository_ts
 </div>
     <details>
       <summary>View Mermaid source</summary>
@@ -847,8 +1062,13 @@
   module_src_features_evaluation_domain_rules_createRuntimeRules_ts[&quot;src/features/evaluation/domain/rules/createRuntimeRules.ts&quot;]
   module_src_features_evaluation_domain_rules_createScriptRules_ts[&quot;src/features/evaluation/domain/rules/createScriptRules.ts&quot;]
   module_src_features_evaluation_utils_repositoryRuleSupport_ts[&quot;src/features/evaluation/utils/repositoryRuleSupport.ts&quot;]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts[&quot;src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts&quot;]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts[&quot;src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts&quot;]
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts[&quot;src/features/metadata/domain/rules/createRepositoryMetadataRules.ts&quot;]
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   module_src_index_ts[&quot;src/index.ts&quot;]
+  module_src_metadataPreflight_test_ts[&quot;src/metadataPreflight.test.ts&quot;]
+  module_src_metadataPreflightPackedConsumer_test_ts[&quot;src/metadataPreflightPackedConsumer.test.ts&quot;]
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
   module_src_atlasAuditConsumer_test_ts --&gt; module_src_index_ts
   module_src_constants_repository_ts --&gt; module_src_constants_repositoryRuleIds_ts
@@ -885,9 +1105,21 @@
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
   module_src_features_evaluation_domain_rules_createScriptRules_ts --&gt; module_src_types_repository_ts
+  module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_constants_repository_ts
   module_src_features_evaluation_utils_repositoryRuleSupport_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; module_src_types_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_constants_repositoryRuleIds_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_features_evaluation_utils_repositoryRuleSupport_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --&gt; module_src_types_repository_ts
   module_src_index_test_ts --&gt; module_src_index_ts
   module_src_index_test_ts --&gt; module_src_types_repository_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_index_ts
+  module_src_metadataPreflight_test_ts --&gt; module_src_types_repository_ts
 </pre>
     </details>
   </article><article class="item" data-search="Export graph diagrams/export-graph.mmd">
@@ -906,9 +1138,17 @@
   module_src_features_evaluation_domain_rules_createRuntimeRules_ts[&quot;src/features/evaluation/domain/rules/createRuntimeRules.ts&quot;]
   module_src_features_evaluation_domain_rules_createScriptRules_ts[&quot;src/features/evaluation/domain/rules/createScriptRules.ts&quot;]
   module_src_features_evaluation_utils_repositoryRuleSupport_ts[&quot;src/features/evaluation/utils/repositoryRuleSupport.ts&quot;]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts[&quot;src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts&quot;]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts[&quot;src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts&quot;]
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts[&quot;src/features/metadata/domain/rules/createRepositoryMetadataRules.ts&quot;]
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   module_src_index_ts[&quot;src/index.ts&quot;]
+  module_src_metadataPreflight_test_ts[&quot;src/metadataPreflight.test.ts&quot;]
+  module_src_metadataPreflightPackedConsumer_test_ts[&quot;src/metadataPreflightPackedConsumer.test.ts&quot;]
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
+  export_createRepositoryMetadataPreflightRuleSet[&quot;createRepositoryMetadataPreflightRuleSet&quot;]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; export_createRepositoryMetadataPreflightRuleSet
+  export_createRepositoryMetadataPreflightRuleSet -.-&gt; export_RepositoryRuleContext
   export_createRepositoryRuleSet[&quot;createRepositoryRuleSet&quot;]
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; export_createRepositoryRuleSet
   export_createRepositoryRuleSet -.-&gt; export_RepositoryRuleContext
@@ -916,6 +1156,10 @@
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; export_evaluateRepository
   export_evaluateRepository -.-&gt; export_RepositoryEvaluationOptions
   export_evaluateRepository -.-&gt; export_RepositoryRuleContext
+  export_evaluateRepositoryMetadataPreflight[&quot;evaluateRepositoryMetadataPreflight&quot;]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; export_evaluateRepositoryMetadataPreflight
+  export_evaluateRepositoryMetadataPreflight -.-&gt; export_RepositoryEvaluationOptions
+  export_evaluateRepositoryMetadataPreflight -.-&gt; export_RepositoryRuleContext
   export_REPOSITORY_RULE_IDS[&quot;REPOSITORY_RULE_IDS&quot;]
   module_src_constants_repositoryRuleIds_ts --&gt; export_REPOSITORY_RULE_IDS
   export_REPOSITORY_RULE_METADATA[&quot;REPOSITORY_RULE_METADATA&quot;]
@@ -930,6 +1174,8 @@
   module_src_types_repository_ts --&gt; export_RepositoryEvaluationResult
   export_RepositoryImportFact[&quot;RepositoryImportFact&quot;]
   module_src_types_repository_ts --&gt; export_RepositoryImportFact
+  export_RepositoryMetadataFact[&quot;RepositoryMetadataFact&quot;]
+  module_src_types_repository_ts --&gt; export_RepositoryMetadataFact
   export_RepositoryPackageFact[&quot;RepositoryPackageFact&quot;]
   module_src_types_repository_ts --&gt; export_RepositoryPackageFact
   export_RepositoryPackageFact -.-&gt; export_RepositoryDependencyFact
@@ -939,6 +1185,7 @@
   module_src_types_repository_ts --&gt; export_RepositoryRuleContext
   export_RepositoryRuleContext -.-&gt; export_RepositoryCliCommandFact
   export_RepositoryRuleContext -.-&gt; export_RepositoryImportFact
+  export_RepositoryRuleContext -.-&gt; export_RepositoryMetadataFact
   export_RepositoryRuleContext -.-&gt; export_RepositoryPackageFact
   export_RepositoryRuleContext -.-&gt; export_RepositoryPathFact
 </div>
@@ -957,9 +1204,17 @@
   module_src_features_evaluation_domain_rules_createRuntimeRules_ts[&quot;src/features/evaluation/domain/rules/createRuntimeRules.ts&quot;]
   module_src_features_evaluation_domain_rules_createScriptRules_ts[&quot;src/features/evaluation/domain/rules/createScriptRules.ts&quot;]
   module_src_features_evaluation_utils_repositoryRuleSupport_ts[&quot;src/features/evaluation/utils/repositoryRuleSupport.ts&quot;]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts[&quot;src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts&quot;]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts[&quot;src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts&quot;]
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts[&quot;src/features/metadata/domain/rules/createRepositoryMetadataRules.ts&quot;]
   module_src_index_test_ts[&quot;src/index.test.ts&quot;]
   module_src_index_ts[&quot;src/index.ts&quot;]
+  module_src_metadataPreflight_test_ts[&quot;src/metadataPreflight.test.ts&quot;]
+  module_src_metadataPreflightPackedConsumer_test_ts[&quot;src/metadataPreflightPackedConsumer.test.ts&quot;]
   module_src_types_repository_ts[&quot;src/types/repository.ts&quot;]
+  export_createRepositoryMetadataPreflightRuleSet[&quot;createRepositoryMetadataPreflightRuleSet&quot;]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --&gt; export_createRepositoryMetadataPreflightRuleSet
+  export_createRepositoryMetadataPreflightRuleSet -.-&gt; export_RepositoryRuleContext
   export_createRepositoryRuleSet[&quot;createRepositoryRuleSet&quot;]
   module_src_features_evaluation_domain_createRepositoryRuleSet_ts --&gt; export_createRepositoryRuleSet
   export_createRepositoryRuleSet -.-&gt; export_RepositoryRuleContext
@@ -967,6 +1222,10 @@
   module_src_features_evaluation_domain_evaluateRepository_ts --&gt; export_evaluateRepository
   export_evaluateRepository -.-&gt; export_RepositoryEvaluationOptions
   export_evaluateRepository -.-&gt; export_RepositoryRuleContext
+  export_evaluateRepositoryMetadataPreflight[&quot;evaluateRepositoryMetadataPreflight&quot;]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --&gt; export_evaluateRepositoryMetadataPreflight
+  export_evaluateRepositoryMetadataPreflight -.-&gt; export_RepositoryEvaluationOptions
+  export_evaluateRepositoryMetadataPreflight -.-&gt; export_RepositoryRuleContext
   export_REPOSITORY_RULE_IDS[&quot;REPOSITORY_RULE_IDS&quot;]
   module_src_constants_repositoryRuleIds_ts --&gt; export_REPOSITORY_RULE_IDS
   export_REPOSITORY_RULE_METADATA[&quot;REPOSITORY_RULE_METADATA&quot;]
@@ -981,6 +1240,8 @@
   module_src_types_repository_ts --&gt; export_RepositoryEvaluationResult
   export_RepositoryImportFact[&quot;RepositoryImportFact&quot;]
   module_src_types_repository_ts --&gt; export_RepositoryImportFact
+  export_RepositoryMetadataFact[&quot;RepositoryMetadataFact&quot;]
+  module_src_types_repository_ts --&gt; export_RepositoryMetadataFact
   export_RepositoryPackageFact[&quot;RepositoryPackageFact&quot;]
   module_src_types_repository_ts --&gt; export_RepositoryPackageFact
   export_RepositoryPackageFact -.-&gt; export_RepositoryDependencyFact
@@ -990,8 +1251,69 @@
   module_src_types_repository_ts --&gt; export_RepositoryRuleContext
   export_RepositoryRuleContext -.-&gt; export_RepositoryCliCommandFact
   export_RepositoryRuleContext -.-&gt; export_RepositoryImportFact
+  export_RepositoryRuleContext -.-&gt; export_RepositoryMetadataFact
   export_RepositoryRuleContext -.-&gt; export_RepositoryPackageFact
   export_RepositoryRuleContext -.-&gt; export_RepositoryPathFact
+</pre>
+    </details>
+  </article><article class="item" data-search="createRepositoryMetadataPreflightRuleSet sequence diagrams/sequences/create-repository-metadata-preflight-rule-set.mmd">
+    <h3>createRepositoryMetadataPreflightRuleSet sequence</h3>
+    <p class="muted"><code>diagrams/sequences/create-repository-metadata-preflight-rule-set.mmd</code></p>
+    <div class="mermaid">sequenceDiagram
+  participant participant_createRepositoryMetadataPreflightRuleSet as createRepositoryMetadataPreflightRuleSet
+  participant participant_createRepositoryMetadataRules as createRepositoryMetadataRules
+  participant participant_createWarningRule as createWarningRule
+  participant participant_metadataDocumentRule as metadataDocumentRule
+  participant participant_metadataImplementsRule as metadataImplementsRule
+  participant participant_metadataLocationRule as metadataLocationRule
+  participant participant_metadataTextRule as metadataTextRule
+  participant_createRepositoryMetadataPreflightRuleSet-&gt;&gt;participant_createRepositoryMetadataRules: createRepositoryMetadataRules()
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataDocumentRule: metadataDocumentRule()
+  participant_metadataDocumentRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataDocumentRule: return
+  participant_metadataDocumentRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataLocationRule: metadataLocationRule()
+  participant_metadataLocationRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataLocationRule: return
+  participant_metadataLocationRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataTextRule: metadataTextRule()
+  participant_metadataTextRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataTextRule: return
+  participant_metadataTextRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataImplementsRule: metadataImplementsRule()
+  participant_metadataImplementsRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataImplementsRule: return
+  participant_metadataImplementsRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules--&gt;&gt;participant_createRepositoryMetadataPreflightRuleSet: return
+</div>
+    <details>
+      <summary>View Mermaid source</summary>
+      <pre>sequenceDiagram
+  participant participant_createRepositoryMetadataPreflightRuleSet as createRepositoryMetadataPreflightRuleSet
+  participant participant_createRepositoryMetadataRules as createRepositoryMetadataRules
+  participant participant_createWarningRule as createWarningRule
+  participant participant_metadataDocumentRule as metadataDocumentRule
+  participant participant_metadataImplementsRule as metadataImplementsRule
+  participant participant_metadataLocationRule as metadataLocationRule
+  participant participant_metadataTextRule as metadataTextRule
+  participant_createRepositoryMetadataPreflightRuleSet-&gt;&gt;participant_createRepositoryMetadataRules: createRepositoryMetadataRules()
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataDocumentRule: metadataDocumentRule()
+  participant_metadataDocumentRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataDocumentRule: return
+  participant_metadataDocumentRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataLocationRule: metadataLocationRule()
+  participant_metadataLocationRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataLocationRule: return
+  participant_metadataLocationRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataTextRule: metadataTextRule()
+  participant_metadataTextRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataTextRule: return
+  participant_metadataTextRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules-&gt;&gt;participant_metadataImplementsRule: metadataImplementsRule()
+  participant_metadataImplementsRule-&gt;&gt;participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule--&gt;&gt;participant_metadataImplementsRule: return
+  participant_metadataImplementsRule--&gt;&gt;participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules--&gt;&gt;participant_createRepositoryMetadataPreflightRuleSet: return
 </pre>
     </details>
   </article>
@@ -1237,33 +1559,130 @@
       <h2>src/features/evaluation/utils/repositoryRuleSupport.ts</h2>
       <article class="item" data-search="createRule src/features/evaluation/utils/repositoryRuleSupport.ts Build one deterministic error-level repository rule.">
     <h3>createRule</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:16:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:18:1</code></p>
     <p>Build one deterministic error-level repository rule.</p>
+    
+  </article><article class="item" data-search="createWarningRule src/features/evaluation/utils/repositoryRuleSupport.ts Build one deterministic warning-level preflight rule.&#10;&#10;Metadata rollout findings are intentionally advisory until Doctor activates the separate&#10;enforcement policy after organization-wide authoring is complete.">
+    <h3>createWarningRule</h3>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:38:1</code></p>
+    <p>Build one deterministic warning-level preflight rule.
+
+Metadata rollout findings are intentionally advisory until Doctor activates the separate
+enforcement policy after organization-wide authoring is complete.</p>
     
   </article><article class="item" data-search="outcome src/features/evaluation/utils/repositoryRuleSupport.ts Translate deterministic provider findings into the generic evaluator outcome contract.">
     <h3>outcome</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:32:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:54:1</code></p>
     <p>Translate deterministic provider findings into the generic evaluator outcome contract.</p>
     
   </article><article class="item" data-search="finding src/features/evaluation/utils/repositoryRuleSupport.ts Build one portable repository finding.">
     <h3>finding</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:37:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:59:1</code></p>
     <p>Build one portable repository finding.</p>
     
   </article><article class="item" data-search="hasDependency src/features/evaluation/utils/repositoryRuleSupport.ts Return whether the normalized package declares one direct dependency.">
     <h3>hasDependency</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:48:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:70:1</code></p>
     <p>Return whether the normalized package declares one direct dependency.</p>
     
   </article><article class="item" data-search="hasDependencyInSection src/features/evaluation/utils/repositoryRuleSupport.ts Return whether one dependency is declared in one exact package section.">
     <h3>hasDependencyInSection</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:53:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:75:1</code></p>
     <p>Return whether one dependency is declared in one exact package section.</p>
     
   </article><article class="item" data-search="hasPath src/features/evaluation/utils/repositoryRuleSupport.ts Return whether one exact path fact exists with the requested kind.">
     <h3>hasPath</h3>
-    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:64:1</code></p>
+    <p class="muted"><code>src/features/evaluation/utils/repositoryRuleSupport.ts:86:1</code></p>
     <p>Return whether one exact path fact exists with the requested kind.</p>
+    
+  </article>
+    </section>
+  </section><section id="view-src-features-metadata-domain-createrepositorymetadatapreflightruleset-ts" class="view" data-view="src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts" hidden>
+    <section class="panel">
+      <h2>src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts</h2>
+      <article class="item" data-search="createRepositoryMetadataPreflightRuleSet src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts Create the report-only repository metadata RuleSet for organization inventory preflight.">
+    <h3>createRepositoryMetadataPreflightRuleSet</h3>
+    <p class="muted"><code>src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts:7:1</code></p>
+    <p>Create the report-only repository metadata RuleSet for organization inventory preflight.</p>
+    
+  </article>
+    </section>
+  </section><section id="view-src-features-metadata-domain-evaluaterepositorymetadatapreflight-ts" class="view" data-view="src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts" hidden>
+    <section class="panel">
+      <h2>src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts</h2>
+      <article class="item" data-search="evaluateRepositoryMetadataPreflight src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts Evaluate advisory repository metadata facts without adding a global repository enforcement rule.">
+    <h3>evaluateRepositoryMetadataPreflight</h3>
+    <p class="muted"><code>src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts:12:1</code></p>
+    <p>Evaluate advisory repository metadata facts without adding a global repository enforcement rule.</p>
+    
+  </article>
+    </section>
+  </section><section id="view-src-features-metadata-domain-rules-createrepositorymetadatarules-ts" class="view" data-view="src/features/metadata/domain/rules/createRepositoryMetadataRules.ts" hidden>
+    <section class="panel">
+      <h2>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts</h2>
+      <article class="item" data-search="createRepositoryMetadataRules src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Create advisory repository-metadata rules for organization inventory and authoring.&#10;&#10;These rules are intentionally excluded from the default repository RuleSet. They can produce&#10;deterministic preflight findings but cannot become a global CI gate until Doctor explicitly&#10;selects them through its separately approved enforcement policy.">
+    <h3>createRepositoryMetadataRules</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:21:1</code></p>
+    <p>Create advisory repository-metadata rules for organization inventory and authoring.
+
+These rules are intentionally excluded from the default repository RuleSet. They can produce
+deterministic preflight findings but cannot become a global CI gate until Doctor explicitly
+selects them through its separately approved enforcement policy.</p>
+    
+  </article><article class="item" data-search="metadataDocumentRule src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Report a missing metadata document only for managed repositories eligible for this rollout.">
+    <h3>metadataDocumentRule</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:31:1</code></p>
+    <p>Report a missing metadata document only for managed repositories eligible for this rollout.</p>
+    
+  </article><article class="item" data-search="metadataLocationRule src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Report a document that was found outside its profile-owned canonical path.">
+    <h3>metadataLocationRule</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:52:1</code></p>
+    <p>Report a document that was found outside its profile-owned canonical path.</p>
+    
+  </article><article class="item" data-search="metadataTextRule src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Reject blank and placeholder authoring while keeping conditional metadata fields optional.">
+    <h3>metadataTextRule</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:76:1</code></p>
+    <p>Reject blank and placeholder authoring while keeping conditional metadata fields optional.</p>
+    
+  </article><article class="item" data-search="metadataImplementsRule src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Keep explicit implementation relations complete without conflating them with dependencies.">
+    <h3>metadataImplementsRule</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:101:1</code></p>
+    <p>Keep explicit implementation relations complete without conflating them with dependencies.</p>
+    
+  </article><article class="item" data-search="isApplicableMetadata src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Return whether metadata policy applies to this exact repository fact.">
+    <h3>isApplicableMetadata</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:127:1</code></p>
+    <p>Return whether metadata policy applies to this exact repository fact.</p>
+    
+  </article><article class="item" data-search="canonicalPath src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Resolve the canonical metadata path from the explicit repository profile.">
+    <h3>canonicalPath</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:134:1</code></p>
+    <p>Resolve the canonical metadata path from the explicit repository profile.</p>
+    
+  </article><article class="item" data-search="textEntries src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Return all required and conditionally authored textual metadata values with JSON-pointer paths.">
+    <h3>textEntries</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:141:1</code></p>
+    <p>Return all required and conditionally authored textual metadata values with JSON-pointer paths.</p>
+    
+  </article><article class="item" data-search="arrayTextEntries src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Return individual JSON-pointer entries for one optional array of authored text.">
+    <h3>arrayTextEntries</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:163:1</code></p>
+    <p>Return individual JSON-pointer entries for one optional array of authored text.</p>
+    
+  </article><article class="item" data-search="isMeaningfulText src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Return whether one authored string contains more than a common placeholder token.">
+    <h3>isMeaningfulText</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:171:1</code></p>
+    <p>Return whether one authored string contains more than a common placeholder token.</p>
+    
+  </article><article class="item" data-search="isImplementationReference src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Verify one explicit implementation reference without inspecting dependencies or consumers.">
+    <h3>isImplementationReference</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:177:1</code></p>
+    <p>Verify one explicit implementation reference without inspecting dependencies or consumers.</p>
+    
+  </article><article class="item" data-search="finding src/features/metadata/domain/rules/createRepositoryMetadataRules.ts Create one advisory preflight finding with serializable metadata evidence.">
+    <h3>finding</h3>
+    <p class="muted"><code>src/features/metadata/domain/rules/createRepositoryMetadataRules.ts:188:1</code></p>
+    <p>Create one advisory preflight finding with serializable metadata evidence.</p>
     
   </article>
     </section>
@@ -1299,6 +1718,66 @@
     <h3>canonicalScripts</h3>
     <p class="muted"><code>src/index.test.ts:139:1</code></p>
     <p>Build canonical required package scripts.</p>
+    
+  </article>
+    </section>
+  </section><section id="view-src-metadatapreflight-test-ts" class="view" data-view="src/metadataPreflight.test.ts" hidden>
+    <section class="panel">
+      <h2>src/metadataPreflight.test.ts</h2>
+      <article class="item" data-search="validMetadataScenario src/metadataPreflight.test.ts Verify valid metadata produces no preflight finding.">
+    <h3>validMetadataScenario</h3>
+    <p class="muted"><code>src/metadataPreflight.test.ts:34:1</code></p>
+    <p>Verify valid metadata produces no preflight finding.</p>
+    
+  </article><article class="item" data-search="missingMetadataScenario src/metadataPreflight.test.ts Verify missing eligible metadata produces only an advisory preflight finding.">
+    <h3>missingMetadataScenario</h3>
+    <p class="muted"><code>src/metadataPreflight.test.ts:42:1</code></p>
+    <p>Verify missing eligible metadata produces only an advisory preflight finding.</p>
+    
+  </article><article class="item" data-search="noGlobalGateScenario src/metadataPreflight.test.ts Verify the default repository evaluator remains free of metadata enforcement.">
+    <h3>noGlobalGateScenario</h3>
+    <p class="muted"><code>src/metadataPreflight.test.ts:58:1</code></p>
+    <p>Verify the default repository evaluator remains free of metadata enforcement.</p>
+    
+  </article><article class="item" data-search="invalidMetadataScenario src/metadataPreflight.test.ts Verify malformed authored values receive actionable advisory diagnostics.">
+    <h3>invalidMetadataScenario</h3>
+    <p class="muted"><code>src/metadataPreflight.test.ts:72:1</code></p>
+    <p>Verify malformed authored values receive actionable advisory diagnostics.</p>
+    
+  </article><article class="item" data-search="exemptionScenario src/metadataPreflight.test.ts Verify exempt repositories remain outside metadata authoring requirements.">
+    <h3>exemptionScenario</h3>
+    <p class="muted"><code>src/metadataPreflight.test.ts:100:1</code></p>
+    <p>Verify exempt repositories remain outside metadata authoring requirements.</p>
+    
+  </article><article class="item" data-search="contextWithMetadata src/metadataPreflight.test.ts Create the minimum repository facts needed to isolate metadata preflight behavior.">
+    <h3>contextWithMetadata</h3>
+    <p class="muted"><code>src/metadataPreflight.test.ts:112:1</code></p>
+    <p>Create the minimum repository facts needed to isolate metadata preflight behavior.</p>
+    
+  </article>
+    </section>
+  </section><section id="view-src-metadatapreflightpackedconsumer-test-ts" class="view" data-view="src/metadataPreflightPackedConsumer.test.ts" hidden>
+    <section class="panel">
+      <h2>src/metadataPreflightPackedConsumer.test.ts</h2>
+      <article class="item" data-search="writeConsumerFiles src/metadataPreflightPackedConsumer.test.ts Write an isolated JavaScript consumer that exercises the public metadata preflight export.">
+    <h3>writeConsumerFiles</h3>
+    <p class="muted"><code>src/metadataPreflightPackedConsumer.test.ts:29:1</code></p>
+    <p>Write an isolated JavaScript consumer that exercises the public metadata preflight export.</p>
+    
+  </article><article class="item" data-search="packAndInstall src/metadataPreflightPackedConsumer.test.ts Pack the current package and install it without using sibling source files.">
+    <h3>packAndInstall</h3>
+    <p class="muted"><code>src/metadataPreflightPackedConsumer.test.ts:45:1</code></p>
+    <p>Pack the current package and install it without using sibling source files.</p>
+    
+  </article><article class="item" data-search="verifyConsumer src/metadataPreflightPackedConsumer.test.ts Run the public consumer with both Node ESM and Bun.">
+    <h3>verifyConsumer</h3>
+    <p class="muted"><code>src/metadataPreflightPackedConsumer.test.ts:61:1</code></p>
+    <p>Run the public consumer with both Node ESM and Bun.</p>
+    
+  </article><article class="item" data-search="runCommand src/metadataPreflightPackedConsumer.test.ts Run one isolated command while preserving useful failure output.">
+    <h3>runCommand</h3>
+    <p class="muted"><code>src/metadataPreflightPackedConsumer.test.ts:67:1</code></p>
+    <p>Run one isolated command while preserving useful failure output.</p>
     
   </article>
     </section>

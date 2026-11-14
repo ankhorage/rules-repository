@@ -1,0 +1,26 @@
+sequenceDiagram
+  participant participant_createRepositoryMetadataPreflightRuleSet as createRepositoryMetadataPreflightRuleSet
+  participant participant_createRepositoryMetadataRules as createRepositoryMetadataRules
+  participant participant_createWarningRule as createWarningRule
+  participant participant_metadataDocumentRule as metadataDocumentRule
+  participant participant_metadataImplementsRule as metadataImplementsRule
+  participant participant_metadataLocationRule as metadataLocationRule
+  participant participant_metadataTextRule as metadataTextRule
+  participant_createRepositoryMetadataPreflightRuleSet->>participant_createRepositoryMetadataRules: createRepositoryMetadataRules()
+  participant_createRepositoryMetadataRules->>participant_metadataDocumentRule: metadataDocumentRule()
+  participant_metadataDocumentRule->>participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule-->>participant_metadataDocumentRule: return
+  participant_metadataDocumentRule-->>participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules->>participant_metadataLocationRule: metadataLocationRule()
+  participant_metadataLocationRule->>participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule-->>participant_metadataLocationRule: return
+  participant_metadataLocationRule-->>participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules->>participant_metadataTextRule: metadataTextRule()
+  participant_metadataTextRule->>participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule-->>participant_metadataTextRule: return
+  participant_metadataTextRule-->>participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules->>participant_metadataImplementsRule: metadataImplementsRule()
+  participant_metadataImplementsRule->>participant_createWarningRule: repositoryRuleSupport.createWarningRule()
+  participant_createWarningRule-->>participant_metadataImplementsRule: return
+  participant_metadataImplementsRule-->>participant_createRepositoryMetadataRules: return
+  participant_createRepositoryMetadataRules-->>participant_createRepositoryMetadataPreflightRuleSet: return

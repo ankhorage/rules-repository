@@ -11,8 +11,13 @@ graph LR
   module_src_features_evaluation_domain_rules_createRuntimeRules_ts["src/features/evaluation/domain/rules/createRuntimeRules.ts"]
   module_src_features_evaluation_domain_rules_createScriptRules_ts["src/features/evaluation/domain/rules/createScriptRules.ts"]
   module_src_features_evaluation_utils_repositoryRuleSupport_ts["src/features/evaluation/utils/repositoryRuleSupport.ts"]
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts["src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"]
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts["src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"]
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts["src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"]
   module_src_index_test_ts["src/index.test.ts"]
   module_src_index_ts["src/index.ts"]
+  module_src_metadataPreflight_test_ts["src/metadataPreflight.test.ts"]
+  module_src_metadataPreflightPackedConsumer_test_ts["src/metadataPreflightPackedConsumer.test.ts"]
   module_src_types_repository_ts["src/types/repository.ts"]
   module_src_atlasAuditConsumer_test_ts --> module_src_index_ts
   module_src_constants_repository_ts --> module_src_constants_repositoryRuleIds_ts
@@ -49,6 +54,18 @@ graph LR
   module_src_features_evaluation_domain_rules_createScriptRules_ts --> module_src_constants_repository_ts
   module_src_features_evaluation_domain_rules_createScriptRules_ts --> module_src_features_evaluation_utils_repositoryRuleSupport_ts
   module_src_features_evaluation_domain_rules_createScriptRules_ts --> module_src_types_repository_ts
+  module_src_features_evaluation_utils_repositoryRuleSupport_ts --> module_src_constants_repository_ts
   module_src_features_evaluation_utils_repositoryRuleSupport_ts --> module_src_types_repository_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --> module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts
+  module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts --> module_src_types_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --> module_src_constants_repository_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --> module_src_features_metadata_domain_createRepositoryMetadataPreflightRuleSet_ts
+  module_src_features_metadata_domain_evaluateRepositoryMetadataPreflight_ts --> module_src_types_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --> module_src_constants_repository_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --> module_src_constants_repositoryRuleIds_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --> module_src_features_evaluation_utils_repositoryRuleSupport_ts
+  module_src_features_metadata_domain_rules_createRepositoryMetadataRules_ts --> module_src_types_repository_ts
   module_src_index_test_ts --> module_src_index_ts
   module_src_index_test_ts --> module_src_types_repository_ts
+  module_src_metadataPreflight_test_ts --> module_src_index_ts
+  module_src_metadataPreflight_test_ts --> module_src_types_repository_ts
