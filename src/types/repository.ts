@@ -6,6 +6,18 @@ import type {
   RulesConfig,
 } from '@ankhorage/rules';
 
+/** One stable structural diagnostic from decoding a repository metadata document. */
+export interface RepositoryMetadataDecodeDiagnostic {
+  readonly code: string;
+  readonly message: string;
+  readonly path: string;
+}
+
+/** The discriminated result of decoding unknown parsed JSON into RepositoryMetadata v1. */
+export type RepositoryMetadataDecodeResult =
+  | { readonly document: RepositoryMetadata; readonly ok: true }
+  | { readonly diagnostics: readonly RepositoryMetadataDecodeDiagnostic[]; readonly ok: false };
+
 /*** One repository path fact independent of filesystem implementation. */
 export interface RepositoryPathFact {
   readonly kind: 'directory' | 'file';
