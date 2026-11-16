@@ -25,7 +25,7 @@ describe('packed metadata preflight consumer', () => {
   }, 30_000);
 });
 
-/*** Write an isolated JavaScript consumer that exercises the public metadata preflight export. */
+/*** Write an isolated JavaScript consumer that exercises the public metadata APIs. */
 function writeConsumerFiles(consumerDirectory: string): void {
   writeFileSync(
     join(consumerDirectory, 'package.json'),
@@ -34,7 +34,9 @@ function writeConsumerFiles(consumerDirectory: string): void {
   writeFileSync(
     join(consumerDirectory, 'consumer.mjs'),
     [
-      "import { evaluateRepositoryMetadataPreflight } from '@ankhorage/rules-repository';",
+      "import { decodeRepositoryMetadata, evaluateRepositoryMetadataPreflight } from '@ankhorage/rules-repository';",
+      "const decoded = decodeRepositoryMetadata({ schemaVersion: 1, kind: 'tooling', title: 'Consumer tooling', summary: 'Uses the public decoder.', purpose: 'Verify packed Node and Bun use.' });",
+      "if (!decoded.ok || decoded.document.kind !== 'tooling') throw new Error('metadata decoder was unavailable');",
       "const result = evaluateRepositoryMetadataPreflight({ cliCommands: [], imports: [], metadata: { eligibility: 'applicable', managed: true, profile: 'source' }, packageJson: { dependencies: [], exports: [], fields: {}, scripts: {} }, paths: [], workflowBunVersions: {} });",
       "if (!result.findings.some(({ ruleId }) => ruleId === 'repository.metadata.document.required')) throw new Error('metadata preflight was unavailable');",
     ].join('\n'),

@@ -8,9 +8,7 @@ import type {
   RepositoryRuleContext,
 } from '../../../../types/repository.js';
 import { repositoryRuleSupport } from '../../../evaluation/utils/repositoryRuleSupport.js';
-
-const PLACEHOLDER_TEXTS = new Set(['-', 'n/a', 'none', 'tbd', 'todo', 'unknown']);
-type RepositoryImplementationRef = NonNullable<RepositoryMetadata['implements']>[number];
+import { repositoryMetadataPolicy } from '../repositoryMetadataPolicy.js';
 
 /*** Create advisory repository-metadata rules for organization inventory and authoring.
  *
@@ -82,7 +80,7 @@ function metadataTextRule(): Rule<RepositoryRuleContext> {
       if (!isApplicableMetadata(metadata) || metadata.document === undefined) return [];
 
       return textEntries(metadata.document).flatMap(({ path, value }) =>
-        isMeaningfulText(value)
+        repositoryMetadataPolicy.isMeaningfulText(value)
           ? []
           : [
               finding(
@@ -108,14 +106,14 @@ function metadataImplementsRule(): Rule<RepositoryRuleContext> {
 
       return metadata.document.implements.flatMap((implementation, index) => {
         const path = canonicalPath(metadata) + '#/implements/' + index;
-        return isImplementationReference(implementation)
+        return repositoryMetadataPolicy.isImplementationReference(implementation)
           ? []
           : [
               finding(
                 REPOSITORY_RULE_IDS.metadataImplements,
                 'Implementation references require a package name and public-shaped optional subpath/interface ID.',
                 path,
-                implementation,
+                implementationReferenceEvidence(implementation),
               ),
             ];
       });
@@ -167,21 +165,17 @@ function arrayTextEntries(
   return values?.map((value, index) => ({ path: '#/' + property + '/' + index, value })) ?? [];
 }
 
-/*** Return whether one authored string contains more than a common placeholder token. */
-function isMeaningfulText(value: string): boolean {
-  const normalized = value.trim().toLowerCase();
-  return normalized.length > 0 && !PLACEHOLDER_TEXTS.has(normalized);
-}
-
-/*** Verify one explicit implementation reference without inspecting dependencies or consumers. */
-function isImplementationReference(
-  value: RepositoryImplementationRef,
-): value is RepositoryImplementationRef {
-  return (
-    isMeaningfulText(value.packageName) &&
-    (value.subpath === undefined || (value.subpath.startsWith('./') && value.subpath.length > 2)) &&
-    (value.interfaceId === undefined || isMeaningfulText(value.interfaceId))
-  );
+/*** Serialize one implementation reference as finding evidence without widening the Contracts type. */
+function implementationReferenceEvidence(
+  implementation: NonNullable<RepositoryMetadata['implements']>[number],
+): JsonValue {
+  return {
+    ...(implementation.interfaceId === undefined
+      ? {}
+      : { interfaceId: implementation.interfaceId }),
+    packageName: implementation.packageName,
+    ...(implementation.subpath === undefined ? {} : { subpath: implementation.subpath }),
+  };
 }
 
 /*** Create one advisory preflight finding with serializable metadata evidence. */
