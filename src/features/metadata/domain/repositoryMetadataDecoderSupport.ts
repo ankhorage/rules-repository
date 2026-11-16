@@ -52,7 +52,9 @@ function decodeOptionalStringArray(
   if (!Array.isArray(value)) {
     return failed(path, 'expected-array', 'Value must be an array of strings.');
   }
-  const decodedValues = value.map((entry, index) => decodeString(entry, path + '/' + index));
+  const decodedValues = decodeArrayElements(value, (entry, index) =>
+    decodeString(entry, path + '/' + index),
+  );
   const diagnostics = decodedValues.flatMap(
     ({ diagnostics: entryDiagnostics }) => entryDiagnostics,
   );
@@ -101,7 +103,7 @@ function decodeOptionalImplementationReferences(
   if (!Array.isArray(value)) {
     return failed('#/implements', 'expected-array', 'implements must be an array of objects.');
   }
-  const decodedReferences = value.map((entry, index) =>
+  const decodedReferences = decodeArrayElements(value, (entry, index) =>
     decodeImplementationReference(entry, index),
   );
   const diagnostics = decodedReferences.flatMap(
@@ -207,6 +209,20 @@ function decodeRequiredString(property: JsonProperty, path: string): DecodedValu
     : failed(path + '/packageName', 'missing-required-property', 'packageName is required.');
 }
 
+/*** Decode every indexed own data element so untrusted array holes and accessors cannot be skipped or executed. */
+function decodeArrayElements<Value>(
+  value: readonly unknown[],
+  decode: (entry: unknown, index: number) => DecodedValue<Value>,
+): readonly DecodedValue<Value>[] {
+  return Array.from({ length: value.length }, (_entry, index) => {
+    const property = readOwnProperty(value, String(index));
+    return decode(
+      property.exists && property.value !== undefined ? property.value : undefined,
+      index,
+    );
+  });
+}
+
 /*** Report unsupported object members so decoded output never silently expands Contracts v1. */
 function unexpectedProperties(
   value: JsonObject,
@@ -218,11 +234,16 @@ function unexpectedProperties(
     .sort()
     .map((property) =>
       diagnostic(
-        path + '/' + property,
+        path + '/' + escapeJsonPointerSegment(property),
         'unexpected-property',
         'Property is not supported by RepositoryMetadata v1.',
       ),
     );
+}
+
+/*** Escape one JSON Pointer reference token according to RFC 6901. */
+function escapeJsonPointerSegment(value: string): string {
+  return value.replaceAll('~', '~0').replaceAll('/', '~1');
 }
 
 /*** Return one failed decoding result. */
@@ -231,7 +252,7 @@ function failed<Value>(path: string, code: string, message: string): DecodedValu
 }
 
 /*** Read an own data property without invoking an untrusted accessor. */
-function readOwnProperty(value: JsonObject, property: string): JsonProperty {
+function readOwnProperty(value: object, property: string): JsonProperty {
   const descriptor = Object.getOwnPropertyDescriptor(value, property);
   return descriptor === undefined
     ? { exists: false, value: undefined }
