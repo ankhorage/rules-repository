@@ -14,7 +14,7 @@
     {
       "id": "npm",
       "label": "npm",
-      "value": "v0.4.1",
+      "value": "v0.5.0",
       "color": "cb3837"
     },
     {
@@ -231,6 +231,17 @@
       ]
     },
     {
+      "path": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "decodeRepositoryMetadata"
+      ]
+    },
+    {
       "path": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
       "isEntrypoint": false,
       "dependencies": [
@@ -243,12 +254,33 @@
       ]
     },
     {
+      "path": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/types/repository.ts"
+      ],
+      "exports": [
+        "DecodedValue",
+        "JsonObject",
+        "repositoryMetadataDecoderSupport"
+      ]
+    },
+    {
+      "path": "src/features/metadata/domain/repositoryMetadataPolicy.ts",
+      "isEntrypoint": false,
+      "dependencies": [],
+      "exports": [
+        "repositoryMetadataPolicy"
+      ]
+    },
+    {
       "path": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
       "isEntrypoint": false,
       "dependencies": [
         "src/constants/repository.ts",
         "src/constants/repositoryRuleIds.ts",
         "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "src/features/metadata/domain/repositoryMetadataPolicy.ts",
         "src/types/repository.ts"
       ],
       "exports": [
@@ -271,6 +303,7 @@
       "exports": [
         "createRepositoryMetadataPreflightRuleSet",
         "createRepositoryRuleSet",
+        "decodeRepositoryMetadata",
         "evaluateRepository",
         "evaluateRepositoryMetadataPreflight",
         "REPOSITORY_RULE_IDS",
@@ -280,6 +313,8 @@
         "RepositoryEvaluationOptions",
         "RepositoryEvaluationResult",
         "RepositoryImportFact",
+        "RepositoryMetadataDecodeDiagnostic",
+        "RepositoryMetadataDecodeResult",
         "RepositoryMetadataFact",
         "RepositoryPackageFact",
         "RepositoryPathFact",
@@ -302,6 +337,14 @@
       "exports": []
     },
     {
+      "path": "src/repositoryMetadataDecoder.test.ts",
+      "isEntrypoint": false,
+      "dependencies": [
+        "src/index.ts"
+      ],
+      "exports": []
+    },
+    {
       "path": "src/types/repository.ts",
       "isEntrypoint": false,
       "dependencies": [],
@@ -311,6 +354,8 @@
         "RepositoryEvaluationOptions",
         "RepositoryEvaluationResult",
         "RepositoryImportFact",
+        "RepositoryMetadataDecodeDiagnostic",
+        "RepositoryMetadataDecodeResult",
         "RepositoryMetadataFact",
         "RepositoryPackageFact",
         "RepositoryPathFact",
@@ -375,6 +420,44 @@
           "label": "() => RuleSet<RepositoryRuleContext>",
           "parameters": [],
           "returnType": "RuleSet<RepositoryRuleContext>",
+          "returnDescription": null
+        }
+      ],
+      "members": [],
+      "structuredRows": []
+    },
+    {
+      "name": "decodeRepositoryMetadata",
+      "title": null,
+      "description": "Decode untrusted parsed JSON into canonical RepositoryMetadata v1.",
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "function",
+      "modulePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 57,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [
+        "RepositoryMetadataDecodeResult"
+      ],
+      "signatures": [
+        {
+          "label": "(value: unknown) => RepositoryMetadataDecodeResult",
+          "parameters": [
+            {
+              "name": "value",
+              "type": "unknown",
+              "required": true,
+              "description": null
+            }
+          ],
+          "returnType": "RepositoryMetadataDecodeResult",
           "returnDescription": null
         }
       ],
@@ -526,7 +609,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 31,
+        "line": 43,
         "column": 1
       },
       "exportPaths": [
@@ -563,7 +646,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 16,
+        "line": 28,
         "column": 1
       },
       "exportPaths": [
@@ -607,7 +690,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 70,
+        "line": 82,
         "column": 1
       },
       "exportPaths": [
@@ -644,7 +727,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 77,
+        "line": 89,
         "column": 1
       },
       "exportPaths": [
@@ -666,7 +749,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 24,
+        "line": 36,
         "column": 1
       },
       "exportPaths": [
@@ -700,6 +783,72 @@
       "structuredRows": []
     },
     {
+      "name": "RepositoryMetadataDecodeDiagnostic",
+      "title": null,
+      "description": null,
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "type",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 10,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [
+        {
+          "name": "code",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "message",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        },
+        {
+          "name": "path",
+          "kind": "property",
+          "type": "string",
+          "required": true,
+          "description": null
+        }
+      ],
+      "structuredRows": []
+    },
+    {
+      "name": "RepositoryMetadataDecodeResult",
+      "title": null,
+      "description": null,
+      "isReadme": false,
+      "see": [],
+      "security": [],
+      "kind": "unknown",
+      "modulePath": "src/types/repository.ts",
+      "sourceLocation": {
+        "filePath": "src/types/repository.ts",
+        "line": 17,
+        "column": 1
+      },
+      "exportPaths": [
+        "src/index.ts"
+      ],
+      "relatedSymbols": [],
+      "signatures": [],
+      "members": [],
+      "structuredRows": []
+    },
+    {
       "name": "RepositoryMetadataFact",
       "title": null,
       "description": null,
@@ -710,7 +859,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 37,
+        "line": 49,
         "column": 1
       },
       "exportPaths": [
@@ -768,7 +917,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 51,
+        "line": 63,
         "column": 1
       },
       "exportPaths": [
@@ -828,7 +977,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 10,
+        "line": 22,
         "column": 1
       },
       "exportPaths": [
@@ -865,7 +1014,7 @@
       "modulePath": "src/types/repository.ts",
       "sourceLocation": {
         "filePath": "src/types/repository.ts",
-        "line": 60,
+        "line": 72,
         "column": 1
       },
       "exportPaths": [
@@ -1435,6 +1584,116 @@
       }
     },
     {
+      "name": "decodeRepositoryMetadata",
+      "description": "Decode untrusted parsed JSON into canonical RepositoryMetadata v1.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 57,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeDocument",
+      "description": "Decode the document after proving its root is a plain JSON object.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 65,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeRequiredDocumentFields",
+      "description": "Decode mandatory Contract-v1 properties.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 85,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeOptionalDocumentFields",
+      "description": "Decode optional Contract-v1 properties without making any of them mandatory.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 133,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeOptionalTextFields",
+      "description": "Decode all optional text-array fields while preserving their authored presence.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 166,
+        "column": 1
+      }
+    },
+    {
+      "name": "optionalDocumentValue",
+      "description": "Assemble decoded optional fields while preserving their authored presence.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 188,
+        "column": 1
+      }
+    },
+    {
+      "name": "requiredString",
+      "description": "Decode one required authored string.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 212,
+        "column": 1
+      }
+    },
+    {
+      "name": "optionalString",
+      "description": "Decode one optional authored string without treating absence as empty text.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 224,
+        "column": 1
+      }
+    },
+    {
+      "name": "isMetadataKind",
+      "description": "Narrow unknown text to one supported RepositoryMetadata v1 kind.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 232,
+        "column": 1
+      }
+    },
+    {
+      "name": "diagnostic",
+      "description": "Construct one stable serializable structural diagnostic.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "line": 237,
+        "column": 1
+      }
+    },
+    {
       "name": "evaluateRepositoryMetadataPreflight",
       "description": "Evaluate advisory repository metadata facts without adding a global repository enforcement rule.",
       "see": [],
@@ -1446,13 +1705,200 @@
       }
     },
     {
+      "name": "decodeString",
+      "description": "Decode one string while preserving valid empty strings for policy evaluation.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 39,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeOptionalStringArray",
+      "description": "Decode one optional array of authored strings.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 46,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeOptionalArchitecture",
+      "description": "Decode the optional architectural facts object.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 68,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeOptionalImplementationReferences",
+      "description": "Decode explicit implementation relationships without consulting host state.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 98,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeImplementationReference",
+      "description": "Decode one implementation reference shape while leaving authored-value policy to preflight.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 121,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeOptionalConstraints",
+      "description": "Decode the optional evidence-backed constraints object.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 154,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeOptionalString",
+      "description": "Decode one optional authored string without treating absence as an empty value.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 199,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeRequiredString",
+      "description": "Decode one required implementation reference package name.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 206,
+        "column": 1
+      }
+    },
+    {
+      "name": "decodeArrayElements",
+      "description": "Decode every indexed own data element so untrusted array holes and accessors cannot be skipped or executed.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 213,
+        "column": 1
+      }
+    },
+    {
+      "name": "unexpectedProperties",
+      "description": "Report unsupported object members so decoded output never silently expands Contracts v1.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 227,
+        "column": 1
+      }
+    },
+    {
+      "name": "escapeJsonPointerSegment",
+      "description": "Escape one JSON Pointer reference token according to RFC 6901.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 245,
+        "column": 1
+      }
+    },
+    {
+      "name": "failed",
+      "description": "Return one failed decoding result.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 250,
+        "column": 1
+      }
+    },
+    {
+      "name": "readOwnProperty",
+      "description": "Read an own data property without invoking an untrusted accessor.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 255,
+        "column": 1
+      }
+    },
+    {
+      "name": "diagnostic",
+      "description": "Construct one stable serializable structural diagnostic.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 266,
+        "column": 1
+      }
+    },
+    {
+      "name": "isJsonObject",
+      "description": "Accept only non-array plain objects from parsed JSON.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "line": 275,
+        "column": 1
+      }
+    },
+    {
+      "name": "isMeaningfulText",
+      "description": "Return whether one authored string contains more than a common placeholder token.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataPolicy.ts",
+        "line": 12,
+        "column": 1
+      }
+    },
+    {
+      "name": "isImplementationReference",
+      "description": "Verify one explicit implementation reference without inspecting dependencies or consumers.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/metadata/domain/repositoryMetadataPolicy.ts",
+        "line": 18,
+        "column": 1
+      }
+    },
+    {
       "name": "createRepositoryMetadataRules",
       "description": "Create advisory repository-metadata rules for organization inventory and authoring.\n\nThese rules are intentionally excluded from the default repository RuleSet. They can produce\ndeterministic preflight findings but cannot become a global CI gate until Doctor explicitly\nselects them through its separately approved enforcement policy.",
       "see": [],
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 21,
+        "line": 19,
         "column": 1
       }
     },
@@ -1463,7 +1909,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 31,
+        "line": 29,
         "column": 1
       }
     },
@@ -1474,7 +1920,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 52,
+        "line": 50,
         "column": 1
       }
     },
@@ -1485,7 +1931,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 76,
+        "line": 74,
         "column": 1
       }
     },
@@ -1496,7 +1942,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 101,
+        "line": 99,
         "column": 1
       }
     },
@@ -1507,7 +1953,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 127,
+        "line": 125,
         "column": 1
       }
     },
@@ -1518,7 +1964,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 134,
+        "line": 132,
         "column": 1
       }
     },
@@ -1529,7 +1975,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 141,
+        "line": 139,
         "column": 1
       }
     },
@@ -1540,29 +1986,18 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 163,
+        "line": 161,
         "column": 1
       }
     },
     {
-      "name": "isMeaningfulText",
-      "description": "Return whether one authored string contains more than a common placeholder token.",
+      "name": "implementationReferenceEvidence",
+      "description": "Serialize one implementation reference as finding evidence without widening the Contracts type.",
       "see": [],
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 171,
-        "column": 1
-      }
-    },
-    {
-      "name": "isImplementationReference",
-      "description": "Verify one explicit implementation reference without inspecting dependencies or consumers.",
-      "see": [],
-      "security": [],
-      "sourceLocation": {
-        "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 177,
+        "line": 169,
         "column": 1
       }
     },
@@ -1573,7 +2008,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
-        "line": 188,
+        "line": 182,
         "column": 1
       }
     },
@@ -1711,7 +2146,7 @@
     },
     {
       "name": "writeConsumerFiles",
-      "description": "Write an isolated JavaScript consumer that exercises the public metadata preflight export.",
+      "description": "Write an isolated JavaScript consumer that exercises the public metadata APIs.",
       "see": [],
       "security": [],
       "sourceLocation": {
@@ -1727,7 +2162,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/metadataPreflightPackedConsumer.test.ts",
-        "line": 45,
+        "line": 47,
         "column": 1
       }
     },
@@ -1738,7 +2173,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/metadataPreflightPackedConsumer.test.ts",
-        "line": 61,
+        "line": 63,
         "column": 1
       }
     },
@@ -1749,7 +2184,29 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/metadataPreflightPackedConsumer.test.ts",
-        "line": 67,
+        "line": 69,
+        "column": 1
+      }
+    },
+    {
+      "name": "documentFor",
+      "description": "Construct valid Contract-v1 metadata with every optional field represented.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/repositoryMetadataDecoder.test.ts",
+        "line": 282,
+        "column": 1
+      }
+    },
+    {
+      "name": "accessorArray",
+      "description": "Construct an array whose first element is an accessor to prove structural decoding never executes it.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/repositoryMetadataDecoder.test.ts",
+        "line": 312,
         "column": 1
       }
     }
@@ -1769,6 +2226,14 @@
       "sourcePath": "src/features/evaluation/domain/createRepositoryRuleSet.ts",
       "symbolName": "createRepositoryRuleSet",
       "description": "Create canonical repository, package, runtime, dependency, and CLI compliance rules.",
+      "isReadme": false
+    },
+    {
+      "kind": "export",
+      "name": "decodeRepositoryMetadata",
+      "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+      "symbolName": "decodeRepositoryMetadata",
+      "description": "Decode untrusted parsed JSON into canonical RepositoryMetadata v1.",
       "isReadme": false
     },
     {
@@ -1832,6 +2297,11 @@
       },
       {
         "fromPath": "src/index.ts",
+        "toPath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "sourcePath": "src/index.ts"
+      },
+      {
+        "fromPath": "src/index.ts",
         "toPath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
         "sourcePath": "src/index.ts"
       },
@@ -1849,6 +2319,11 @@
         "fromPath": "src/metadataPreflight.test.ts",
         "toPath": "src/types/repository.ts",
         "sourcePath": "src/metadataPreflight.test.ts"
+      },
+      {
+        "fromPath": "src/repositoryMetadataDecoder.test.ts",
+        "toPath": "src/index.ts",
+        "sourcePath": "src/repositoryMetadataDecoder.test.ts"
       },
       {
         "fromPath": "src/constants/repository.ts",
@@ -1926,6 +2401,16 @@
         "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
       },
       {
+        "fromPath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+        "toPath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
         "fromPath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts",
         "toPath": "src/constants/repository.ts",
         "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
@@ -1941,6 +2426,11 @@
         "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
       },
       {
+        "fromPath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "toPath": "src/types/repository.ts",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
         "fromPath": "src/features/evaluation/domain/rules/createCliRules.ts",
         "toPath": "src/constants/repository.ts",
         "sourcePath": "src/features/evaluation/domain/rules/createCliRules.ts"
@@ -2073,6 +2563,11 @@
       {
         "fromPath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
         "toPath": "src/features/evaluation/utils/repositoryRuleSupport.ts",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromPath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toPath": "src/features/metadata/domain/repositoryMetadataPolicy.ts",
         "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
       }
     ],
@@ -2480,6 +2975,42 @@
         "sourcePath": "src/metadataPreflightPackedConsumer.test.ts"
       },
       {
+        "fromSymbol": "src/repositoryMetadataDecoder.test.ts",
+        "toSymbol": "test",
+        "callExpression": "test",
+        "sourcePath": "src/repositoryMetadataDecoder.test.ts"
+      },
+      {
+        "fromSymbol": "src/repositoryMetadataDecoder.test.ts",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/repositoryMetadataDecoder.test.ts"
+      },
+      {
+        "fromSymbol": "src/repositoryMetadataDecoder.test.ts",
+        "toSymbol": "decodeRepositoryMetadata",
+        "callExpression": "decodeRepositoryMetadata",
+        "sourcePath": "src/repositoryMetadataDecoder.test.ts"
+      },
+      {
+        "fromSymbol": "src/repositoryMetadataDecoder.test.ts",
+        "toSymbol": "documentFor",
+        "callExpression": "documentFor",
+        "sourcePath": "src/repositoryMetadataDecoder.test.ts"
+      },
+      {
+        "fromSymbol": "src/repositoryMetadataDecoder.test.ts",
+        "toSymbol": "accessorArray",
+        "callExpression": "accessorArray",
+        "sourcePath": "src/repositoryMetadataDecoder.test.ts"
+      },
+      {
+        "fromSymbol": "src/repositoryMetadataDecoder.test.ts",
+        "toSymbol": "evaluateRepositoryMetadataPreflight",
+        "callExpression": "evaluateRepositoryMetadataPreflight",
+        "sourcePath": "src/repositoryMetadataDecoder.test.ts"
+      },
+      {
         "fromSymbol": "createRepositoryRuleSet",
         "toSymbol": "createRuntimeRules",
         "callExpression": "createRuntimeRules",
@@ -2558,6 +3089,150 @@
         "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
       },
       {
+        "fromSymbol": "decodeRepositoryMetadata",
+        "toSymbol": "decodeDocument",
+        "callExpression": "decodeDocument",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeDocument",
+        "toSymbol": "isJsonObject",
+        "callExpression": "repositoryMetadataDecoderSupport.isJsonObject",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeDocument",
+        "toSymbol": "failed",
+        "callExpression": "repositoryMetadataDecoderSupport.failed",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeDocument",
+        "toSymbol": "decodeRequiredDocumentFields",
+        "callExpression": "decodeRequiredDocumentFields",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeDocument",
+        "toSymbol": "decodeOptionalDocumentFields",
+        "callExpression": "decodeOptionalDocumentFields",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeDocument",
+        "toSymbol": "unexpectedProperties",
+        "callExpression": "repositoryMetadataDecoderSupport.unexpectedProperties",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeRequiredDocumentFields",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "repositoryMetadataDecoderSupport.readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeRequiredDocumentFields",
+        "toSymbol": "isMetadataKind",
+        "callExpression": "isMetadataKind",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeRequiredDocumentFields",
+        "toSymbol": "requiredString",
+        "callExpression": "requiredString",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeRequiredDocumentFields",
+        "toSymbol": "diagnostic",
+        "callExpression": "diagnostic",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalDocumentFields",
+        "toSymbol": "optionalString",
+        "callExpression": "optionalString",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalDocumentFields",
+        "toSymbol": "decodeOptionalTextFields",
+        "callExpression": "decodeOptionalTextFields",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalDocumentFields",
+        "toSymbol": "decodeOptionalArchitecture",
+        "callExpression": "repositoryMetadataDecoderSupport.decodeOptionalArchitecture",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalDocumentFields",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "repositoryMetadataDecoderSupport.readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalDocumentFields",
+        "toSymbol": "decodeOptionalImplementationReferences",
+        "callExpression": "repositoryMetadataDecoderSupport.decodeOptionalImplementationReferences",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalDocumentFields",
+        "toSymbol": "decodeOptionalConstraints",
+        "callExpression": "repositoryMetadataDecoderSupport.decodeOptionalConstraints",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalDocumentFields",
+        "toSymbol": "optionalDocumentValue",
+        "callExpression": "optionalDocumentValue",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalTextFields",
+        "toSymbol": "decodeOptionalStringArray",
+        "callExpression": "repositoryMetadataDecoderSupport.decodeOptionalStringArray",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalTextFields",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "repositoryMetadataDecoderSupport.readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "requiredString",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "repositoryMetadataDecoderSupport.readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "requiredString",
+        "toSymbol": "decodeString",
+        "callExpression": "repositoryMetadataDecoderSupport.decodeString",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "requiredString",
+        "toSymbol": "failed",
+        "callExpression": "repositoryMetadataDecoderSupport.failed",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "optionalString",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "repositoryMetadataDecoderSupport.readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
+        "fromSymbol": "optionalString",
+        "toSymbol": "decodeString",
+        "callExpression": "repositoryMetadataDecoderSupport.decodeString",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
+      },
+      {
         "fromSymbol": "evaluateRepositoryMetadataPreflight",
         "toSymbol": "createRepositoryMetadataPreflightRuleSet",
         "callExpression": "createRepositoryMetadataPreflightRuleSet",
@@ -2580,6 +3255,204 @@
         "toSymbol": "createRuleRegistry",
         "callExpression": "createRuleRegistry",
         "sourcePath": "src/features/metadata/domain/evaluateRepositoryMetadataPreflight.ts"
+      },
+      {
+        "fromSymbol": "decodeString",
+        "toSymbol": "failed",
+        "callExpression": "failed",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalStringArray",
+        "toSymbol": "failed",
+        "callExpression": "failed",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalStringArray",
+        "toSymbol": "decodeArrayElements",
+        "callExpression": "decodeArrayElements",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "toSymbol": "decodeString",
+        "callExpression": "decodeString",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalArchitecture",
+        "toSymbol": "isJsonObject",
+        "callExpression": "isJsonObject",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalArchitecture",
+        "toSymbol": "failed",
+        "callExpression": "failed",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalArchitecture",
+        "toSymbol": "decodeOptionalString",
+        "callExpression": "decodeOptionalString",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalArchitecture",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalArchitecture",
+        "toSymbol": "decodeOptionalStringArray",
+        "callExpression": "decodeOptionalStringArray",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalArchitecture",
+        "toSymbol": "unexpectedProperties",
+        "callExpression": "unexpectedProperties",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalImplementationReferences",
+        "toSymbol": "failed",
+        "callExpression": "failed",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalImplementationReferences",
+        "toSymbol": "decodeArrayElements",
+        "callExpression": "decodeArrayElements",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "toSymbol": "decodeImplementationReference",
+        "callExpression": "decodeImplementationReference",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeImplementationReference",
+        "toSymbol": "isJsonObject",
+        "callExpression": "isJsonObject",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeImplementationReference",
+        "toSymbol": "failed",
+        "callExpression": "failed",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeImplementationReference",
+        "toSymbol": "decodeRequiredString",
+        "callExpression": "decodeRequiredString",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeImplementationReference",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeImplementationReference",
+        "toSymbol": "decodeOptionalString",
+        "callExpression": "decodeOptionalString",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeImplementationReference",
+        "toSymbol": "unexpectedProperties",
+        "callExpression": "unexpectedProperties",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalConstraints",
+        "toSymbol": "isJsonObject",
+        "callExpression": "isJsonObject",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalConstraints",
+        "toSymbol": "failed",
+        "callExpression": "failed",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalConstraints",
+        "toSymbol": "decodeOptionalStringArray",
+        "callExpression": "decodeOptionalStringArray",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalConstraints",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalConstraints",
+        "toSymbol": "unexpectedProperties",
+        "callExpression": "unexpectedProperties",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeOptionalString",
+        "toSymbol": "decodeString",
+        "callExpression": "decodeString",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeRequiredString",
+        "toSymbol": "decodeString",
+        "callExpression": "decodeString",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "decodeRequiredString",
+        "toSymbol": "failed",
+        "callExpression": "failed",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "toSymbol": "readOwnProperty",
+        "callExpression": "readOwnProperty",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "toSymbol": "decode",
+        "callExpression": "decode",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "toSymbol": "diagnostic",
+        "callExpression": "diagnostic",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts",
+        "toSymbol": "escapeJsonPointerSegment",
+        "callExpression": "escapeJsonPointerSegment",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "failed",
+        "toSymbol": "diagnostic",
+        "callExpression": "diagnostic",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataDecoderSupport.ts"
+      },
+      {
+        "fromSymbol": "isImplementationReference",
+        "toSymbol": "isMeaningfulText",
+        "callExpression": "isMeaningfulText",
+        "sourcePath": "src/features/metadata/domain/repositoryMetadataPolicy.ts"
       },
       {
         "fromSymbol": "createCliRules",
@@ -2992,7 +3865,7 @@
       {
         "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
         "toSymbol": "isMeaningfulText",
-        "callExpression": "isMeaningfulText",
+        "callExpression": "repositoryMetadataPolicy.isMeaningfulText",
         "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
       },
       {
@@ -3004,19 +3877,19 @@
       {
         "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
         "toSymbol": "isImplementationReference",
-        "callExpression": "isImplementationReference",
+        "callExpression": "repositoryMetadataPolicy.isImplementationReference",
+        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts",
+        "toSymbol": "implementationReferenceEvidence",
+        "callExpression": "implementationReferenceEvidence",
         "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
       },
       {
         "fromSymbol": "textEntries",
         "toSymbol": "arrayTextEntries",
         "callExpression": "arrayTextEntries",
-        "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
-      },
-      {
-        "fromSymbol": "isImplementationReference",
-        "toSymbol": "isMeaningfulText",
-        "callExpression": "isMeaningfulText",
         "sourcePath": "src/features/metadata/domain/rules/createRepositoryMetadataRules.ts"
       },
       {
@@ -3061,6 +3934,11 @@
         "fromSymbol": "createRepositoryMetadataPreflightRuleSet",
         "toType": "RuleSet",
         "sourcePath": "src/features/metadata/domain/createRepositoryMetadataPreflightRuleSet.ts"
+      },
+      {
+        "fromSymbol": "decodeRepositoryMetadata",
+        "toType": "RepositoryMetadataDecodeResult",
+        "sourcePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts"
       },
       {
         "fromSymbol": "evaluateRepositoryMetadataPreflight",

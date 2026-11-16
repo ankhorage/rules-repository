@@ -62,6 +62,44 @@
     "structuredRows": []
   },
   {
+    "name": "decodeRepositoryMetadata",
+    "title": null,
+    "description": "Decode untrusted parsed JSON into canonical RepositoryMetadata v1.",
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "function",
+    "modulePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+    "sourceLocation": {
+      "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
+      "line": 57,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [
+      "RepositoryMetadataDecodeResult"
+    ],
+    "signatures": [
+      {
+        "label": "(value: unknown) => RepositoryMetadataDecodeResult",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "unknown",
+            "required": true,
+            "description": null
+          }
+        ],
+        "returnType": "RepositoryMetadataDecodeResult",
+        "returnDescription": null
+      }
+    ],
+    "members": [],
+    "structuredRows": []
+  },
+  {
     "name": "evaluateRepository",
     "title": null,
     "description": "Evaluate normalized repository facts through the canonical repository RuleSet.",
@@ -206,7 +244,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 31,
+      "line": 43,
       "column": 1
     },
     "exportPaths": [
@@ -243,7 +281,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 16,
+      "line": 28,
       "column": 1
     },
     "exportPaths": [
@@ -287,7 +325,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 70,
+      "line": 82,
       "column": 1
     },
     "exportPaths": [
@@ -324,7 +362,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 77,
+      "line": 89,
       "column": 1
     },
     "exportPaths": [
@@ -346,7 +384,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 24,
+      "line": 36,
       "column": 1
     },
     "exportPaths": [
@@ -380,6 +418,72 @@
     "structuredRows": []
   },
   {
+    "name": "RepositoryMetadataDecodeDiagnostic",
+    "title": null,
+    "description": null,
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "type",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 10,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [
+      {
+        "name": "code",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "message",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      },
+      {
+        "name": "path",
+        "kind": "property",
+        "type": "string",
+        "required": true,
+        "description": null
+      }
+    ],
+    "structuredRows": []
+  },
+  {
+    "name": "RepositoryMetadataDecodeResult",
+    "title": null,
+    "description": null,
+    "isReadme": false,
+    "see": [],
+    "security": [],
+    "kind": "unknown",
+    "modulePath": "src/types/repository.ts",
+    "sourceLocation": {
+      "filePath": "src/types/repository.ts",
+      "line": 17,
+      "column": 1
+    },
+    "exportPaths": [
+      "src/index.ts"
+    ],
+    "relatedSymbols": [],
+    "signatures": [],
+    "members": [],
+    "structuredRows": []
+  },
+  {
     "name": "RepositoryMetadataFact",
     "title": null,
     "description": null,
@@ -390,7 +494,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 37,
+      "line": 49,
       "column": 1
     },
     "exportPaths": [
@@ -448,7 +552,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 51,
+      "line": 63,
       "column": 1
     },
     "exportPaths": [
@@ -508,7 +612,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 10,
+      "line": 22,
       "column": 1
     },
     "exportPaths": [
@@ -545,7 +649,7 @@
     "modulePath": "src/types/repository.ts",
     "sourceLocation": {
       "filePath": "src/types/repository.ts",
-      "line": 60,
+      "line": 72,
       "column": 1
     },
     "exportPaths": [

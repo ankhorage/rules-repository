@@ -26,6 +26,20 @@ Create canonical repository, package, runtime, dependency, and CLI compliance ru
 - `() => RuleSet<RepositoryRuleContext>`
   - returns: `RuleSet<RepositoryRuleContext>`
 
+## decodeRepositoryMetadata
+
+Kind: `function`
+Module: `src/features/metadata/domain/decodeRepositoryMetadata.ts`
+Source: `src/features/metadata/domain/decodeRepositoryMetadata.ts:57:1`
+
+Decode untrusted parsed JSON into canonical RepositoryMetadata v1.
+
+### Signatures
+
+- `(value: unknown) => RepositoryMetadataDecodeResult`
+  - value: `unknown`
+  - returns: `RepositoryMetadataDecodeResult`
+
 ## evaluateRepository
 
 Kind: `function`
@@ -76,7 +90,7 @@ Canonical repository metadata used by validators and managed-file renderers.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:31:1`
+Source: `src/types/repository.ts:43:1`
 
 One normalized public CLI command and its implementation source.
 
@@ -91,7 +105,7 @@ One normalized public CLI command and its implementation source.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:16:1`
+Source: `src/types/repository.ts:28:1`
 
 One package dependency fact normalized across dependency sections.
 
@@ -107,7 +121,7 @@ One package dependency fact normalized across dependency sections.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:70:1`
+Source: `src/types/repository.ts:82:1`
 
 Optional generic Rules configuration applied to repository rules.
 
@@ -122,7 +136,7 @@ Optional generic Rules configuration applied to repository rules.
 
 Kind: `unknown`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:77:1`
+Source: `src/types/repository.ts:89:1`
 
 Generic Rules result produced by repository evaluation.
 
@@ -130,7 +144,7 @@ Generic Rules result produced by repository evaluation.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:24:1`
+Source: `src/types/repository.ts:36:1`
 
 One source import fact used for current-only package-boundary checks.
 
@@ -142,11 +156,31 @@ One source import fact used for current-only package-boundary checks.
 | path | property | `string` | yes |  |
 | specifier | property | `string` | yes |  |
 
+## RepositoryMetadataDecodeDiagnostic
+
+Kind: `type`
+Module: `src/types/repository.ts`
+Source: `src/types/repository.ts:10:1`
+
+### Members
+
+| Name | Kind | Type | Required | Description |
+| --- | --- | --- | --- | --- |
+| code | property | `string` | yes |  |
+| message | property | `string` | yes |  |
+| path | property | `string` | yes |  |
+
+## RepositoryMetadataDecodeResult
+
+Kind: `unknown`
+Module: `src/types/repository.ts`
+Source: `src/types/repository.ts:17:1`
+
 ## RepositoryMetadataFact
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:37:1`
+Source: `src/types/repository.ts:49:1`
 
 ### Members
 
@@ -162,7 +196,7 @@ Source: `src/types/repository.ts:37:1`
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:51:1`
+Source: `src/types/repository.ts:63:1`
 
 Portable package.json facts required by repository rules.
 
@@ -180,7 +214,7 @@ Portable package.json facts required by repository rules.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:10:1`
+Source: `src/types/repository.ts:22:1`
 
 One repository path fact independent of filesystem implementation.
 
@@ -195,7 +229,7 @@ One repository path fact independent of filesystem implementation.
 
 Kind: `type`
 Module: `src/types/repository.ts`
-Source: `src/types/repository.ts:60:1`
+Source: `src/types/repository.ts:72:1`
 
 Portable repository facts evaluated independently of filesystem and parser technology.
 

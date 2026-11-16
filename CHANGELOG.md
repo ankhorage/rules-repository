@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.5.0
+
+### Minor Changes
+
+- bca23f1: Expose a deterministic runtime decoder for untrusted RepositoryMetadata v1 JSON.
+
 ## 0.4.1
 
 ### Patch Changes
