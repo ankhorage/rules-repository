@@ -62,6 +62,7 @@
     "prepack": "bun run build",
     "lint": "ankhorage-eslint . --max-warnings=0",
     "lint:fix": "ankhorage-eslint . --fix --max-warnings=0",
+    "metadata:rollout": "bun scripts/metadata-rollout.ts",
     "format": "ankhorage-prettier --write .",
     "format:check": "ankhorage-prettier --check .",
     "knip:check": "ankhorage-knip"
