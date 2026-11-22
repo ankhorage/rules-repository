@@ -304,7 +304,7 @@ jobs:
       { name: 'validate', status: 'completed', conclusion: 'success' },
       { name: 'container-acceptance', status: 'completed', conclusion: 'success' },
     ];
-    expect(successfulCheckEvidence(successfulChecks)).toBeNull();
+    expect(successfulCheckEvidence(successfulChecks, ci)).toBeNull();
     const unavailable = branchProtectionEvidence({
       code: 1,
       output: 'HTTP 403: Resource not accessible by integration',
@@ -318,22 +318,29 @@ jobs:
         defaultSha: 'head',
         currentSha: 'head',
         policy: unavailable,
-        checkState: successfulCheckEvidence(successfulChecks),
+        checkState: successfulCheckEvidence(successfulChecks, ci),
       }),
-    ).toContain('POLICY_UNAVAILABLE_OR_UNPROTECTED');
+    ).toBeNull();
     const unprotected = branchProtectionEvidence({
       code: 1,
       output: 'HTTP 404: Branch not protected',
     });
     expect(unprotected).toEqual({ kind: 'unprotected' });
+  });
+
+  test('rejects a failed or absent declared CI job even when an unrelated check succeeds', () => {
+    const multiJobCi = `${ci}\n  acceptance:\n    runs-on: ubuntu-latest\n    steps:\n      - run: bun run test:acceptance\n`;
+    const checks = [
+      { name: 'validate', status: 'completed', conclusion: 'success' },
+      { name: 'other-workflow', status: 'completed', conclusion: 'success' },
+    ];
+    expect(successfulCheckEvidence(checks, multiJobCi)).toContain('Required check');
     expect(
-      classifyDefaultBranchEvidence({
-        defaultSha: 'head',
-        currentSha: 'head',
-        policy: unprotected,
-        checkState: null,
-      }),
-    ).toContain('POLICY_UNAVAILABLE_OR_UNPROTECTED');
+      successfulCheckEvidence(
+        [...checks, { name: 'validate', status: 'completed', conclusion: 'failure' }],
+        multiJobCi,
+      ),
+    ).toContain('did not succeed');
   });
 
   test('fails missing checks and stale evidence while accepting protected default-head success', () => {
