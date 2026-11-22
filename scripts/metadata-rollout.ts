@@ -1160,7 +1160,7 @@ const run = async (
 ): Promise<CommandResult> => {
   const child = Bun.spawn([command, ...arguments_], {
     cwd,
-    env: environment === undefined ? undefined : { ...process.env, ...environment },
+    env: childEnvironment(environment),
     stdout: 'pipe',
     stderr: 'pipe',
   });
@@ -1171,6 +1171,11 @@ const run = async (
   ]);
   return { code, output: `${stdout}${stderr}` };
 };
+
+/*** Materialize the current rollout environment because Bun.spawn does not observe later process.env mutations by default. */
+export const childEnvironment = (
+  environment?: Record<string, string>,
+): Record<string, string | undefined> => ({ ...process.env, ...environment });
 const writeReport = async (
   directory: string,
   report: { readonly entries: readonly ReportEntry[] } & Record<string, unknown>,
