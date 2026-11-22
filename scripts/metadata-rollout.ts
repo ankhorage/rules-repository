@@ -400,12 +400,7 @@ const workflowContractLoss = (
   if (previous === null || next === null)
     return `Prewrite guard cannot parse ${label} workflow contract.`;
   const missing = previous.filter((requirement) => !next.includes(requirement));
-  if (
-    missing.length > 0 &&
-    provenPublishedBaseline &&
-    (label === 'release' || label === 'CI')
-  )
-    return null;
+  if (missing.length > 0 && provenPublishedBaseline) return null;
   return missing.length === 0
     ? null
     : `Prewrite guard rejected weakened ${label} contract: ${missing.join(', ')}.`;
