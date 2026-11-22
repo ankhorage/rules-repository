@@ -21,6 +21,7 @@ type ReportEntry = {
   readonly changes: readonly string[];
   readonly validations: readonly string[];
   readonly prUrl: string | null;
+  readonly planning: 'SAFE' | 'BLOCKED' | 'NOT_APPLICABLE';
   readonly reason: string;
 };
 
@@ -71,7 +72,7 @@ const main = async (): Promise<void> => {
     );
   }
   const entries = await mapBounded(applicable, 8, (repository) =>
-    inspectRepository(repository, options, devtoolsVersion),
+    inspectRepositorySafely(repository, options, devtoolsVersion),
   );
   const excluded = repositories
     .filter((repository) => APPROVED_EXCLUSIONS.has(repository.name))
@@ -142,6 +143,7 @@ const inspectRepository = async (
     changes: [] as string[],
     validations: [] as string[],
     prUrl: null as string | null,
+    planning: 'NOT_APPLICABLE' as const,
   };
   if (OWNER_HELD.has(repository.name))
     return {
@@ -172,14 +174,6 @@ const inspectRepository = async (
       status: 'BLOCKED',
       reason: 'No root .github/workflows/ci.yml; profile-specific CI evidence is required.',
     };
-  if (options.mode === 'dry-run')
-    return {
-      ...base,
-      status: 'PENDING',
-      validations: ['default-branch inventory only; no checkout or write'],
-      reason:
-        'Default branch lacks effective metadata enforcement; --apply will load local instructions before any write.',
-    };
   if (options.mode === 'verify')
     return {
       ...base,
@@ -187,6 +181,31 @@ const inspectRepository = async (
       reason: 'Default branch lacks effective metadata enforcement.',
     };
   return synchronizeSafely(repository, base, options, devtoolsVersion, workflow);
+};
+
+/*** Convert an unexpected repository-local fault into durable evidence while the remaining wave continues. */
+export const inspectRepositorySafely = async (
+  repository: Repository,
+  options: ReturnType<typeof parseOptions>,
+  devtoolsVersion: string,
+): Promise<ReportEntry> => {
+  try {
+    return await inspectRepository(repository, options, devtoolsVersion);
+  } catch (error) {
+    return {
+      repository: repository.name,
+      status: 'FAILED',
+      defaultBranch: repository.default_branch,
+      defaultSha: null,
+      metadata: 'unverified',
+      ci: 'unverified',
+      changes: [],
+      validations: [],
+      prUrl: null,
+      planning: 'BLOCKED',
+      reason: `Unexpected isolated repository failure: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
 };
 
 const synchronizeSafely = async (
@@ -218,16 +237,10 @@ const synchronizeSafely = async (
         entry,
         'Not a standard Bun/TypeScript repository; profile-specific evidence is required.',
       );
-    if (options.mode === 'dry-run')
-      return {
-        ...entry,
-        status: 'PENDING',
-        validations: [...instructions],
-        reason:
-          'Dry-run is read-only; --apply will synchronize the published Devtools dependency and lockfile in an isolated candidate before previewing managed changes.',
-      };
-    const resume = await prepareCandidateBranch(checkout, repository);
-    if (resume !== null) return blocked(entry, resume);
+    if (options.mode !== 'dry-run') {
+      const resume = await prepareCandidateBranch(checkout, repository);
+      if (resume !== null) return blocked(entry, resume);
+    }
     const dependency = await synchronizePublishedDevtools(checkout, devtoolsVersion);
     if (dependency !== null) return blocked(entry, dependency);
     const preview = await runDevtools(checkout, true);
@@ -260,6 +273,20 @@ const synchronizeSafely = async (
       changed,
     );
     if (guard !== null) return blocked(entry, guard);
+    if (options.mode === 'dry-run')
+      return {
+        ...entry,
+        status: 'PENDING',
+        planning: 'SAFE',
+        changes: changed,
+        validations: [
+          ...instructions,
+          'published Devtools local workflow preview',
+          'managed contract preserved',
+        ],
+        reason:
+          'SAFE plan only: isolated candidate was discarded without a branch, commit, push, or PR.',
+      };
     const validations = await validateCheckout(checkout);
     if (validations.some((validation) => validation.startsWith('FAILED:')))
       return {
@@ -281,6 +308,7 @@ const synchronizeSafely = async (
     return {
       ...entry,
       status: prUrl === null ? 'FAILED' : 'PENDING',
+      planning: prUrl === null ? 'BLOCKED' : 'SAFE',
       changes: changed,
       validations: [...validations, 'second Devtools dry-run idempotent'],
       prUrl,
@@ -318,17 +346,73 @@ const workflowContractLoss = (before: string, after: string, label: string): str
   if (previous === null || next === null)
     return `Prewrite guard cannot parse ${label} workflow contract.`;
   const missing = previous.filter((requirement) => !next.includes(requirement));
+  if (missing.length > 0 && label === 'CI' && isCanonicalManagedCiUpgrade(before, after))
+    return null;
   return missing.length === 0
     ? null
     : `Prewrite guard rejected weakened ${label} contract: ${missing.join(', ')}.`;
 };
 
-/*** Extract every preservation-relevant GitHub Actions field into canonical semantic requirements. */
-export const workflowContract = (workflow: string): string[] | null => {
+/*** Recognize only a whole, standard managed CI template migration; bespoke acceptance never qualifies. */
+export const isCanonicalManagedCiUpgrade = (before: string, after: string): boolean => {
+  const previous = parseWorkflow(before);
+  const next = parseWorkflow(after);
+  if (previous === null || next === null) return false;
+  const previousJobs = Object.entries(previous.jobs);
+  const nextJobs = Object.entries(next.jobs);
+  if (previousJobs.length !== 1 || nextJobs.length !== 1) return false;
+  const [previousName, previousJob] = previousJobs[0];
+  const [nextName, nextJob] = nextJobs[0];
+  if (previousName !== 'validate' || nextName !== 'validate') return false;
+  if (hasBespokeJobContract(previousJob) || hasBespokeJobContract(nextJob)) return false;
+  const priorSteps = workflowSteps(previousJob);
+  const nextSteps = workflowSteps(nextJob);
+  if (priorSteps === null || nextSteps === null) return false;
+  const standardStep = (step: Record<string, unknown>): boolean => {
+    const name = typeof step.name === 'string' ? step.name : '';
+    const uses = typeof step.uses === 'string' ? step.uses : '';
+    const run = typeof step.run === 'string' ? step.run : '';
+    return (
+      uses === 'actions/checkout@v4' ||
+      uses === 'oven-sh/setup-bun@v2' ||
+      uses === 'actions/setup-node@v4' ||
+      /^(Checkout repository|Setup Bun|Setup Node|Install dependencies|Reject package version rollback|Run build|Validate opted-in APM owner release|Validate Ankhorage repository|Run lint|Run format check|Run Knip|Run tests|Run typecheck|Check changesets)$/u.test(
+        name,
+      ) ||
+      /^(bun install --frozen-lockfile|bun run (build|lint|format:check|knip:check|test|typecheck))$/mu.test(
+        run,
+      )
+    );
+  };
+  return (
+    priorSteps.every(standardStep) &&
+    nextSteps.every(standardStep) &&
+    nextSteps.some(
+      (step) =>
+        typeof step.run === 'string' &&
+        /@ankhorage\/doctor@[^\s]+\s+validate\s+\.\s+--enforce-repository-metadata/u.test(step.run),
+    )
+  );
+};
+
+const parseWorkflow = (workflow: string): Record<string, unknown> | null => {
   const document = parseDocument(workflow, { uniqueKeys: true });
   if (document.errors.length > 0 || document.contents === null) return null;
   const source = document.toJS({ mapAsMap: false });
-  if (!isRecord(source)) return null;
+  return isRecord(source) && isRecord(source.jobs) ? source : null;
+};
+const workflowSteps = (job: unknown): Record<string, unknown>[] | null =>
+  isRecord(job) && Array.isArray(job.steps) && job.steps.every(isRecord) ? job.steps : null;
+const hasBespokeJobContract = (job: unknown): boolean =>
+  !isRecord(job) ||
+  ['container', 'services', 'env', 'permissions', 'strategy', 'defaults'].some(
+    (field) => job[field] !== undefined,
+  );
+
+/*** Extract every preservation-relevant GitHub Actions field into canonical semantic requirements. */
+export const workflowContract = (workflow: string): string[] | null => {
+  const source = parseWorkflow(workflow);
+  if (source === null) return null;
   const requirements = [
     `trigger:${canonical(source.on ?? source.true)}`,
     `workflow-env:${canonical(source.env)}`,
@@ -385,7 +469,16 @@ const validateCheckout = async (checkout: string): Promise<string[]> => {
   const manifest = JSON.parse(await readFile(join(checkout, 'package.json'), 'utf8')) as {
     scripts?: Record<string, string>;
   };
-  const doctor = await run('bunx', ['@ankhorage/doctor', 'validate', '.'], checkout);
+  const doctorVersion = await doctorVersionFromInstalledDevtools(checkout);
+  if (doctorVersion === null)
+    return [
+      'FAILED: installed published Devtools workflow does not declare an enforcing Doctor release',
+    ];
+  const doctor = await run(
+    'bunx',
+    [`@ankhorage/doctor@${doctorVersion}`, 'validate', '.', '--enforce-repository-metadata'],
+    checkout,
+  );
   if (doctor.code !== 0)
     return [`FAILED: published Doctor metadata validation: ${firstLine(doctor.output)}`];
   const candidates = [
@@ -397,7 +490,13 @@ const validateCheckout = async (checkout: string): Promise<string[]> => {
     'format:check',
     'test',
   ].filter((name) => manifest.scripts?.[name] !== undefined);
-  const validations = ['passed: published Doctor metadata validation'];
+  const workflowStatus = await runDevtoolsStatus(checkout);
+  if (workflowStatus.code !== 0)
+    return [`FAILED: installed Devtools workflow status: ${firstLine(workflowStatus.output)}`];
+  const validations = [
+    `passed: published Doctor ${doctorVersion} metadata validation with enforcement`,
+    'passed: installed Devtools workflow status',
+  ];
   for (const script of candidates) {
     const result = await run('bun', ['run', script], checkout);
     validations.push(
@@ -408,6 +507,36 @@ const validateCheckout = async (checkout: string): Promise<string[]> => {
     if (result.code !== 0) break;
   }
   return validations;
+};
+
+/*** Read the exact published Doctor pin rendered by the installed Devtools workflow, never a comment. */
+export const doctorVersionFromWorkflow = (workflow: string): string | null => {
+  const parsed = parseWorkflow(workflow);
+  if (parsed === null) return null;
+  const jobs = Object.values(parsed.jobs ?? {});
+  for (const job of jobs) {
+    const steps = workflowSteps(job) ?? [];
+    for (const step of steps) {
+      if (typeof step.run !== 'string') continue;
+      const match =
+        /@ankhorage\/doctor@([^\s]+)\s+validate\s+\.\s+--enforce-repository-metadata/u.exec(
+          step.run,
+        );
+      if (match !== null) return match[1];
+    }
+  }
+  return null;
+};
+const doctorVersionFromInstalledDevtools = async (checkout: string): Promise<string | null> => {
+  const rendered = await run(
+    'bun',
+    [
+      '-e',
+      "import { readFile } from 'node:fs/promises'; process.stdout.write(await readFile('node_modules/@ankhorage/devtools/dist/tools/workflows/files/ci.yml', 'utf8'))",
+    ],
+    checkout,
+  );
+  return rendered.code === 0 ? doctorVersionFromWorkflow(rendered.output) : null;
 };
 
 const commitAndCreatePr = async (
@@ -494,7 +623,7 @@ const commitAndCreatePr = async (
   return created.code === 0 ? created.output.trim() : null;
 };
 
-const prepareCandidateBranch = async (
+export const prepareCandidateBranch = async (
   checkout: string,
   repository: Repository,
 ): Promise<string | null> => {
@@ -517,9 +646,15 @@ const prepareCandidateBranch = async (
     ['merge-base', '--is-ancestor', `origin/${repository.default_branch}`, 'HEAD'],
     checkout,
   );
-  return related.code === 0
+  if (related.code === 0) return null;
+  const merge = await run(
+    'git',
+    ['merge', '--no-edit', `origin/${repository.default_branch}`],
+    checkout,
+  );
+  return merge.code === 0
     ? null
-    : 'Existing rollout branch is not based on the current default branch; refusing to overwrite unrelated work.';
+    : 'Existing rollout branch cannot merge the advanced default branch cleanly; refusing to overwrite or force-push.';
 };
 
 const existingPrUrl = async (
@@ -561,10 +696,21 @@ export const loadInstructions = async (checkout: string): Promise<readonly strin
   const missing = required.filter((path) => !skills.includes(path));
   if (missing.length > 0)
     return `Repository declares unavailable mandatory skills: ${missing.join(', ')}.`;
+  const automatable = new Set([
+    '.agents/skills/ankhorage-coding-rules/SKILL.md',
+    '.agents/skills/ankhorage-project-structure/SKILL.md',
+    '.agents/skills/hexagonal-architecture/SKILL.md',
+  ]);
+  const unsupported = skills.filter((path) => !automatable.has(path));
+  if (unsupported.length > 0)
+    return `Repository has local instructions requiring human review before automation: ${unsupported.join(', ')}.`;
   const contents = await Promise.all(skills.map((path) => readFile(join(checkout, path), 'utf8')));
   if (contents.some((content) => content.trim().length === 0))
     return 'Repository contains an empty local skill; automation cannot apply it safely.';
-  return ['read AGENTS.md', ...skills.map((path) => `read ${path}`)];
+  return [
+    'applied AGENTS.md through isolated checkout, no force push, and managed-path-only guard',
+    ...skills.map((path) => `applied supported local policy ${path}`),
+  ];
 };
 
 const findSkillFiles = async (
@@ -642,6 +788,12 @@ const runDevtools = (checkout: string, dryRun: boolean): Promise<CommandResult> 
     ['ankhorage-repository', 'workflows', 'sync', '.', ...(dryRun ? ['--dry-run'] : [])],
     checkout,
   );
+const runDevtoolsStatus = (checkout: string): Promise<CommandResult> =>
+  run(
+    'bunx',
+    ['--bun', '--no-install', 'ankhorage-repository', 'workflows', 'status', '.'],
+    checkout,
+  );
 const parseManagedPaths = (output: string): string[] =>
   [...output.matchAll(/^[+↻✓-]\s+([^\s]+)\s+(?:would |created|updated|unchanged|removed)/gm)].map(
     (match) => match[1],
@@ -716,26 +868,47 @@ const verifyDefaultBranchEvidence = async (
   defaultSha: string | null,
 ): Promise<string | null> => {
   if (defaultSha === null) return 'Default branch HEAD is unavailable.';
+  const required = await run('gh', [
+    'api',
+    `repos/${ORGANIZATION}/${repository.name}/branches/${repository.default_branch}/protection/required_status_checks`,
+    '--jq',
+    '.contexts',
+  ]);
+  if (required.code !== 0)
+    return `Required-check policy is unavailable: ${firstLine(required.output)}`;
+  let requiredNames: unknown;
+  try {
+    requiredNames = JSON.parse(required.output);
+  } catch {
+    return 'Required-check policy returned malformed evidence.';
+  }
+  if (
+    !Array.isArray(requiredNames) ||
+    requiredNames.length === 0 ||
+    !requiredNames.every((name) => typeof name === 'string')
+  )
+    return 'Required-check identities are unavailable or empty.';
   const checks = await run('gh', [
     'api',
+    '--paginate',
+    '--slurp',
     `repos/${ORGANIZATION}/${repository.name}/commits/${defaultSha}/check-runs`,
-    '--jq',
-    '[.check_runs[] | select(.status == "completed") | .conclusion] | @json',
   ]);
   if (checks.code !== 0)
     return `Default-head GitHub checks are unavailable: ${firstLine(checks.output)}`;
-  let conclusions: unknown;
+  let pages: unknown;
   try {
-    conclusions = JSON.parse(checks.output);
+    pages = JSON.parse(checks.output);
   } catch {
     return 'Default-head GitHub checks returned malformed evidence.';
   }
-  if (
-    !Array.isArray(conclusions) ||
-    conclusions.length === 0 ||
-    conclusions.some((value) => value !== 'success')
-  )
-    return 'Default-head GitHub checks are missing or not all successful.';
+  const checkEvidence = Array.isArray(pages)
+    ? pages.flatMap((page) =>
+        isRecord(page) && Array.isArray(page.check_runs) ? page.check_runs : [],
+      )
+    : [];
+  const checkState = requiredCheckState(checkEvidence, requiredNames);
+  if (checkState !== null) return checkState;
   const checkout = await mkdtemp(join(tmpdir(), `metadata-verify-${repository.name}-`));
   try {
     const clone = await run('git', [
@@ -749,13 +922,60 @@ const verifyDefaultBranchEvidence = async (
     ]);
     if (clone.code !== 0)
       return `Default branch Doctor checkout failed: ${firstLine(clone.output)}`;
-    const doctor = await run('bunx', ['@ankhorage/doctor', 'validate', '.'], checkout);
-    return doctor.code === 0
+    const workflow = await readFile(join(checkout, '.github/workflows/ci.yml'), 'utf8').catch(
+      () => null,
+    );
+    const doctorVersion = workflow === null ? null : doctorVersionFromWorkflow(workflow);
+    if (doctorVersion === null) return 'Default branch has no effective enforcing Doctor step.';
+    const doctor = await run(
+      'bunx',
+      [`@ankhorage/doctor@${doctorVersion}`, 'validate', '.', '--enforce-repository-metadata'],
+      checkout,
+    );
+    if (doctor.code !== 0)
+      return `Published Doctor rejected metadata with enforcement: ${firstLine(doctor.output)}`;
+    const currentSha = await defaultBranchSha(repository);
+    return currentSha === defaultSha
       ? null
-      : `Published Doctor rejected metadata: ${firstLine(doctor.output)}`;
+      : 'Default branch advanced during verification; evidence is stale.';
   } finally {
     await rm(checkout, { recursive: true, force: true });
   }
+};
+
+/*** Select the newest attempt for each required identity and reject pending, skipped, failed, or absent gates. */
+export const requiredCheckState = (
+  checks: readonly unknown[],
+  requiredNames: readonly string[],
+): string | null => {
+  const latest = new Map<string, Record<string, unknown>>();
+  for (const value of checks) {
+    if (!isRecord(value) || typeof value.name !== 'string' || !requiredNames.includes(value.name))
+      continue;
+    const prior = latest.get(value.name);
+    const timestamp =
+      typeof value.completed_at === 'string'
+        ? value.completed_at
+        : typeof value.started_at === 'string'
+          ? value.started_at
+          : '';
+    const priorTimestamp =
+      typeof prior?.completed_at === 'string'
+        ? prior.completed_at
+        : typeof prior?.started_at === 'string'
+          ? prior.started_at
+          : '';
+    if (prior === undefined || timestamp >= priorTimestamp) latest.set(value.name, value);
+  }
+  for (const name of requiredNames) {
+    const check = latest.get(name);
+    if (check === undefined) return `Required check ${name} is absent on the verified SHA.`;
+    if (check.status !== 'completed')
+      return `Required check ${name} is pending on the verified SHA.`;
+    if (check.conclusion !== 'success')
+      return `Required check ${name} did not succeed on the verified SHA.`;
+  }
+  return null;
 };
 const exemptEntry = (repository: Repository): ReportEntry => ({
   repository: repository.name,
@@ -767,11 +987,13 @@ const exemptEntry = (repository: Repository): ReportEntry => ({
   changes: [],
   validations: [],
   prUrl: null,
+  planning: 'NOT_APPLICABLE',
   reason: 'Approved inventory exclusion.',
 });
 const blocked = (entry: Omit<ReportEntry, 'status' | 'reason'>, reason: string): ReportEntry => ({
   ...entry,
   status: 'BLOCKED',
+  planning: 'BLOCKED',
   reason,
 });
 const firstLine = (text: string): string => text.trim().split('\n')[0] || 'no diagnostic output';
@@ -828,12 +1050,12 @@ const writeReport = async (
   const rows = report.entries
     .map(
       (entry) =>
-        `| ${entry.repository} | ${entry.status} | ${entry.ci} | ${entry.metadata} | ${entry.prUrl ?? ''} | ${entry.reason.replaceAll('|', '\\|')} |`,
+        `| ${entry.repository} | ${entry.status} | ${entry.planning} | ${entry.ci} | ${entry.metadata} | ${entry.prUrl ?? ''} | ${entry.reason.replaceAll('|', '\\|')} |`,
     )
     .join('\n');
   await writeFile(
     join(directory, `metadata-rollout-${stamp}.md`),
-    `# Metadata rollout report\n\n| Repository | Status | CI | Metadata | PR | Reason |\n| --- | --- | --- | --- | --- | --- |\n${rows}\n`,
+    `# Metadata rollout report\n\n| Repository | Status | Plan | CI | Metadata | PR | Reason |\n| --- | --- | --- | --- | --- | --- | --- |\n${rows}\n`,
   );
 };
 
