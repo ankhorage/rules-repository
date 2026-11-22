@@ -427,8 +427,14 @@ export const isCanonicalManagedCiUpgrade = (before: string, after: string): bool
   const previousRoot = { ...previous, jobs: undefined };
   const nextRoot = { ...next, jobs: undefined };
   if (canonical(previousRoot) !== canonical(nextRoot)) return false;
-  const previousJobWithoutSteps = { ...(previousJob as Record<string, unknown>), steps: undefined };
-  const nextJobWithoutSteps = { ...(nextJob as Record<string, unknown>), steps: undefined };
+  const previousJobWithoutSteps = {
+    ...(previousJob as Record<string, unknown>),
+    steps: undefined,
+  };
+  const nextJobWithoutSteps = {
+    ...(nextJob as Record<string, unknown>),
+    steps: undefined,
+  };
   if (canonical(previousJobWithoutSteps) !== canonical(nextJobWithoutSteps)) return false;
   const priorSteps = workflowSteps(previousJob);
   const nextSteps = workflowSteps(nextJob);
