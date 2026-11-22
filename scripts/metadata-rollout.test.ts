@@ -220,19 +220,17 @@ jobs:
     ]) {
       expect(unchangedPublishedManagedWorkflow({ ci: custom, release }, published)).not.toBeNull();
       expect(
-        guardWorkflowContract(
-          { ci: custom, release },
-          { ci: canonical, release },
-          ['.github/workflows/ci.yml'],
-        ),
+        guardWorkflowContract({ ci: custom, release }, { ci: canonical, release }, [
+          '.github/workflows/ci.yml',
+        ]),
       ).toContain('weakened CI');
     }
     expect(unchangedPublishedManagedWorkflow(published, published)).toBeNull();
     expect(
-      unchangedPublishedManagedWorkflow(
-        published,
-        { ci: legacy, release: release.replace('bun run release', 'bun run bad-release') },
-      ),
+      unchangedPublishedManagedWorkflow(published, {
+        ci: legacy,
+        release: release.replace('bun run release', 'bun run bad-release'),
+      }),
     ).toContain('release workflow differs');
     expect(isCanonicalManagedCiUpgrade(legacy, canonical)).toBe(true);
     expect(isCanonicalManagedCiUpgrade(alteredTrigger, canonical)).toBe(false);
