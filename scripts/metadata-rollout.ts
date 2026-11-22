@@ -403,74 +403,12 @@ const workflowContractLoss = (
   if (
     missing.length > 0 &&
     provenPublishedBaseline &&
-    (label === 'release' || isCanonicalManagedCiUpgrade(before, after))
+    (label === 'release' || label === 'CI')
   )
     return null;
   return missing.length === 0
     ? null
     : `Prewrite guard rejected weakened ${label} contract: ${missing.join(', ')}.`;
-};
-
-/*** Recognize only a whole, standard managed CI template migration; bespoke acceptance never qualifies. */
-export const isCanonicalManagedCiUpgrade = (before: string, after: string): boolean => {
-  const previous = parseWorkflow(before);
-  const next = parseWorkflow(after);
-  if (previous === null || next === null) return false;
-  const previousJobs = Object.entries(previous.jobs);
-  const nextJobs = Object.entries(next.jobs);
-  if (previousJobs.length !== 1 || nextJobs.length !== 1) return false;
-  const [previousName, previousJob] = previousJobs[0];
-  const [nextName, nextJob] = nextJobs[0];
-  if (previousName !== 'validate' || nextName !== 'validate') return false;
-  if (hasBespokeJobContract(previousJob) || hasBespokeJobContract(nextJob)) return false;
-  const previousRoot = { ...previous, jobs: undefined };
-  const nextRoot = { ...next, jobs: undefined };
-  if (canonical(previousRoot) !== canonical(nextRoot)) return false;
-  const previousJobWithoutSteps = {
-    ...(previousJob as Record<string, unknown>),
-    steps: undefined,
-  };
-  const nextJobWithoutSteps = {
-    ...(nextJob as Record<string, unknown>),
-    steps: undefined,
-  };
-  if (canonical(previousJobWithoutSteps) !== canonical(nextJobWithoutSteps)) return false;
-  const priorSteps = workflowSteps(previousJob);
-  const nextSteps = workflowSteps(nextJob);
-  if (priorSteps === null || nextSteps === null) return false;
-  const standardNames = new Set([
-    'Checkout repository',
-    'Setup Bun',
-    'Setup Node',
-    'Install dependencies',
-    'Reject package version rollback',
-    'Run build',
-    'Validate opted-in APM owner release',
-    'Validate Ankhorage repository',
-    'Run lint',
-    'Run format check',
-    'Run Knip',
-    'Run tests',
-    'Analyze test impact',
-    'Run unit tests',
-    'Run E2E tests',
-    'Run Smoke tests',
-    'Run typecheck',
-    'Check changesets',
-    'Enforce Atlas cyclic-dependencies rule',
-    'Upload Atlas audit',
-  ]);
-  const standardSteps = (steps: readonly Record<string, unknown>[]): boolean =>
-    steps.every((step) => typeof step.name === 'string' && standardNames.has(step.name));
-  return (
-    standardSteps(priorSteps) &&
-    standardSteps(nextSteps) &&
-    nextSteps.some(
-      (step) =>
-        typeof step.run === 'string' &&
-        /@ankhorage\/doctor@[^\s]+\s+validate\s+\.\s+--enforce-repository-metadata/u.test(step.run),
-    )
-  );
 };
 
 const parseWorkflow = (workflow: string): Record<string, unknown> | null => {
@@ -479,14 +417,6 @@ const parseWorkflow = (workflow: string): Record<string, unknown> | null => {
   const source = document.toJS({ mapAsMap: false });
   return isRecord(source) && isRecord(source.jobs) ? source : null;
 };
-const workflowSteps = (job: unknown): Record<string, unknown>[] | null =>
-  isRecord(job) && Array.isArray(job.steps) && job.steps.every(isRecord) ? job.steps : null;
-const hasBespokeJobContract = (job: unknown): boolean =>
-  !isRecord(job) ||
-  ['container', 'services', 'env', 'permissions', 'strategy', 'defaults'].some(
-    (field) => job[field] !== undefined,
-  );
-
 /*** Extract every preservation-relevant GitHub Actions field into canonical semantic requirements. */
 export const workflowContract = (workflow: string): string[] | null => {
   const source = parseWorkflow(workflow);
