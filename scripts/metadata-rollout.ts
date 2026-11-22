@@ -180,7 +180,7 @@ const inspectRepository = async (
       status: 'PENDING',
       reason: 'Default branch lacks effective metadata enforcement.',
     };
-  return synchronizeSafely(repository, base, options, devtoolsVersion, workflow);
+  return synchronizeSafely(repository, base, options, devtoolsVersion);
 };
 
 /*** Convert an unexpected repository-local fault into durable evidence while the remaining wave continues. */
@@ -213,7 +213,6 @@ const synchronizeSafely = async (
   entry: Omit<ReportEntry, 'status' | 'reason'>,
   options: ReturnType<typeof parseOptions>,
   devtoolsVersion: string,
-  originalWorkflow: string,
 ): Promise<ReportEntry> => {
   const checkout = await mkdtemp(join(tmpdir(), `metadata-rollout-${repository.name}-`));
   try {
@@ -241,6 +240,16 @@ const synchronizeSafely = async (
       const resume = await prepareCandidateBranch(checkout, repository);
       if (resume !== null) return blocked(entry, resume);
     }
+    const existingWorkflow = await readFile(join(checkout, '.github/workflows/ci.yml'), 'utf8');
+    const existingRelease = await readFile(
+      join(checkout, '.github/workflows/release.yml'),
+      'utf8',
+    ).catch(() => null);
+    const provenance = await verifyPublishedManagedBaseline(checkout, {
+      ci: existingWorkflow,
+      release: existingRelease,
+    });
+    if (provenance !== null) return blocked(entry, provenance);
     const dependency = await synchronizePublishedDevtools(checkout, devtoolsVersion);
     if (dependency !== null) return blocked(entry, dependency);
     const preview = await runDevtools(checkout, true);
@@ -266,11 +275,11 @@ const synchronizeSafely = async (
       join(checkout, '.github/workflows/release.yml'),
       'utf8',
     );
-    const originalRelease = await githubFile(repository, '.github/workflows/release.yml');
     const guard = guardWorkflowContract(
-      { ci: originalWorkflow, release: originalRelease },
+      { ci: existingWorkflow, release: existingRelease },
       { ci: generatedWorkflow, release: generatedRelease },
       changed,
+      true,
     );
     if (guard !== null) return blocked(entry, guard);
     if (options.mode === 'dry-run')
@@ -322,31 +331,81 @@ const synchronizeSafely = async (
   }
 };
 
+/*** Prove the existing CI and release workflows match their installed published Devtools version. */
+export const unchangedPublishedManagedWorkflow = (
+  original: { readonly ci: string; readonly release: string | null },
+  regenerated: { readonly ci: string; readonly release: string | null },
+): string | null => {
+  if (original.ci !== regenerated.ci)
+    return 'Existing CI differs from installed published Devtools; human review required.';
+  if (original.release !== regenerated.release)
+    return 'Existing release workflow differs from installed published Devtools; human review required.';
+  return null;
+};
+
+const verifyPublishedManagedBaseline = async (
+  checkout: string,
+  original: { readonly ci: string; readonly release: string | null },
+): Promise<string | null> => {
+  const install = await run('bun', ['install', '--frozen-lockfile'], checkout);
+  if (install.code !== 0)
+    return `Original frozen install failed: ${firstLine(install.output)}`;
+  const sync = await run(
+    'bunx',
+    ['--bun', '--no-install', 'ankhorage-repository', 'workflows', 'sync', '.'],
+    checkout,
+  );
+  if (sync.code !== 0)
+    return `Original published Devtools workflow sync unavailable: ${firstLine(sync.output)}`;
+  const regenerated = {
+    ci: await readFile(join(checkout, '.github/workflows/ci.yml'), 'utf8'),
+    release: await readFile(join(checkout, '.github/workflows/release.yml'), 'utf8').catch(
+      () => null,
+    ),
+  };
+  const provenance = unchangedPublishedManagedWorkflow(original, regenerated);
+  if (provenance !== null) return provenance;
+  const diff = await changedPaths(checkout);
+  return diff.length === 0
+    ? null
+    : `Original Devtools sync changed tracked or untracked files: ${diff.join(', ')}.`;
+};
+
 export const guardWorkflowContract = (
   before: { readonly ci: string; readonly release: string | null },
   after: { readonly ci: string; readonly release: string | null },
   changed: readonly string[],
+  provenPublishedBaseline = false,
 ): string | null => {
   if (!after.ci.includes('--enforce-repository-metadata'))
     return 'Generated CI lacks explicit --enforce-repository-metadata enforcement.';
   if (changed.some((path) => !MANAGED_PATHS.has(path)))
     return `Sync changed non-managed paths: ${changed.filter((path) => !MANAGED_PATHS.has(path)).join(', ')}.`;
-  const ciLoss = workflowContractLoss(before.ci, after.ci, 'CI');
+  const ciLoss = workflowContractLoss(before.ci, after.ci, 'CI', provenPublishedBaseline);
   if (ciLoss !== null) return ciLoss;
   if (before.release === null || after.release === null)
     return before.release === after.release
       ? null
       : 'Prewrite guard cannot prove release workflow preservation.';
-  return workflowContractLoss(before.release, after.release, 'release');
+  return workflowContractLoss(before.release, after.release, 'release', provenPublishedBaseline);
 };
 
-const workflowContractLoss = (before: string, after: string, label: string): string | null => {
+const workflowContractLoss = (
+  before: string,
+  after: string,
+  label: string,
+  provenPublishedBaseline: boolean,
+): string | null => {
   const previous = workflowContract(before);
   const next = workflowContract(after);
   if (previous === null || next === null)
     return `Prewrite guard cannot parse ${label} workflow contract.`;
   const missing = previous.filter((requirement) => !next.includes(requirement));
-  if (missing.length > 0 && label === 'CI' && isCanonicalManagedCiUpgrade(before, after))
+  if (
+    missing.length > 0 &&
+    provenPublishedBaseline &&
+    (label === 'release' || isCanonicalManagedCiUpgrade(before, after))
+  )
     return null;
   return missing.length === 0
     ? null
@@ -365,28 +424,42 @@ export const isCanonicalManagedCiUpgrade = (before: string, after: string): bool
   const [nextName, nextJob] = nextJobs[0];
   if (previousName !== 'validate' || nextName !== 'validate') return false;
   if (hasBespokeJobContract(previousJob) || hasBespokeJobContract(nextJob)) return false;
+  const previousRoot = { ...previous, jobs: undefined };
+  const nextRoot = { ...next, jobs: undefined };
+  if (canonical(previousRoot) !== canonical(nextRoot)) return false;
+  const previousJobWithoutSteps = { ...(previousJob as Record<string, unknown>), steps: undefined };
+  const nextJobWithoutSteps = { ...(nextJob as Record<string, unknown>), steps: undefined };
+  if (canonical(previousJobWithoutSteps) !== canonical(nextJobWithoutSteps)) return false;
   const priorSteps = workflowSteps(previousJob);
   const nextSteps = workflowSteps(nextJob);
   if (priorSteps === null || nextSteps === null) return false;
-  const standardStep = (step: Record<string, unknown>): boolean => {
-    const name = typeof step.name === 'string' ? step.name : '';
-    const uses = typeof step.uses === 'string' ? step.uses : '';
-    const run = typeof step.run === 'string' ? step.run : '';
-    return (
-      uses === 'actions/checkout@v4' ||
-      uses === 'oven-sh/setup-bun@v2' ||
-      uses === 'actions/setup-node@v4' ||
-      /^(Checkout repository|Setup Bun|Setup Node|Install dependencies|Reject package version rollback|Run build|Validate opted-in APM owner release|Validate Ankhorage repository|Run lint|Run format check|Run Knip|Run tests|Run typecheck|Check changesets)$/u.test(
-        name,
-      ) ||
-      /^(bun install --frozen-lockfile|bun run (build|lint|format:check|knip:check|test|typecheck))$/mu.test(
-        run,
-      )
-    );
-  };
+  const standardNames = new Set([
+    'Checkout repository',
+    'Setup Bun',
+    'Setup Node',
+    'Install dependencies',
+    'Reject package version rollback',
+    'Run build',
+    'Validate opted-in APM owner release',
+    'Validate Ankhorage repository',
+    'Run lint',
+    'Run format check',
+    'Run Knip',
+    'Run tests',
+    'Analyze test impact',
+    'Run unit tests',
+    'Run E2E tests',
+    'Run Smoke tests',
+    'Run typecheck',
+    'Check changesets',
+    'Enforce Atlas cyclic-dependencies rule',
+    'Upload Atlas audit',
+  ]);
+  const standardSteps = (steps: readonly Record<string, unknown>[]): boolean =>
+    steps.every((step) => typeof step.name === 'string' && standardNames.has(step.name));
   return (
-    priorSteps.every(standardStep) &&
-    nextSteps.every(standardStep) &&
+    standardSteps(priorSteps) &&
+    standardSteps(nextSteps) &&
     nextSteps.some(
       (step) =>
         typeof step.run === 'string' &&
