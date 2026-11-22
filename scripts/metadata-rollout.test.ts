@@ -7,7 +7,7 @@ import {
   changedPaths,
   doctorVersionFromWorkflow,
   guardWorkflowContract,
-  isCanonicalManagedCiUpgrade,
+  unchangedPublishedManagedWorkflow,
   loadInstructions,
   MANAGED_PATHS,
   prepareCandidateBranch,
@@ -131,7 +131,7 @@ describe('metadata rollout safety contracts', () => {
     }
   });
 
-  test('permits only evidenced canonical managed-template upgrades and protects bespoke acceptance', () => {
+  test('requires a proven published baseline before accepting managed workflow replacements', () => {
     const legacy = `name: CI
 on: [push, pull_request]
 jobs:
@@ -148,11 +148,18 @@ jobs:
       'bunx @ankhorage/doctor@0.14.0 validate .',
       'bunx @ankhorage/doctor@0.15.1 validate . --enforce-repository-metadata',
     );
-    expect(isCanonicalManagedCiUpgrade(legacy, canonical)).toBe(true);
     expect(
       guardWorkflowContract({ ci: legacy, release }, { ci: canonical, release }, [
         '.github/workflows/ci.yml',
       ]),
+    ).toContain('weakened CI');
+    expect(
+      guardWorkflowContract(
+        { ci: legacy, release },
+        { ci: canonical, release },
+        ['.github/workflows/ci.yml'],
+        true,
+      ),
     ).toBeNull();
     const chess = legacy.replace(
       '    steps:',
@@ -169,6 +176,60 @@ jobs:
         '.github/workflows/ci.yml',
       ]),
     ).toContain('weakened CI');
+  });
+
+  test('requires published provenance for the canonical upgrade exception', () => {
+    const legacy = `name: CI
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        run: bun run test
+      - name: Validate Ankhorage repository
+        run: bunx @ankhorage/doctor@0.14.0 validate .
+`;
+    const canonical = legacy.replace(
+      'bunx @ankhorage/doctor@0.14.0 validate .',
+      'bunx @ankhorage/doctor@0.15.1 validate . --enforce-repository-metadata',
+    );
+    const published = { ci: legacy, release };
+    const disguisedTest = legacy.replace('run: bun run test', 'run: bun run test:critical');
+    const alteredTrigger = legacy.replace('on: [push, pull_request]', 'on: push');
+    const alteredPermission = legacy.replace(
+      '    runs-on:',
+      '    permissions: { contents: write }\n    runs-on:',
+    );
+    const alteredCondition = legacy.replace(
+      '    runs-on:',
+      '    if: github.event_name == push\n    runs-on:',
+    );
+    const alteredEnv = legacy.replace(
+      '    runs-on:',
+      '    env: { DATABASE_URL: postgres://example }\n    runs-on:',
+    );
+    for (const custom of [
+      disguisedTest,
+      alteredTrigger,
+      alteredPermission,
+      alteredCondition,
+      alteredEnv,
+    ]) {
+      expect(unchangedPublishedManagedWorkflow({ ci: custom, release }, published)).not.toBeNull();
+      expect(
+        guardWorkflowContract({ ci: custom, release }, { ci: canonical, release }, [
+          '.github/workflows/ci.yml',
+        ]),
+      ).toContain('weakened CI');
+    }
+    expect(unchangedPublishedManagedWorkflow(published, published)).toBeNull();
+    expect(
+      unchangedPublishedManagedWorkflow(published, {
+        ci: legacy,
+        release: release.replace('bun run release', 'bun run bad-release'),
+      }),
+    ).toContain('release workflow differs');
   });
 
   test('extracts an effective Doctor pin from a step, never a workflow comment', () => {
