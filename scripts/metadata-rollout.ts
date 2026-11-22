@@ -29,6 +29,17 @@ type ReportEntry = {
   readonly reason: string;
 };
 
+/*** Serialize published Doctor resolution while retaining parallel repository inspection. */
+const doctorResolution = { tail: Promise.resolve() };
+export const serializeDoctorResolution = <T>(action: () => Promise<T>): Promise<T> => {
+  const next = doctorResolution.tail.then(action);
+  doctorResolution.tail = next.then(
+    () => undefined,
+    () => undefined,
+  );
+  return next;
+};
+
 const ORGANIZATION = 'ankhorage';
 const UMBRELLA = 'ankhorage/rules-repository#14';
 const APPROVED_EXCLUSIONS = new Set([
@@ -545,11 +556,13 @@ const validateCheckout = async (checkout: string): Promise<string[]> => {
     return [
       'FAILED: installed published Devtools workflow does not declare an enforcing Doctor release',
     ];
-  const doctor = await run(
-    'bunx',
-    [`@ankhorage/doctor@${doctorVersion}`, 'validate', '.', '--enforce-repository-metadata'],
-    checkout,
-    { BUN_INSTALL_CACHE_DIR: join(checkout, '.metadata-rollout-doctor-cache') },
+  const doctor = await serializeDoctorResolution(() =>
+    run(
+      'bunx',
+      [`@ankhorage/doctor@${doctorVersion}`, 'validate', '.', '--enforce-repository-metadata'],
+      checkout,
+      { BUN_INSTALL_CACHE_DIR: join(checkout, '.metadata-rollout-doctor-cache') },
+    ),
   );
   if (doctor.code !== 0)
     return [`FAILED: published Doctor metadata validation: ${firstLine(doctor.output)}`];
@@ -1041,10 +1054,12 @@ const verifyDefaultBranchEvidence = async (
     );
     const doctorVersion = workflow === null ? null : doctorVersionFromWorkflow(workflow);
     if (doctorVersion === null) return 'Default branch has no effective enforcing Doctor step.';
-    const doctor = await run(
-      'bunx',
-      [`@ankhorage/doctor@${doctorVersion}`, 'validate', '.', '--enforce-repository-metadata'],
-      checkout,
+    const doctor = await serializeDoctorResolution(() =>
+      run(
+        'bunx',
+        [`@ankhorage/doctor@${doctorVersion}`, 'validate', '.', '--enforce-repository-metadata'],
+        checkout,
+      ),
     );
     if (doctor.code !== 0)
       return `Published Doctor rejected metadata with enforcement: ${firstLine(doctor.output)}`;

@@ -15,6 +15,7 @@ import {
   prepareCandidateBranch,
   requiredCheckState,
   successfulCheckEvidence,
+  serializeDoctorResolution,
 } from './metadata-rollout.js';
 
 const ci = `name: CI
@@ -370,6 +371,27 @@ jobs:
         checkState: null,
       }),
     ).toContain('ACTUAL_CI_CONTRACT_DRIFT');
+  });
+
+  test('serializes published Doctor requests and continues after a failed request', async () => {
+    const sequence: string[] = [];
+    const first = serializeDoctorResolution(async () => {
+      sequence.push('first-start');
+      await Promise.resolve();
+      sequence.push('first-end');
+      return 1;
+    });
+    const second = serializeDoctorResolution(async () => {
+      sequence.push('second-start');
+      throw new Error('expected Doctor resolution failure');
+    });
+    const third = serializeDoctorResolution(async () => {
+      sequence.push('third-start');
+      return 3;
+    });
+    const results = await Promise.allSettled([first, second, third]);
+    expect(results.map((result) => result.status)).toEqual(['fulfilled', 'rejected', 'fulfilled']);
+    expect(sequence).toEqual(['first-start', 'first-end', 'second-start', 'third-start']);
   });
 
   test('safely resumes an existing remote branch after main advances and rejects a merge conflict', async () => {
