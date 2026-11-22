@@ -219,7 +219,7 @@ const inspectRepository = async (
   const parallelReason = PARALLEL_OWNER_WORK.get(repository.name);
   if (parallelReason !== undefined) return { ...base, status: 'PENDING', reason: parallelReason };
   if (workflow?.includes('--enforce-repository-metadata') && metadata === 'present') {
-    const verification = await verifyDefaultBranchEvidence(repository, defaultSha);
+    const verification = await verifyDefaultBranchEvidence(repository, defaultSha, workflow);
     return verification === null
       ? {
           ...base,
@@ -227,6 +227,7 @@ const inspectRepository = async (
           validations: [
             'published Doctor metadata validation',
             'default-head successful GitHub checks',
+            'GitHub branch-protection evidence recorded separately from metadata validation',
           ],
           reason:
             'Default branch metadata, enforcement, published Doctor, and GitHub acceptance are proven.',
@@ -956,15 +957,15 @@ export const branchProtectionEvidence = (result: CommandResult): BranchProtectio
   }
 };
 
-/*** Require at least one successful exact-SHA GitHub check when branch policy cannot identify required names. */
-export const successfulCheckEvidence = (checks: readonly unknown[]): string | null => {
-  const completed = checks.filter(
-    (check): check is Record<string, unknown> => isRecord(check) && check.status === 'completed',
-  );
-  if (completed.length === 0) return 'No completed GitHub checks exist on the verified SHA.';
-  if (!completed.some((check) => check.conclusion === 'success'))
-    return 'No successful GitHub check exists on the verified SHA.';
-  return null;
+/*** Require successful exact-SHA checks for each job declared by the repository's CI workflow. */
+export const successfulCheckEvidence = (
+  checks: readonly unknown[],
+  workflow: string,
+): string | null => {
+  const parsed = parseWorkflow(workflow);
+  if (parsed === null || !isRecord(parsed.jobs)) return 'Cannot read declared CI job identities.';
+  const requiredNames = Object.keys(parsed.jobs);
+  return requiredCheckState(checks, requiredNames);
 };
 
 /*** Keep real CI, branch protection, and stale-head failures as separate fail-closed evidence classes. */
@@ -977,10 +978,6 @@ export const classifyDefaultBranchEvidence = (input: {
   if (input.checkState !== null) return `ACTUAL_CI_CONTRACT_DRIFT: ${input.checkState}`;
   if (input.currentSha !== input.defaultSha)
     return 'ACTUAL_CI_CONTRACT_DRIFT: Default branch advanced during verification; evidence is stale.';
-  if (input.policy.kind === 'unprotected')
-    return 'POLICY_UNAVAILABLE_OR_UNPROTECTED: Default branch has no mandatory required-check protection.';
-  if (input.policy.kind === 'unavailable')
-    return `POLICY_UNAVAILABLE_OR_UNPROTECTED: Required-check policy is unavailable: ${input.policy.reason}`;
   return null;
 };
 
@@ -988,6 +985,7 @@ export const classifyDefaultBranchEvidence = (input: {
 const verifyDefaultBranchEvidence = async (
   repository: Repository,
   defaultSha: string | null,
+  workflow: string,
 ): Promise<string | null> => {
   if (defaultSha === null) return 'Default branch HEAD is unavailable.';
   const checks = await run('gh', [
@@ -1020,7 +1018,7 @@ const verifyDefaultBranchEvidence = async (
   const checkState =
     policy.kind === 'protected'
       ? requiredCheckState(checkEvidence, policy.requiredNames)
-      : successfulCheckEvidence(checkEvidence);
+      : successfulCheckEvidence(checkEvidence, workflow);
   const currentSha = await defaultBranchSha(repository);
   const evidence = classifyDefaultBranchEvidence({ defaultSha, currentSha, policy, checkState });
   if (evidence !== null) return evidence;
