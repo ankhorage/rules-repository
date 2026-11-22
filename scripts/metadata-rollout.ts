@@ -1,6 +1,7 @@
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
+import { parseDocument } from 'yaml';
 
 type Mode = 'dry-run' | 'apply' | 'verify' | 'resume';
 type RolloutStatus = 'VERIFIED' | 'EXEMPT' | 'PENDING' | 'BLOCKED' | 'FAILED';
@@ -49,12 +50,14 @@ const PARALLEL_OWNER_WORK = new Map([
   ],
   ['flow', 'Flow #34 is owner-held container/OCI work and must not be overwritten.'],
 ]);
-const MANAGED_PATHS = new Set([
+export const MANAGED_PATHS = new Set([
   '.github/scripts/ci-impact.ts',
   '.github/workflows/ci.yml',
   '.github/workflows/release.yml',
   '.github/workflows/renovate.yml',
   'renovate.json5',
+  'package.json',
+  'bun.lock',
 ]);
 
 const main = async (): Promise<void> => {
@@ -91,7 +94,7 @@ const main = async (): Promise<void> => {
   process.exitCode = incomplete ? 1 : 0;
 };
 
-const parseOptions = (argv: readonly string[]) => {
+export const parseOptions = (argv: readonly string[]) => {
   const mode = argv.includes('--apply')
     ? 'apply'
     : argv.includes('--verify')
@@ -106,6 +109,8 @@ const parseOptions = (argv: readonly string[]) => {
       : resolve(argv[reportIndex + 1] ?? '');
   if (reportIndex !== -1 && argv[reportIndex + 1] === undefined)
     throw new Error('--report-dir requires a directory.');
+  if (['--apply', '--verify', '--resume'].filter((option) => argv.includes(option)).length > 1)
+    throw new Error('Select at most one of --apply, --verify, or --resume.');
   const unknown = argv.filter(
     (value, index) =>
       !['--apply', '--verify', '--resume', '--dry-run', '--report-dir'].includes(value) &&
@@ -146,12 +151,21 @@ const inspectRepository = async (
     };
   const parallelReason = PARALLEL_OWNER_WORK.get(repository.name);
   if (parallelReason !== undefined) return { ...base, status: 'PENDING', reason: parallelReason };
-  if (workflow?.includes('--enforce-repository-metadata') && metadata === 'present')
-    return {
-      ...base,
-      status: 'VERIFIED',
-      reason: 'Default branch has authored metadata and explicit CI enforcement.',
-    };
+  if (workflow?.includes('--enforce-repository-metadata') && metadata === 'present') {
+    const verification = await verifyDefaultBranchEvidence(repository, defaultSha);
+    return verification === null
+      ? {
+          ...base,
+          status: 'VERIFIED',
+          validations: [
+            'published Doctor metadata validation',
+            'default-head successful GitHub checks',
+          ],
+          reason:
+            'Default branch metadata, enforcement, published Doctor, and GitHub acceptance are proven.',
+        }
+      : blocked(base, verification);
+  }
   if (workflow === null)
     return {
       ...base,
@@ -195,7 +209,7 @@ const synchronizeSafely = async (
     ]);
     if (clone.code !== 0) return blocked(entry, `Clone failed: ${firstLine(clone.output)}`);
     const instructions = await loadInstructions(checkout);
-    if (instructions !== null) return blocked(entry, instructions);
+    if (typeof instructions === 'string') return blocked(entry, instructions);
     if (
       !(await exists(join(checkout, 'package.json'))) ||
       !(await exists(join(checkout, 'bun.lock')))
@@ -204,7 +218,19 @@ const synchronizeSafely = async (
         entry,
         'Not a standard Bun/TypeScript repository; profile-specific evidence is required.',
       );
-    const preview = await runDevtools(checkout, devtoolsVersion, true);
+    if (options.mode === 'dry-run')
+      return {
+        ...entry,
+        status: 'PENDING',
+        validations: [...instructions],
+        reason:
+          'Dry-run is read-only; --apply will synchronize the published Devtools dependency and lockfile in an isolated candidate before previewing managed changes.',
+      };
+    const resume = await prepareCandidateBranch(checkout, repository);
+    if (resume !== null) return blocked(entry, resume);
+    const dependency = await synchronizePublishedDevtools(checkout, devtoolsVersion);
+    if (dependency !== null) return blocked(entry, dependency);
+    const preview = await runDevtools(checkout, true);
     if (preview.code !== 0)
       return blocked(entry, `Published Devtools dry-run failed: ${firstLine(preview.output)}`);
     const planned = parseManagedPaths(preview.output);
@@ -218,21 +244,21 @@ const synchronizeSafely = async (
         entry,
         `Devtools planned an unapproved path: ${planned.filter((path) => !MANAGED_PATHS.has(path)).join(', ')}.`,
       );
-    if (options.mode === 'dry-run')
-      return {
-        ...entry,
-        status: 'PENDING',
-        changes: planned,
-        validations: ['published Devtools dry-run', 'AGENTS.md and required local skills read'],
-        reason:
-          'Safe candidate identified; rerun with --apply to write only after the prewrite contract guard.',
-      };
-    const sync = await runDevtools(checkout, devtoolsVersion, false);
+    const sync = await runDevtools(checkout, false);
     if (sync.code !== 0)
       return blocked(entry, `Published Devtools sync failed: ${firstLine(sync.output)}`);
     const changed = await changedPaths(checkout);
     const generatedWorkflow = await readFile(join(checkout, '.github/workflows/ci.yml'), 'utf8');
-    const guard = guardWorkflowContract(originalWorkflow, generatedWorkflow, changed);
+    const generatedRelease = await readFile(
+      join(checkout, '.github/workflows/release.yml'),
+      'utf8',
+    );
+    const originalRelease = await githubFile(repository, '.github/workflows/release.yml');
+    const guard = guardWorkflowContract(
+      { ci: originalWorkflow, release: originalRelease },
+      { ci: generatedWorkflow, release: generatedRelease },
+      changed,
+    );
     if (guard !== null) return blocked(entry, guard);
     const validations = await validateCheckout(checkout);
     if (validations.some((validation) => validation.startsWith('FAILED:')))
@@ -243,7 +269,7 @@ const synchronizeSafely = async (
         validations,
         reason: 'Required local validation failed; checkout was discarded without a commit.',
       };
-    const idempotence = await runDevtools(checkout, devtoolsVersion, true);
+    const idempotence = await runDevtools(checkout, true);
     if (
       idempotence.code !== 0 ||
       parseManagedPaths(idempotence.output).some(
@@ -268,41 +294,89 @@ const synchronizeSafely = async (
   }
 };
 
-const guardWorkflowContract = (
-  before: string,
-  after: string,
+export const guardWorkflowContract = (
+  before: { readonly ci: string; readonly release: string | null },
+  after: { readonly ci: string; readonly release: string | null },
   changed: readonly string[],
 ): string | null => {
-  if (!after.includes('--enforce-repository-metadata'))
+  if (!after.ci.includes('--enforce-repository-metadata'))
     return 'Generated CI lacks explicit --enforce-repository-metadata enforcement.';
   if (changed.some((path) => !MANAGED_PATHS.has(path)))
     return `Sync changed non-managed paths: ${changed.filter((path) => !MANAGED_PATHS.has(path)).join(', ')}.`;
-  const beforeContract = workflowContract(before);
-  const afterContract = workflowContract(after);
-  const removed = [...beforeContract.jobs].filter((job) => !afterContract.jobs.has(job));
-  if (removed.length > 0) return `Prewrite guard rejected removed CI jobs: ${removed.join(', ')}.`;
-  const missingServices = [...beforeContract.services].filter(
-    (service) => !afterContract.services.has(service),
-  );
-  if (missingServices.length > 0)
-    return `Prewrite guard rejected removed CI services: ${missingServices.join(', ')}.`;
-  const missingRuns = [...beforeContract.runs].filter((run) => !afterContract.runs.has(run));
-  return missingRuns.length === 0
-    ? null
-    : `Prewrite guard rejected removed CI run contracts: ${missingRuns.join(' | ')}.`;
+  const ciLoss = workflowContractLoss(before.ci, after.ci, 'CI');
+  if (ciLoss !== null) return ciLoss;
+  if (before.release === null || after.release === null)
+    return before.release === after.release
+      ? null
+      : 'Prewrite guard cannot prove release workflow preservation.';
+  return workflowContractLoss(before.release, after.release, 'release');
 };
 
-const workflowContract = (workflow: string) => ({
-  jobs: new Set(
-    [...workflow.matchAll(/^ {2}([A-Za-z0-9_-]+):\s*(?:#.*)?$/gm)]
-      .map((match) => match[1])
-      .filter((name) => !['on', 'env', 'permissions', 'defaults', 'concurrency'].includes(name)),
-  ),
-  services: new Set(
-    [...workflow.matchAll(/^ {6}([A-Za-z0-9_-]+):\s*(?:#.*)?$/gm)].map((match) => match[1]),
-  ),
-  runs: new Set([...workflow.matchAll(/^\s*run:\s*(.+)$/gm)].map((match) => match[1].trim())),
-});
+const workflowContractLoss = (before: string, after: string, label: string): string | null => {
+  const previous = workflowContract(before);
+  const next = workflowContract(after);
+  if (previous === null || next === null)
+    return `Prewrite guard cannot parse ${label} workflow contract.`;
+  const missing = previous.filter((requirement) => !next.includes(requirement));
+  return missing.length === 0
+    ? null
+    : `Prewrite guard rejected weakened ${label} contract: ${missing.join(', ')}.`;
+};
+
+/*** Extract every preservation-relevant GitHub Actions field into canonical semantic requirements. */
+export const workflowContract = (workflow: string): string[] | null => {
+  const document = parseDocument(workflow, { uniqueKeys: true });
+  if (document.errors.length > 0 || document.contents === null) return null;
+  const source = document.toJS({ mapAsMap: false });
+  if (!isRecord(source)) return null;
+  const requirements = [
+    `trigger:${canonical(source.on ?? source.true)}`,
+    `workflow-env:${canonical(source.env)}`,
+    `workflow-permissions:${canonical(source.permissions)}`,
+    `workflow-concurrency:${canonical(source.concurrency)}`,
+  ];
+  if (!isRecord(source.jobs)) return null;
+  for (const [jobName, jobValue] of Object.entries(source.jobs)) {
+    if (!isRecord(jobValue)) return null;
+    requirements.push(`job:${jobName}`);
+    for (const field of [
+      'if',
+      'needs',
+      'permissions',
+      'runs-on',
+      'container',
+      'services',
+      'env',
+      'defaults',
+      'strategy',
+      'timeout-minutes',
+    ])
+      requirements.push(`job:${jobName}:${field}:${canonical(jobValue[field])}`);
+    if (!Array.isArray(jobValue.steps)) return null;
+    for (const step of jobValue.steps) {
+      if (!isRecord(step)) return null;
+      for (const field of [
+        'name',
+        'id',
+        'if',
+        'uses',
+        'run',
+        'shell',
+        'working-directory',
+        'env',
+        'with',
+        'continue-on-error',
+        'timeout-minutes',
+      ])
+        requirements.push(`step:${jobName}:${field}:${canonical(step[field])}`);
+    }
+  }
+  return requirements;
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+const canonical = (value: unknown): string => JSON.stringify(value === undefined ? null : value);
 
 const validateCheckout = async (checkout: string): Promise<string[]> => {
   const install = await run('bun', ['install', '--frozen-lockfile'], checkout);
@@ -311,6 +385,9 @@ const validateCheckout = async (checkout: string): Promise<string[]> => {
   const manifest = JSON.parse(await readFile(join(checkout, 'package.json'), 'utf8')) as {
     scripts?: Record<string, string>;
   };
+  const doctor = await run('bunx', ['@ankhorage/doctor', 'validate', '.'], checkout);
+  if (doctor.code !== 0)
+    return [`FAILED: published Doctor metadata validation: ${firstLine(doctor.output)}`];
   const candidates = [
     'build',
     'check-types',
@@ -320,14 +397,17 @@ const validateCheckout = async (checkout: string): Promise<string[]> => {
     'format:check',
     'test',
   ].filter((name) => manifest.scripts?.[name] !== undefined);
-  return Promise.all(
-    candidates.map(async (script) => {
-      const result = await run('bun', ['run', script], checkout);
-      return result.code === 0
+  const validations = ['passed: published Doctor metadata validation'];
+  for (const script of candidates) {
+    const result = await run('bun', ['run', script], checkout);
+    validations.push(
+      result.code === 0
         ? `passed: bun run ${script}`
-        : `FAILED: bun run ${script}: ${firstLine(result.output)}`;
-    }),
-  );
+        : `FAILED: bun run ${script}: ${firstLine(result.output)}`,
+    );
+    if (result.code !== 0) break;
+  }
+  return validations;
 };
 
 const commitAndCreatePr = async (
@@ -336,11 +416,40 @@ const commitAndCreatePr = async (
   changed: readonly string[],
 ): Promise<string | null> => {
   const branch = `chore/14-repository-metadata-${repository.name}`;
-  if ((await run('git', ['switch', '-c', branch], checkout)).code !== 0) return null;
+  if ((await run('git', ['branch', '--show-current'], checkout)).output.trim() !== branch)
+    return null;
   if ((await run('git', ['add', ...changed], checkout)).code !== 0) return null;
+  const staged = await run('git', ['diff', '--cached', '--name-only'], checkout);
+  const expected = changed.filter((path) => MANAGED_PATHS.has(path)).sort();
+  if (
+    staged.code !== 0 ||
+    JSON.stringify(staged.output.split('\n').filter(Boolean).sort()) !== JSON.stringify(expected)
+  )
+    return null;
+  if (expected.length === 0) return existingPrUrl(checkout, repository, branch);
   if (
     (await run('git', ['commit', '-m', 'chore(ci): enforce repository metadata'], checkout))
       .code !== 0
+  )
+    return null;
+  const tree = await run(
+    'git',
+    [
+      'ls-tree',
+      '-r',
+      '--name-only',
+      'HEAD',
+      '--',
+      '.github/scripts/ci-impact.ts',
+      '.github/workflows/ci.yml',
+    ],
+    checkout,
+  );
+  if (
+    tree.code !== 0 ||
+    ['.github/scripts/ci-impact.ts', '.github/workflows/ci.yml'].some(
+      (path) => !tree.output.split('\n').includes(path),
+    )
   )
     return null;
   if ((await run('git', ['push', '--set-upstream', 'origin', branch], checkout)).code !== 0)
@@ -385,43 +494,168 @@ const commitAndCreatePr = async (
   return created.code === 0 ? created.output.trim() : null;
 };
 
-const loadInstructions = async (checkout: string): Promise<string | null> => {
-  const required = [
-    'AGENTS.md',
-    '.agents/skills/ankhorage-coding-rules/SKILL.md',
-    '.agents/skills/ankhorage-project-structure/SKILL.md',
-    '.agents/skills/hexagonal-architecture/SKILL.md',
-  ];
-  for (const relativePath of required) {
-    try {
-      await readFile(join(checkout, relativePath), 'utf8');
-    } catch {
-      return `Required repository instructions are unavailable: ${relativePath}.`;
-    }
-  }
-  return null;
+const prepareCandidateBranch = async (
+  checkout: string,
+  repository: Repository,
+): Promise<string | null> => {
+  const branch = `chore/14-repository-metadata-${repository.name}`;
+  const remote = await run('git', ['ls-remote', '--heads', 'origin', branch], checkout);
+  if (remote.code !== 0)
+    return `Cannot inspect existing rollout branch: ${firstLine(remote.output)}`;
+  if (remote.output.trim() === '')
+    return (await run('git', ['switch', '-c', branch], checkout)).code === 0
+      ? null
+      : 'Cannot create rollout branch.';
+  if ((await run('git', ['fetch', 'origin', branch], checkout)).code !== 0)
+    return 'Cannot fetch existing rollout branch.';
+  if (
+    (await run('git', ['switch', '--track', '-c', branch, `origin/${branch}`], checkout)).code !== 0
+  )
+    return 'Cannot check out existing rollout branch.';
+  const related = await run(
+    'git',
+    ['merge-base', '--is-ancestor', `origin/${repository.default_branch}`, 'HEAD'],
+    checkout,
+  );
+  return related.code === 0
+    ? null
+    : 'Existing rollout branch is not based on the current default branch; refusing to overwrite unrelated work.';
 };
 
-const runDevtools = (checkout: string, version: string, dryRun: boolean): Promise<CommandResult> =>
+const existingPrUrl = async (
+  checkout: string,
+  repository: Repository,
+  branch: string,
+): Promise<string | null> => {
+  const existing = await run(
+    'gh',
+    [
+      'pr',
+      'list',
+      '--repo',
+      `${ORGANIZATION}/${repository.name}`,
+      '--head',
+      branch,
+      '--json',
+      'url',
+      '--jq',
+      '.[0].url',
+    ],
+    checkout,
+  );
+  return existing.code === 0 && existing.output.trim() !== '' ? existing.output.trim() : null;
+};
+
+/*** Discover each repository's own mandatory instructions instead of assuming a global skill profile. */
+export const loadInstructions = async (checkout: string): Promise<readonly string[] | string> => {
+  let agents: string;
+  try {
+    agents = await readFile(join(checkout, 'AGENTS.md'), 'utf8');
+  } catch {
+    return 'Repository AGENTS.md is unavailable; automation cannot prove local instruction compliance.';
+  }
+  const skills = await findSkillFiles(join(checkout, '.agents', 'skills'));
+  const required = [...agents.matchAll(/\.agents\/skills\/([^/\s]+)\/SKILL\.md/g)].map(
+    (match) => `.agents/skills/${match[1]}/SKILL.md`,
+  );
+  const missing = required.filter((path) => !skills.includes(path));
+  if (missing.length > 0)
+    return `Repository declares unavailable mandatory skills: ${missing.join(', ')}.`;
+  const contents = await Promise.all(skills.map((path) => readFile(join(checkout, path), 'utf8')));
+  if (contents.some((content) => content.trim().length === 0))
+    return 'Repository contains an empty local skill; automation cannot apply it safely.';
+  return ['read AGENTS.md', ...skills.map((path) => `read ${path}`)];
+};
+
+const findSkillFiles = async (
+  directory: string,
+  relative = '.agents/skills',
+): Promise<string[]> => {
+  try {
+    const entries = await readdir(directory, { withFileTypes: true });
+    const descendants = await Promise.all(
+      entries.map(async (entry) => {
+        const nextRelative = `${relative}/${entry.name}`;
+        if (entry.isFile() && entry.name === 'SKILL.md') return [nextRelative];
+        return entry.isDirectory() ? findSkillFiles(join(directory, entry.name), nextRelative) : [];
+      }),
+    );
+    return descendants.flat().sort();
+  } catch {
+    return [];
+  }
+};
+
+/*** Install the exact published Devtools release in the consumer before generating its workflows. */
+export const synchronizePublishedDevtools = async (
+  checkout: string,
+  version: string,
+): Promise<string | null> => {
+  const manifest = JSON.parse(await readFile(join(checkout, 'package.json'), 'utf8')) as {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  };
+  const declared =
+    manifest.devDependencies?.['@ankhorage/devtools'] ??
+    manifest.dependencies?.['@ankhorage/devtools'];
+  if (declared !== undefined) {
+    const existing = await verifyDevtoolsCiImpact(checkout, version);
+    if (existing === null) return null;
+  }
+  const update = await run('bun', ['add', '--dev', `@ankhorage/devtools@${version}`], checkout);
+  if (update.code !== 0)
+    return `Published Devtools dependency synchronization failed: ${firstLine(update.output)}`;
+  const installed = await run('bun', ['install', '--frozen-lockfile'], checkout);
+  if (installed.code !== 0)
+    return `Published Devtools lockfile validation failed: ${firstLine(installed.output)}`;
+  return verifyDevtoolsCiImpact(checkout, version);
+};
+
+/*** Prove the installed consumer dependency, rather than a transient bunx package, exposes ci-impact. */
+const verifyDevtoolsCiImpact = async (
+  checkout: string,
+  version: string,
+): Promise<string | null> => {
+  const versionCheck = await run(
+    'bun',
+    [
+      '-e',
+      `const manifest = await import('./node_modules/@ankhorage/devtools/package.json'); if (manifest.default.version !== ${JSON.stringify(version)}) process.exit(1);`,
+    ],
+    checkout,
+  );
+  if (versionCheck.code !== 0)
+    return 'Installed @ankhorage/devtools does not match the resolved published release.';
+  const capability = await run(
+    'bun',
+    ['-e', "await import('@ankhorage/devtools/ci-impact');"],
+    checkout,
+  );
+  return capability.code === 0
+    ? null
+    : `Installed @ankhorage/devtools does not expose ci-impact: ${firstLine(capability.output)}`;
+};
+
+const runDevtools = (checkout: string, dryRun: boolean): Promise<CommandResult> =>
   run(
     'bunx',
-    [
-      '--package',
-      `@ankhorage/devtools@${version}`,
-      'ankhorage-repository',
-      'workflows',
-      'sync',
-      '.',
-      ...(dryRun ? ['--dry-run'] : []),
-    ],
+    ['ankhorage-repository', 'workflows', 'sync', '.', ...(dryRun ? ['--dry-run'] : [])],
     checkout,
   );
 const parseManagedPaths = (output: string): string[] =>
   [...output.matchAll(/^[+↻✓-]\s+([^\s]+)\s+(?:would |created|updated|unchanged|removed)/gm)].map(
     (match) => match[1],
   );
-const changedPaths = async (checkout: string): Promise<string[]> =>
-  (await run('git', ['diff', '--name-only'], checkout)).output.split('\n').filter(Boolean);
+/*** Enumerate tracked additions, modifications and deletions plus generated untracked managed files. */
+export const changedPaths = async (checkout: string): Promise<string[]> => {
+  const [tracked, untracked] = await Promise.all([
+    run('git', ['diff', '--name-only', '--diff-filter=ACDMRTUXB'], checkout),
+    run('git', ['ls-files', '--others', '--exclude-standard'], checkout),
+  ]);
+  return [
+    ...new Set([...tracked.output.split('\n'), ...untracked.output.split('\n')].filter(Boolean)),
+  ].sort();
+};
 const readDevtoolsVersion = async (): Promise<string> => {
   const result = await run('bun', ['pm', 'view', '@ankhorage/devtools', 'version']);
   if (result.code !== 0)
@@ -474,6 +708,54 @@ const metadataState = async (
   ]);
   if (nonSource.code === 0) return 'present';
   return isNotFound(source.output) && isNotFound(nonSource.output) ? 'missing' : 'unverified';
+};
+
+/*** Require published Doctor and successful default-head checks before reporting a completed rollout. */
+const verifyDefaultBranchEvidence = async (
+  repository: Repository,
+  defaultSha: string | null,
+): Promise<string | null> => {
+  if (defaultSha === null) return 'Default branch HEAD is unavailable.';
+  const checks = await run('gh', [
+    'api',
+    `repos/${ORGANIZATION}/${repository.name}/commits/${defaultSha}/check-runs`,
+    '--jq',
+    '[.check_runs[] | select(.status == "completed") | .conclusion] | @json',
+  ]);
+  if (checks.code !== 0)
+    return `Default-head GitHub checks are unavailable: ${firstLine(checks.output)}`;
+  let conclusions: unknown;
+  try {
+    conclusions = JSON.parse(checks.output);
+  } catch {
+    return 'Default-head GitHub checks returned malformed evidence.';
+  }
+  if (
+    !Array.isArray(conclusions) ||
+    conclusions.length === 0 ||
+    conclusions.some((value) => value !== 'success')
+  )
+    return 'Default-head GitHub checks are missing or not all successful.';
+  const checkout = await mkdtemp(join(tmpdir(), `metadata-verify-${repository.name}-`));
+  try {
+    const clone = await run('git', [
+      'clone',
+      '--depth',
+      '1',
+      '--branch',
+      repository.default_branch,
+      `https://github.com/${ORGANIZATION}/${repository.name}.git`,
+      checkout,
+    ]);
+    if (clone.code !== 0)
+      return `Default branch Doctor checkout failed: ${firstLine(clone.output)}`;
+    const doctor = await run('bunx', ['@ankhorage/doctor', 'validate', '.'], checkout);
+    return doctor.code === 0
+      ? null
+      : `Published Doctor rejected metadata: ${firstLine(doctor.output)}`;
+  } finally {
+    await rm(checkout, { recursive: true, force: true });
+  }
 };
 const exemptEntry = (repository: Repository): ReportEntry => ({
   repository: repository.name,
@@ -555,4 +837,4 @@ const writeReport = async (
   );
 };
 
-void main();
+if (import.meta.main) void main();
