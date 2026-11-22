@@ -348,8 +348,7 @@ const verifyPublishedManagedBaseline = async (
   original: { readonly ci: string; readonly release: string | null },
 ): Promise<string | null> => {
   const install = await run('bun', ['install', '--frozen-lockfile'], checkout);
-  if (install.code !== 0)
-    return `Original frozen install failed: ${firstLine(install.output)}`;
+  if (install.code !== 0) return `Original frozen install failed: ${firstLine(install.output)}`;
   const sync = await run(
     'bunx',
     ['--bun', '--no-install', 'ankhorage-repository', 'workflows', 'sync', '.'],
