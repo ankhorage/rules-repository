@@ -17,6 +17,8 @@ import {
   requiredCheckState,
   successfulCheckEvidence,
   serializeDoctorResolution,
+  parseOptions,
+  selectRepositories,
 } from './metadata-rollout.js';
 
 const ci = `name: CI
@@ -49,6 +51,22 @@ jobs:
 `;
 
 describe('metadata rollout safety contracts', () => {
+  test('limits mutating execution to explicit applicable repositories', () => {
+    expect(
+      parseOptions(['--apply', '--repositories', 'reader,infra-r2,reader']).repositories,
+    ).toEqual(['infra-r2', 'reader']);
+    expect(
+      selectRepositories(
+        [
+          { name: 'chess', archived: false, default_branch: 'main' },
+          { name: 'reader', archived: false, default_branch: 'main' },
+        ],
+        ['reader'],
+      ).map((repository) => repository.name),
+    ).toEqual(['reader']);
+    expect(() => selectRepositories([], ['outside-scope'])).toThrow('not applicable inventory');
+  });
+
   test('passes the prepared Bun environment to spawned commands', () => {
     const previous = process.env.BUN_INSTALL_CACHE_DIR;
     try {

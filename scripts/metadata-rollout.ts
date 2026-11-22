@@ -102,7 +102,8 @@ const main = async (): Promise<void> => {
         `Approved inventory mismatch: expected 92 applicable repositories, received ${applicable.length}.`,
       );
     }
-    const entries = await mapBounded(applicable, 8, (repository) =>
+    const selected = selectRepositories(applicable, options.repositories);
+    const entries = await mapBounded(selected, 8, (repository) =>
       inspectRepositorySafely(repository, options, devtoolsVersion),
     );
     const excluded = repositories
@@ -117,6 +118,7 @@ const main = async (): Promise<void> => {
         applicable: applicable.length,
         exclusions: [...APPROVED_EXCLUSIONS].sort(),
       },
+      selectedRepositories: options.repositories,
       entries: [...entries, ...excluded].sort((left, right) =>
         left.repository.localeCompare(right.repository),
       ),
@@ -180,21 +182,48 @@ export const parseOptions = (argv: readonly string[]) => {
         ? 'resume'
         : 'dry-run';
   const reportIndex = argv.indexOf('--report-dir');
+  const repositoriesIndex = argv.indexOf('--repositories');
   const reportDirectory =
     reportIndex === -1
       ? resolve('.metadata-rollout-reports')
       : resolve(argv[reportIndex + 1] ?? '');
   if (reportIndex !== -1 && argv[reportIndex + 1] === undefined)
     throw new Error('--report-dir requires a directory.');
+  if (repositoriesIndex !== -1 && argv[repositoriesIndex + 1] === undefined)
+    throw new Error('--repositories requires a comma-separated repository list.');
   if (['--apply', '--verify', '--resume'].filter((option) => argv.includes(option)).length > 1)
     throw new Error('Select at most one of --apply, --verify, or --resume.');
   const unknown = argv.filter(
     (value, index) =>
-      !['--apply', '--verify', '--resume', '--dry-run', '--report-dir'].includes(value) &&
-      index !== reportIndex + 1,
+      !['--apply', '--verify', '--resume', '--dry-run', '--report-dir', '--repositories'].includes(
+        value,
+      ) &&
+      index !== reportIndex + 1 &&
+      index !== repositoriesIndex + 1,
   );
   if (unknown.length > 0) throw new Error(`Unknown arguments: ${unknown.join(', ')}`);
-  return { mode: mode as Mode, reportDirectory };
+  const repositories =
+    repositoriesIndex === -1
+      ? []
+      : [...new Set((argv[repositoriesIndex + 1] ?? '').split(',').filter(Boolean))].sort();
+  if (repositoriesIndex !== -1 && repositories.length === 0)
+    throw new Error('--repositories requires at least one repository.');
+  return { mode: mode as Mode, reportDirectory, repositories };
+};
+
+/*** Restrict a mutating rollout to explicitly approved inventory members. */
+export const selectRepositories = (
+  repositories: readonly Repository[],
+  selectedNames: readonly string[],
+): readonly Repository[] => {
+  if (selectedNames.length === 0) return repositories;
+  const available = new Set(repositories.map((repository) => repository.name));
+  const unknown = selectedNames.filter((name) => !available.has(name));
+  if (unknown.length > 0)
+    throw new Error(
+      `Selected repositories are not applicable inventory members: ${unknown.join(', ')}.`,
+    );
+  return repositories.filter((repository) => selectedNames.includes(repository.name));
 };
 
 const inspectRepository = async (
