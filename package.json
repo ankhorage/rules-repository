@@ -47,7 +47,8 @@
     "@ankhorage/paradox": "^0.2.6",
     "@types/bun": "^1.4.2",
     "@types/node": "^26.6.2",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "yaml": "^2.9.1"
   },
   "packageManager": "bun@1.4.2",
   "scripts": {
@@ -62,6 +63,7 @@
     "prepack": "bun run build",
     "lint": "ankhorage-eslint . --max-warnings=0",
     "lint:fix": "ankhorage-eslint . --fix --max-warnings=0",
+    "metadata:rollout": "bun scripts/metadata-rollout.ts",
     "format": "ankhorage-prettier --write .",
     "format:check": "ankhorage-prettier --check .",
     "knip:check": "ankhorage-knip"

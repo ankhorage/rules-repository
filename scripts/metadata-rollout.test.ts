@@ -1,0 +1,294 @@
+import { describe, expect, test } from 'bun:test';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+import {
+  changedPaths,
+  doctorVersionFromWorkflow,
+  guardWorkflowContract,
+  isCanonicalManagedCiUpgrade,
+  loadInstructions,
+  MANAGED_PATHS,
+  prepareCandidateBranch,
+  requiredCheckState,
+} from './metadata-rollout.js';
+
+const ci = `name: CI
+on: [push, pull_request]
+jobs:
+  validate:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+    env:
+      DATABASE_URL: postgres://postgres
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          bun run test:integration
+          bun run test:browser
+`;
+const release = `name: Release
+on:
+  push:
+    branches: [main]
+jobs:
+  publish:
+    container: node:22
+    steps:
+      - uses: actions/checkout@v4
+      - run: bun run release
+`;
+
+describe('metadata rollout safety contracts', () => {
+  test('rejects multiline acceptance, service, environment, condition, and release losses', () => {
+    for (const after of [
+      ci.replace('          bun run test:browser\n', ''),
+      ci.replace('    services:\n      postgres:\n        image: postgres:16\n', ''),
+      ci.replace('    env:\n      DATABASE_URL: postgres://postgres\n', ''),
+      ci.replace("    if: github.event_name == 'push'\n", ''),
+    ]) {
+      expect(
+        guardWorkflowContract(
+          { ci, release },
+          { ci: `${after}\n# --enforce-repository-metadata`, release },
+          ['.github/workflows/ci.yml'],
+        ),
+      ).toContain('rejected weakened CI contract');
+    }
+    expect(
+      guardWorkflowContract(
+        { ci, release },
+        {
+          ci: `${ci}\n# --enforce-repository-metadata`,
+          release: release.replace('    container: node:22\n', ''),
+        },
+        ['.github/workflows/ci.yml', '.github/workflows/release.yml'],
+      ),
+    ).toContain('rejected weakened release contract');
+  });
+
+  test('accepts an additive managed enforcement step and rejects unmanaged output', () => {
+    const after = ci.replace(
+      '      - run: |',
+      '      - run: bunx @ankhorage/doctor validate . --enforce-repository-metadata\n      - run: |',
+    );
+    expect(
+      guardWorkflowContract({ ci, release }, { ci: after, release }, ['.github/workflows/ci.yml']),
+    ).toBeNull();
+    expect(guardWorkflowContract({ ci, release }, { ci: after, release }, ['README.md'])).toContain(
+      'non-managed',
+    );
+  });
+
+  test('includes generated untracked helpers with tracked additions, modifications, and deletions', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'metadata-rollout-test-'));
+    try {
+      await Bun.$`git init ${directory}`.quiet();
+      await Bun.$`git -C ${directory} config user.email test@example.invalid`.quiet();
+      await Bun.$`git -C ${directory} config user.name test`.quiet();
+      await writeFile(join(directory, 'modified.ts'), 'before');
+      await writeFile(join(directory, 'removed.ts'), 'remove');
+      await Bun.$`git -C ${directory} add .`.quiet();
+      await Bun.$`git -C ${directory} commit -m initial`.quiet();
+      await writeFile(join(directory, 'modified.ts'), 'after');
+      await Bun.$`rm ${join(directory, 'removed.ts')}`.quiet();
+      await mkdir(join(directory, '.github/scripts'), { recursive: true });
+      await writeFile(join(directory, '.github/scripts/ci-impact.ts'), 'export {};');
+      expect(await changedPaths(directory)).toEqual([
+        '.github/scripts/ci-impact.ts',
+        'modified.ts',
+        'removed.ts',
+      ]);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  test('discovers declared local skills and keeps dependency artifacts managed', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'metadata-instructions-test-'));
+    try {
+      await mkdir(join(directory, '.agents/skills/ankhorage-coding-rules'), { recursive: true });
+      await writeFile(
+        join(directory, 'AGENTS.md'),
+        'Load .agents/skills/ankhorage-coding-rules/SKILL.md before edits.',
+      );
+      await writeFile(join(directory, '.agents/skills/ankhorage-coding-rules/SKILL.md'), '# Rules');
+      expect(await loadInstructions(directory)).toEqual([
+        'applied AGENTS.md through isolated checkout, no force push, and managed-path-only guard',
+        'applied supported local policy .agents/skills/ankhorage-coding-rules/SKILL.md',
+      ]);
+      expect(MANAGED_PATHS.has('package.json')).toBe(true);
+      expect(MANAGED_PATHS.has('bun.lock')).toBe(true);
+      await mkdir(join(directory, '.agents/skills/custom'), { recursive: true });
+      await writeFile(join(directory, '.agents/skills/custom/SKILL.md'), '# Custom');
+      expect(await loadInstructions(directory)).toContain('requiring human review');
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  test('permits only evidenced canonical managed-template upgrades and protects bespoke acceptance', () => {
+    const legacy = `name: CI
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: bun run test
+      - name: Validate Ankhorage repository
+        run: bunx @ankhorage/doctor@0.14.0 validate .
+`;
+    const canonical = legacy.replace(
+      'bunx @ankhorage/doctor@0.14.0 validate .',
+      'bunx @ankhorage/doctor@0.15.1 validate . --enforce-repository-metadata',
+    );
+    expect(isCanonicalManagedCiUpgrade(legacy, canonical)).toBe(true);
+    expect(
+      guardWorkflowContract({ ci: legacy, release }, { ci: canonical, release }, [
+        '.github/workflows/ci.yml',
+      ]),
+    ).toBeNull();
+    const chess = legacy.replace(
+      '    steps:',
+      '    services:\n      redis:\n        image: redis\n    steps:',
+    );
+    expect(
+      guardWorkflowContract({ ci: chess, release }, { ci: canonical, release }, [
+        '.github/workflows/ci.yml',
+      ]),
+    ).toContain('weakened CI');
+    const flow = legacy.replace('    steps:', '    container: ghcr.io/example/oci\n    steps:');
+    expect(
+      guardWorkflowContract({ ci: flow, release }, { ci: canonical, release }, [
+        '.github/workflows/ci.yml',
+      ]),
+    ).toContain('weakened CI');
+  });
+
+  test('extracts an effective Doctor pin from a step, never a workflow comment', () => {
+    expect(
+      doctorVersionFromWorkflow(
+        '# bunx @ankhorage/doctor@0.15.1 validate . --enforce-repository-metadata\n' + ci,
+      ),
+    ).toBeNull();
+    expect(
+      doctorVersionFromWorkflow(
+        ci.replace(
+          '          bun run test:integration',
+          '          bunx @ankhorage/doctor@0.15.1 validate . --enforce-repository-metadata',
+        ),
+      ),
+    ).toBe('0.15.1');
+  });
+
+  test('requires the latest successful required check and tolerates no optional inference', () => {
+    expect(
+      requiredCheckState(
+        [
+          {
+            name: 'validate',
+            status: 'completed',
+            conclusion: 'success',
+            completed_at: '2026-01-01T00:00:00Z',
+          },
+          {
+            name: 'validate',
+            status: 'in_progress',
+            conclusion: null,
+            started_at: '2026-01-01T00:01:00Z',
+          },
+          {
+            name: 'optional',
+            status: 'completed',
+            conclusion: 'skipped',
+            completed_at: '2026-01-01T00:02:00Z',
+          },
+        ],
+        ['validate'],
+      ),
+    ).toContain('pending');
+    expect(
+      requiredCheckState(
+        [
+          {
+            name: 'validate',
+            status: 'completed',
+            conclusion: 'success',
+            completed_at: '2026-01-01T00:03:00Z',
+          },
+          {
+            name: 'optional',
+            status: 'completed',
+            conclusion: 'failure',
+            completed_at: '2026-01-01T00:02:00Z',
+          },
+        ],
+        ['validate'],
+      ),
+    ).toBeNull();
+    expect(requiredCheckState([], ['validate'])).toContain('absent');
+  });
+
+  test('safely resumes an existing remote branch after main advances and rejects a merge conflict', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'metadata-rollout-remote-'));
+    const remote = join(directory, 'remote.git');
+    const seed = join(directory, 'seed');
+    const resumed = join(directory, 'resumed');
+    const conflicting = join(directory, 'conflicting');
+    const repository = { name: 'fixture', archived: false, default_branch: 'main' };
+    const git = async (...arguments_: string[]) => Bun.$`git ${arguments_}`.quiet();
+    try {
+      await git('init', '--bare', remote);
+      await git('clone', remote, seed);
+      await git('-C', seed, 'checkout', '-b', 'main');
+      await git('-C', seed, 'config', 'user.email', 'test@example.invalid');
+      await git('-C', seed, 'config', 'user.name', 'test');
+      await writeFile(join(seed, 'workflow.txt'), 'base\n');
+      await git('-C', seed, 'add', '.');
+      await git('-C', seed, 'commit', '-m', 'initial');
+      await git('-C', seed, 'push', '-u', 'origin', 'main');
+      await git('clone', '--branch', 'main', remote, resumed);
+      await git('-C', resumed, 'config', 'user.email', 'test@example.invalid');
+      await git('-C', resumed, 'config', 'user.name', 'test');
+      expect(await prepareCandidateBranch(resumed, repository)).toBeNull();
+      await writeFile(join(resumed, 'branch.txt'), 'rollout\n');
+      await git('-C', resumed, 'add', '.');
+      await git('-C', resumed, 'commit', '-m', 'rollout');
+      await git('-C', resumed, 'push', '-u', 'origin', 'chore/14-repository-metadata-fixture');
+      await writeFile(join(seed, 'main.txt'), 'advanced\n');
+      await git('-C', seed, 'add', '.');
+      await git('-C', seed, 'commit', '-m', 'advanced main');
+      await git('-C', seed, 'push');
+      await git('clone', '--branch', 'main', remote, conflicting);
+      await git('-C', conflicting, 'config', 'user.email', 'test@example.invalid');
+      await git('-C', conflicting, 'config', 'user.name', 'test');
+      expect(await prepareCandidateBranch(conflicting, repository)).toBeNull();
+      expect(await Bun.file(join(conflicting, 'main.txt')).text()).toBe('advanced\n');
+      const branchEditor = join(directory, 'branch-editor');
+      await git('clone', '--branch', 'chore/14-repository-metadata-fixture', remote, branchEditor);
+      await git('-C', branchEditor, 'config', 'user.email', 'test@example.invalid');
+      await git('-C', branchEditor, 'config', 'user.name', 'test');
+      await writeFile(join(branchEditor, 'workflow.txt'), 'branch\n');
+      await git('-C', branchEditor, 'add', '.');
+      await git('-C', branchEditor, 'commit', '-m', 'branch edit');
+      await git('-C', branchEditor, 'push');
+      await writeFile(join(seed, 'workflow.txt'), 'main\n');
+      await git('-C', seed, 'add', '.');
+      await git('-C', seed, 'commit', '-m', 'conflicting main edit');
+      await git('-C', seed, 'push');
+      const retry = join(directory, 'retry');
+      await git('clone', '--branch', 'main', remote, retry);
+      await git('-C', retry, 'config', 'user.email', 'test@example.invalid');
+      await git('-C', retry, 'config', 'user.name', 'test');
+      expect(await prepareCandidateBranch(retry, repository)).toContain('cannot merge');
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+});
