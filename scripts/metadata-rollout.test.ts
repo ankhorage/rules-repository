@@ -5,6 +5,7 @@ import { join } from 'node:path';
 
 import {
   branchProtectionEvidence,
+  childEnvironment,
   changedPaths,
   classifyDefaultBranchEvidence,
   doctorVersionFromWorkflow,
@@ -48,6 +49,17 @@ jobs:
 `;
 
 describe('metadata rollout safety contracts', () => {
+  test('passes the prepared Bun environment to spawned commands', () => {
+    const previous = process.env.BUN_INSTALL_CACHE_DIR;
+    try {
+      process.env.BUN_INSTALL_CACHE_DIR = '/tmp/metadata-rollout-cache';
+      expect(childEnvironment().BUN_INSTALL_CACHE_DIR).toBe('/tmp/metadata-rollout-cache');
+    } finally {
+      if (previous === undefined) delete process.env.BUN_INSTALL_CACHE_DIR;
+      else process.env.BUN_INSTALL_CACHE_DIR = previous;
+    }
+  });
+
   test('rejects multiline acceptance, service, environment, condition, and release losses', () => {
     for (const after of [
       ci.replace('          bun run test:browser\n', ''),
