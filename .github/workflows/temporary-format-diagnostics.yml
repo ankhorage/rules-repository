@@ -1,5 +1,6 @@
 name: Temporary format diagnostics
 on:
+  pull_request:
   push:
     branches:
       - fix/14-prove-published-workflow-provenance
