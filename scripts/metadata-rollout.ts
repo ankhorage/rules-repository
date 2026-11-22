@@ -9,6 +9,7 @@ type CommandResult = { readonly code: number; readonly output: string };
 type BunEnvironment = Readonly<
   Record<'TMPDIR' | 'BUN_INSTALL_CACHE_DIR' | 'XDG_CACHE_HOME', string>
 >;
+type BunPreflight = { readonly environment: BunEnvironment; readonly root: string };
 type Repository = {
   readonly name: string;
   readonly archived: boolean;
@@ -67,54 +68,62 @@ export const MANAGED_PATHS = new Set([
 
 const main = async (): Promise<void> => {
   const options = parseOptions(process.argv.slice(2));
-  const bunEnvironment = await prepareBunEnvironment(options.reportDirectory);
-  if (typeof bunEnvironment === 'string') {
+  const preflight = await prepareBunEnvironment(options.reportDirectory);
+  if (typeof preflight === 'string') {
     await writeReport(options.reportDirectory, {
       generatedAt: new Date().toISOString(),
       mode: options.mode,
-      globalBlocker: bunEnvironment,
+      globalBlocker: preflight,
       entries: [],
     });
     process.exitCode = 1;
     return;
   }
-  Object.assign(process.env, bunEnvironment);
-  const devtoolsVersion = await readDevtoolsVersion();
-  const repositories = await listRepositories();
-  const applicable = repositories.filter((repository) => !APPROVED_EXCLUSIONS.has(repository.name));
-  if (applicable.length !== 92) {
-    throw new Error(
-      `Approved inventory mismatch: expected 92 applicable repositories, received ${applicable.length}.`,
+  try {
+    Object.assign(process.env, preflight.environment);
+    const devtoolsVersion = await readDevtoolsVersion();
+    const repositories = await listRepositories();
+    const applicable = repositories.filter(
+      (repository) => !APPROVED_EXCLUSIONS.has(repository.name),
     );
+    if (applicable.length !== 92) {
+      throw new Error(
+        `Approved inventory mismatch: expected 92 applicable repositories, received ${applicable.length}.`,
+      );
+    }
+    const entries = await mapBounded(applicable, 8, (repository) =>
+      inspectRepositorySafely(repository, options, devtoolsVersion),
+    );
+    const excluded = repositories
+      .filter((repository) => APPROVED_EXCLUSIONS.has(repository.name))
+      .map((repository) => exemptEntry(repository));
+    const report = {
+      generatedAt: new Date().toISOString(),
+      mode: options.mode,
+      devtoolsVersion,
+      inventory: {
+        total: repositories.length,
+        applicable: applicable.length,
+        exclusions: [...APPROVED_EXCLUSIONS].sort(),
+      },
+      entries: [...entries, ...excluded].sort((left, right) =>
+        left.repository.localeCompare(right.repository),
+      ),
+    };
+    await writeReport(options.reportDirectory, report);
+    const incomplete = report.entries.some(
+      (entry) => !['VERIFIED', 'EXEMPT'].includes(entry.status),
+    );
+    process.exitCode = incomplete ? 1 : 0;
+  } finally {
+    await rm(preflight.root, { recursive: true, force: true });
   }
-  const entries = await mapBounded(applicable, 8, (repository) =>
-    inspectRepositorySafely(repository, options, devtoolsVersion),
-  );
-  const excluded = repositories
-    .filter((repository) => APPROVED_EXCLUSIONS.has(repository.name))
-    .map((repository) => exemptEntry(repository));
-  const report = {
-    generatedAt: new Date().toISOString(),
-    mode: options.mode,
-    devtoolsVersion,
-    inventory: {
-      total: repositories.length,
-      applicable: applicable.length,
-      exclusions: [...APPROVED_EXCLUSIONS].sort(),
-    },
-    entries: [...entries, ...excluded].sort((left, right) =>
-      left.repository.localeCompare(right.repository),
-    ),
-  };
-  await writeReport(options.reportDirectory, report);
-  const incomplete = report.entries.some((entry) => !['VERIFIED', 'EXEMPT'].includes(entry.status));
-  process.exitCode = incomplete ? 1 : 0;
 };
 
 /*** Prove Bun can complete one unchanged frozen install before the rollout fans out to repository clones. */
 export const prepareBunEnvironment = async (
   reportDirectory: string,
-): Promise<BunEnvironment | string> => {
+): Promise<BunPreflight | string> => {
   const root = await mkdtemp(join(resolve(reportDirectory, '..'), '.metadata-rollout-host-'));
   const checkout = join(root, 'ai');
   const environment = {
@@ -122,6 +131,7 @@ export const prepareBunEnvironment = async (
     BUN_INSTALL_CACHE_DIR: join(root, 'cache'),
     XDG_CACHE_HOME: join(root, 'xdg-cache'),
   } as const;
+  let completed = false;
   try {
     await Promise.all(
       Object.values(environment).map((directory) => mkdir(directory, { recursive: true })),
@@ -141,11 +151,12 @@ export const prepareBunEnvironment = async (
     if (install.code !== 0)
       return `${install.output.includes('EPERM') ? 'HOST_TEMP_EPERM' : 'HOST_ENVIRONMENT_FAILURE'}: representative frozen install failed: ${firstLine(install.output)}`;
     const unchanged = await run('git', ['diff', '--exit-code', '--', 'bun.lock'], checkout);
-    return unchanged.code === 0
-      ? environment
-      : 'HOST_ENVIRONMENT_FAILURE: representative frozen install modified bun.lock.';
+    if (unchanged.code !== 0)
+      return 'HOST_ENVIRONMENT_FAILURE: representative frozen install modified bun.lock.';
+    completed = true;
+    return { environment, root };
   } finally {
-    await rm(root, { recursive: true, force: true });
+    if (!completed) await rm(root, { recursive: true, force: true });
   }
 };
 
