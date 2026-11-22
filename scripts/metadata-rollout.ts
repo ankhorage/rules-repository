@@ -549,6 +549,7 @@ const validateCheckout = async (checkout: string): Promise<string[]> => {
     'bunx',
     [`@ankhorage/doctor@${doctorVersion}`, 'validate', '.', '--enforce-repository-metadata'],
     checkout,
+    { BUN_INSTALL_CACHE_DIR: join(checkout, '.metadata-rollout-doctor-cache') },
   );
   if (doctor.code !== 0)
     return [`FAILED: published Doctor metadata validation: ${firstLine(doctor.output)}`];
