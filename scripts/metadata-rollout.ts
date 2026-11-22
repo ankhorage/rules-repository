@@ -6,6 +6,9 @@ import { parseDocument } from 'yaml';
 type Mode = 'dry-run' | 'apply' | 'verify' | 'resume';
 type RolloutStatus = 'VERIFIED' | 'EXEMPT' | 'PENDING' | 'BLOCKED' | 'FAILED';
 type CommandResult = { readonly code: number; readonly output: string };
+type BunEnvironment = Readonly<
+  Record<'TMPDIR' | 'BUN_INSTALL_CACHE_DIR' | 'XDG_CACHE_HOME', string>
+>;
 type Repository = {
   readonly name: string;
   readonly archived: boolean;
@@ -64,6 +67,18 @@ export const MANAGED_PATHS = new Set([
 
 const main = async (): Promise<void> => {
   const options = parseOptions(process.argv.slice(2));
+  const bunEnvironment = await prepareBunEnvironment(options.reportDirectory);
+  if (typeof bunEnvironment === 'string') {
+    await writeReport(options.reportDirectory, {
+      generatedAt: new Date().toISOString(),
+      mode: options.mode,
+      globalBlocker: bunEnvironment,
+      entries: [],
+    });
+    process.exitCode = 1;
+    return;
+  }
+  Object.assign(process.env, bunEnvironment);
   const devtoolsVersion = await readDevtoolsVersion();
   const repositories = await listRepositories();
   const applicable = repositories.filter((repository) => !APPROVED_EXCLUSIONS.has(repository.name));
@@ -94,6 +109,44 @@ const main = async (): Promise<void> => {
   await writeReport(options.reportDirectory, report);
   const incomplete = report.entries.some((entry) => !['VERIFIED', 'EXEMPT'].includes(entry.status));
   process.exitCode = incomplete ? 1 : 0;
+};
+
+/*** Prove Bun can complete one unchanged frozen install before the rollout fans out to repository clones. */
+export const prepareBunEnvironment = async (
+  reportDirectory: string,
+): Promise<BunEnvironment | string> => {
+  const root = await mkdtemp(join(resolve(reportDirectory, '..'), '.metadata-rollout-host-'));
+  const checkout = join(root, 'ai');
+  const environment = {
+    TMPDIR: join(root, 'tmp'),
+    BUN_INSTALL_CACHE_DIR: join(root, 'cache'),
+    XDG_CACHE_HOME: join(root, 'xdg-cache'),
+  } as const;
+  try {
+    await Promise.all(
+      Object.values(environment).map((directory) => mkdir(directory, { recursive: true })),
+    );
+    const clone = await run('git', [
+      'clone',
+      '--depth',
+      '1',
+      '--branch',
+      'main',
+      `https://github.com/${ORGANIZATION}/ai.git`,
+      checkout,
+    ]);
+    if (clone.code !== 0)
+      return `HOST_ENVIRONMENT_FAILURE: representative checkout failed: ${firstLine(clone.output)}`;
+    const install = await run('bun', ['install', '--frozen-lockfile'], checkout, environment);
+    if (install.code !== 0)
+      return `${install.output.includes('EPERM') ? 'HOST_TEMP_EPERM' : 'HOST_ENVIRONMENT_FAILURE'}: representative frozen install failed: ${firstLine(install.output)}`;
+    const unchanged = await run('git', ['diff', '--exit-code', '--', 'bun.lock'], checkout);
+    return unchanged.code === 0
+      ? environment
+      : 'HOST_ENVIRONMENT_FAILURE: representative frozen install modified bun.lock.';
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 };
 
 export const parseOptions = (argv: readonly string[]) => {
@@ -868,32 +921,64 @@ const metadataState = async (
   return isNotFound(source.output) && isNotFound(nonSource.output) ? 'missing' : 'unverified';
 };
 
+type BranchProtectionEvidence =
+  | { readonly kind: 'protected'; readonly requiredNames: readonly string[] }
+  | { readonly kind: 'unprotected' }
+  | { readonly kind: 'unavailable'; readonly reason: string };
+
+/*** Classify branch-policy evidence without mistaking policy API access for CI execution. */
+export const branchProtectionEvidence = (result: CommandResult): BranchProtectionEvidence => {
+  if (result.code !== 0) {
+    if (isNotFound(result.output) || result.output.includes('Branch not protected'))
+      return { kind: 'unprotected' };
+    return { kind: 'unavailable', reason: firstLine(result.output) };
+  }
+  try {
+    const requiredNames: unknown = JSON.parse(result.output);
+    return Array.isArray(requiredNames) &&
+      requiredNames.length > 0 &&
+      requiredNames.every((name) => typeof name === 'string')
+      ? { kind: 'protected', requiredNames }
+      : { kind: 'unavailable', reason: 'Required-check identities are unavailable or empty.' };
+  } catch {
+    return { kind: 'unavailable', reason: 'Required-check policy returned malformed evidence.' };
+  }
+};
+
+/*** Require at least one successful exact-SHA GitHub check when branch policy cannot identify required names. */
+export const successfulCheckEvidence = (checks: readonly unknown[]): string | null => {
+  const completed = checks.filter(
+    (check): check is Record<string, unknown> => isRecord(check) && check.status === 'completed',
+  );
+  if (completed.length === 0) return 'No completed GitHub checks exist on the verified SHA.';
+  if (!completed.some((check) => check.conclusion === 'success'))
+    return 'No successful GitHub check exists on the verified SHA.';
+  return null;
+};
+
+/*** Keep real CI, branch protection, and stale-head failures as separate fail-closed evidence classes. */
+export const classifyDefaultBranchEvidence = (input: {
+  readonly defaultSha: string;
+  readonly currentSha: string | null;
+  readonly policy: BranchProtectionEvidence;
+  readonly checkState: string | null;
+}): string | null => {
+  if (input.checkState !== null) return `ACTUAL_CI_CONTRACT_DRIFT: ${input.checkState}`;
+  if (input.currentSha !== input.defaultSha)
+    return 'ACTUAL_CI_CONTRACT_DRIFT: Default branch advanced during verification; evidence is stale.';
+  if (input.policy.kind === 'unprotected')
+    return 'POLICY_UNAVAILABLE_OR_UNPROTECTED: Default branch has no mandatory required-check protection.';
+  if (input.policy.kind === 'unavailable')
+    return `POLICY_UNAVAILABLE_OR_UNPROTECTED: Required-check policy is unavailable: ${input.policy.reason}`;
+  return null;
+};
+
 /*** Require published Doctor and successful default-head checks before reporting a completed rollout. */
 const verifyDefaultBranchEvidence = async (
   repository: Repository,
   defaultSha: string | null,
 ): Promise<string | null> => {
   if (defaultSha === null) return 'Default branch HEAD is unavailable.';
-  const required = await run('gh', [
-    'api',
-    `repos/${ORGANIZATION}/${repository.name}/branches/${repository.default_branch}/protection/required_status_checks`,
-    '--jq',
-    '.contexts',
-  ]);
-  if (required.code !== 0)
-    return `Required-check policy is unavailable: ${firstLine(required.output)}`;
-  let requiredNames: unknown;
-  try {
-    requiredNames = JSON.parse(required.output);
-  } catch {
-    return 'Required-check policy returned malformed evidence.';
-  }
-  if (
-    !Array.isArray(requiredNames) ||
-    requiredNames.length === 0 ||
-    !requiredNames.every((name) => typeof name === 'string')
-  )
-    return 'Required-check identities are unavailable or empty.';
   const checks = await run('gh', [
     'api',
     '--paginate',
@@ -913,8 +998,21 @@ const verifyDefaultBranchEvidence = async (
         isRecord(page) && Array.isArray(page.check_runs) ? page.check_runs : [],
       )
     : [];
-  const checkState = requiredCheckState(checkEvidence, requiredNames);
-  if (checkState !== null) return checkState;
+  const policy = branchProtectionEvidence(
+    await run('gh', [
+      'api',
+      `repos/${ORGANIZATION}/${repository.name}/branches/${repository.default_branch}/protection/required_status_checks`,
+      '--jq',
+      '.contexts',
+    ]),
+  );
+  const checkState =
+    policy.kind === 'protected'
+      ? requiredCheckState(checkEvidence, policy.requiredNames)
+      : successfulCheckEvidence(checkEvidence);
+  const currentSha = await defaultBranchSha(repository);
+  const evidence = classifyDefaultBranchEvidence({ defaultSha, currentSha, policy, checkState });
+  if (evidence !== null) return evidence;
   const checkout = await mkdtemp(join(tmpdir(), `metadata-verify-${repository.name}-`));
   try {
     const clone = await run('git', [
@@ -940,10 +1038,9 @@ const verifyDefaultBranchEvidence = async (
     );
     if (doctor.code !== 0)
       return `Published Doctor rejected metadata with enforcement: ${firstLine(doctor.output)}`;
-    const currentSha = await defaultBranchSha(repository);
-    return currentSha === defaultSha
+    return (await defaultBranchSha(repository)) === defaultSha
       ? null
-      : 'Default branch advanced during verification; evidence is stale.';
+      : 'ACTUAL_CI_CONTRACT_DRIFT: Default branch advanced during verification; evidence is stale.';
   } finally {
     await rm(checkout, { recursive: true, force: true });
   }
@@ -1034,12 +1131,18 @@ const run = async (
   command: string,
   arguments_: readonly string[],
   cwd?: string,
+  environment?: Record<string, string>,
 ): Promise<CommandResult> => {
-  const process = Bun.spawn([command, ...arguments_], { cwd, stdout: 'pipe', stderr: 'pipe' });
+  const child = Bun.spawn([command, ...arguments_], {
+    cwd,
+    env: environment === undefined ? undefined : { ...process.env, ...environment },
+    stdout: 'pipe',
+    stderr: 'pipe',
+  });
   const [stdout, stderr, code] = await Promise.all([
-    new Response(process.stdout).text(),
-    new Response(process.stderr).text(),
-    process.exited,
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+    child.exited,
   ]);
   return { code, output: `${stdout}${stderr}` };
 };
