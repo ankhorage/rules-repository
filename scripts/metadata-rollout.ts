@@ -412,6 +412,8 @@ const parseWorkflow = (workflow: string): Record<string, unknown> | null => {
   const source = document.toJS({ mapAsMap: false });
   return isRecord(source) && isRecord(source.jobs) ? source : null;
 };
+const workflowSteps = (job: unknown): Record<string, unknown>[] | null =>
+  isRecord(job) && Array.isArray(job.steps) && job.steps.every(isRecord) ? job.steps : null;
 /*** Extract every preservation-relevant GitHub Actions field into canonical semantic requirements. */
 export const workflowContract = (workflow: string): string[] | null => {
   const source = parseWorkflow(workflow);
