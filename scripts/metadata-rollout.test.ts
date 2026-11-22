@@ -199,9 +199,18 @@ jobs:
     const published = { ci: legacy, release };
     const disguisedTest = legacy.replace('run: bun run test', 'run: bun run test:critical');
     const alteredTrigger = legacy.replace('on: [push, pull_request]', 'on: push');
-    const alteredPermission = legacy.replace('    runs-on:', '    permissions: { contents: write }\\n    runs-on:');
-    const alteredCondition = legacy.replace('    runs-on:', '    if: github.event_name == push\\n    runs-on:');
-    const alteredEnv = legacy.replace('    runs-on:', '    env: { DATABASE_URL: postgres://example }\\n    runs-on:');
+    const alteredPermission = legacy.replace(
+      '    runs-on:',
+      '    permissions: { contents: write }\n    runs-on:',
+    );
+    const alteredCondition = legacy.replace(
+      '    runs-on:',
+      '    if: github.event_name == push\n    runs-on:',
+    );
+    const alteredEnv = legacy.replace(
+      '    runs-on:',
+      '    env: { DATABASE_URL: postgres://example }\n    runs-on:',
+    );
     for (const custom of [
       disguisedTest,
       alteredTrigger,
