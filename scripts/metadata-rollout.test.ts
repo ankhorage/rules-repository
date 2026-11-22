@@ -7,7 +7,6 @@ import {
   changedPaths,
   doctorVersionFromWorkflow,
   guardWorkflowContract,
-  isCanonicalManagedCiUpgrade,
   unchangedPublishedManagedWorkflow,
   loadInstructions,
   MANAGED_PATHS,
@@ -132,7 +131,7 @@ describe('metadata rollout safety contracts', () => {
     }
   });
 
-  test('permits only evidenced canonical managed-template upgrades and protects bespoke acceptance', () => {
+  test('requires a proven published baseline before accepting managed workflow replacements', () => {
     const legacy = `name: CI
 on: [push, pull_request]
 jobs:
@@ -149,7 +148,6 @@ jobs:
       'bunx @ankhorage/doctor@0.14.0 validate .',
       'bunx @ankhorage/doctor@0.15.1 validate . --enforce-repository-metadata',
     );
-    expect(isCanonicalManagedCiUpgrade(legacy, canonical)).toBe(true);
     expect(
       guardWorkflowContract({ ci: legacy, release }, { ci: canonical, release }, [
         '.github/workflows/ci.yml',
@@ -232,9 +230,6 @@ jobs:
         release: release.replace('bun run release', 'bun run bad-release'),
       }),
     ).toContain('release workflow differs');
-    expect(isCanonicalManagedCiUpgrade(legacy, canonical)).toBe(true);
-    expect(isCanonicalManagedCiUpgrade(alteredTrigger, canonical)).toBe(false);
-    expect(isCanonicalManagedCiUpgrade(alteredCondition, canonical)).toBe(false);
   });
 
   test('extracts an effective Doctor pin from a step, never a workflow comment', () => {
