@@ -4,7 +4,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import {
+  branchProtectionEvidence,
   changedPaths,
+  classifyDefaultBranchEvidence,
   doctorVersionFromWorkflow,
   guardWorkflowContract,
   unchangedPublishedManagedWorkflow,
@@ -12,6 +14,7 @@ import {
   MANAGED_PATHS,
   prepareCandidateBranch,
   requiredCheckState,
+  successfulCheckEvidence,
 } from './metadata-rollout.js';
 
 const ci = `name: CI
@@ -294,6 +297,72 @@ jobs:
       ),
     ).toBeNull();
     expect(requiredCheckState([], ['validate'])).toContain('absent');
+  });
+
+  test('separates inaccessible or absent branch protection from exact-SHA CI evidence', () => {
+    const successfulChecks = [
+      { name: 'validate', status: 'completed', conclusion: 'success' },
+      { name: 'container-acceptance', status: 'completed', conclusion: 'success' },
+    ];
+    expect(successfulCheckEvidence(successfulChecks)).toBeNull();
+    const unavailable = branchProtectionEvidence({
+      code: 1,
+      output: 'HTTP 403: Resource not accessible by integration',
+    });
+    expect(unavailable).toEqual({
+      kind: 'unavailable',
+      reason: 'HTTP 403: Resource not accessible by integration',
+    });
+    expect(
+      classifyDefaultBranchEvidence({
+        defaultSha: 'head',
+        currentSha: 'head',
+        policy: unavailable,
+        checkState: successfulCheckEvidence(successfulChecks),
+      }),
+    ).toContain('POLICY_UNAVAILABLE_OR_UNPROTECTED');
+    const unprotected = branchProtectionEvidence({
+      code: 1,
+      output: 'HTTP 404: Branch not protected',
+    });
+    expect(unprotected).toEqual({ kind: 'unprotected' });
+    expect(
+      classifyDefaultBranchEvidence({
+        defaultSha: 'head',
+        currentSha: 'head',
+        policy: unprotected,
+        checkState: null,
+      }),
+    ).toContain('POLICY_UNAVAILABLE_OR_UNPROTECTED');
+  });
+
+  test('fails missing checks and stale evidence while accepting protected default-head success', () => {
+    const policy = branchProtectionEvidence({ code: 0, output: '["validate"]' });
+    const checks = [{ name: 'validate', status: 'completed', conclusion: 'success' }];
+    expect(
+      classifyDefaultBranchEvidence({
+        defaultSha: 'head',
+        currentSha: 'head',
+        policy,
+        checkState: requiredCheckState(checks, ['validate']),
+      }),
+    ).toBeNull();
+    expect(
+      classifyDefaultBranchEvidence({
+        defaultSha: 'head',
+        currentSha: 'head',
+        policy,
+        checkState: requiredCheckState([], ['validate']),
+      }),
+    ).toContain('ACTUAL_CI_CONTRACT_DRIFT');
+    expect(
+      classifyDefaultBranchEvidence({
+        defaultSha: 'head',
+        currentSha: 'advanced',
+        policy,
+        checkState: null,
+      }),
+    ).toContain('ACTUAL_CI_CONTRACT_DRIFT');
   });
 
   test('safely resumes an existing remote branch after main advances and rejects a merge conflict', async () => {
