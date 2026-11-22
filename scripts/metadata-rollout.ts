@@ -29,6 +29,7 @@ const ORGANIZATION = 'ankhorage';
 const UMBRELLA = 'ankhorage/rules-repository#14';
 const APPROVED_EXCLUSIONS = new Set([
   'ankhorage4',
+  'graph-neo4j',
   'goldkind',
   'osx',
   'release-wave-e2e-consumer',
