@@ -1,0 +1,20 @@
+name: Temporary format diagnostics
+on:
+  push:
+    branches:
+      - fix/14-prove-published-workflow-provenance
+permissions:
+  contents: read
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.2'
+      - run: bun install --frozen-lockfile
+      - name: Print exact Prettier correction
+        run: |
+          bun run format
+          git diff -- scripts/metadata-rollout.ts scripts/metadata-rollout.test.ts
