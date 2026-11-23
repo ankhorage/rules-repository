@@ -20,6 +20,10 @@ describe('repository rules', () => {
     expect(result.results.every(({ status }) => status === 'PASS')).toBe(true);
   });
 
+  test('accepts compatible non-downgraded Bun types declarations', assertCompatibleBunTypes);
+
+  test('rejects unsupported Bun types declarations', assertUnsupportedBunTypes);
+
   test('reports incomplete results when repository facts are unavailable', assertMissingFacts);
 
   test('reports escaped relative imports through the repository-boundary rule', () => {
@@ -54,6 +58,26 @@ describe('repository rules', () => {
     expect(ids).toContain('package.imports.ankh-workspace-alias.disallowed');
   });
 });
+
+/*** Verify the current and predecessor Bun type ranges remain semver-compatible. */
+function assertCompatibleBunTypes(): void {
+  for (const typesRange of ['^1.4.2', '^1.4.5']) {
+    const result = evaluateRepository(contextWithBunTypesRange(typesRange));
+    expect(result.findings.map(({ ruleId }) => ruleId)).not.toContain(
+      'package.dependencies.types-bun.policy',
+    );
+  }
+}
+
+/*** Verify another Bun line, an obsolete patch, and a non-caret range remain invalid. */
+function assertUnsupportedBunTypes(): void {
+  for (const typesRange of ['^1.4.1', '^1.5.0', '~1.4.5']) {
+    const result = evaluateRepository(contextWithBunTypesRange(typesRange));
+    expect(result.findings.map(({ ruleId }) => ruleId)).toContain(
+      'package.dependencies.types-bun.policy',
+    );
+  }
+}
 
 /*** Verify that generated consumers receive only the canonical Atlas audit metadata. */
 function assertAtlasAuditContract(): void {
@@ -97,6 +121,20 @@ function createCanonicalContext(): RepositoryRuleContext {
     workflowBunVersions: {
       '.github/workflows/ci.yml': REPOSITORY_RULE_METADATA.runtime.bun.version,
       '.github/workflows/release.yml': REPOSITORY_RULE_METADATA.runtime.bun.version,
+    },
+  };
+}
+
+/*** Build canonical facts with one explicit @types/bun declaration. */
+function contextWithBunTypesRange(typesRange: string): RepositoryRuleContext {
+  const context = createCanonicalContext();
+  return {
+    ...context,
+    packageJson: {
+      ...context.packageJson,
+      dependencies: context.packageJson.dependencies.map((dependency) =>
+        dependency.name === '@types/bun' ? { ...dependency, value: typesRange } : dependency,
+      ),
     },
   };
 }

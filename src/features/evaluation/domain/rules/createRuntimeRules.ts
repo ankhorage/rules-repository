@@ -5,6 +5,9 @@ import { REPOSITORY_RULE_IDS } from '../../../../constants/repositoryRuleIds.js'
 import type { RepositoryRuleContext } from '../../../../types/repository.js';
 import { repositoryRuleSupport } from '../../utils/repositoryRuleSupport.js';
 
+const BUN_TYPES_COMPATIBLE_RANGE = /^\^1\.4\.(\d+)$/u;
+const BUN_TYPES_MINIMUM_PATCH = 2;
+
 /*** Create canonical Bun runtime and workflow rules. */
 export function createRuntimeRules(): readonly Rule<RepositoryRuleContext>[] {
   return [
@@ -73,25 +76,31 @@ function packageManagerExactRule(): Rule<RepositoryRuleContext> {
   );
 }
 
-/*** Require the canonical @types/bun dependency range. */
+/*** Require an @types/bun caret range compatible with the managed Bun 1.4 policy. */
 function bunTypesRule(): Rule<RepositoryRuleContext> {
   return repositoryRuleSupport.createRule(
     REPOSITORY_RULE_IDS.bunTypes,
     'The @types/bun dependency must match the canonical Bun runtime policy.',
     ({ packageJson }) => {
       const dependency = packageJson.dependencies.find(({ name }) => name === '@types/bun');
-      return dependency?.value === REPOSITORY_RULE_METADATA.runtime.bun.typesRange
+      return isCompatibleBunTypesRange(dependency?.value)
         ? []
         : [
             repositoryRuleSupport.finding(
               REPOSITORY_RULE_IDS.bunTypes,
-              '@types/bun must use ' + REPOSITORY_RULE_METADATA.runtime.bun.typesRange + '.',
+              '@types/bun must use a compatible Bun 1.4 caret range.',
               'package.json',
               { actual: dependency?.value ?? '' },
             ),
           ];
     },
   );
+}
+
+/*** Match the supported Bun 1.4 caret declarations without accepting another runtime line. */
+function isCompatibleBunTypesRange(range: string | undefined): boolean {
+  const match = range?.match(BUN_TYPES_COMPATIBLE_RANGE);
+  return match !== undefined && match !== null && Number(match[1]) >= BUN_TYPES_MINIMUM_PATCH;
 }
 
 /*** Require canonical Bun versions in managed CI and release workflows. */
