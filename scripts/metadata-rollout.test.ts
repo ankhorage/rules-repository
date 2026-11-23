@@ -13,6 +13,8 @@ import {
   unchangedPublishedManagedWorkflow,
   loadInstructions,
   MANAGED_PATHS,
+  preflightBlockedEntries,
+  preflightFailureReason,
   prepareCandidateBranch,
   requiredCheckState,
   successfulCheckEvidence,
@@ -76,6 +78,41 @@ describe('metadata rollout safety contracts', () => {
       if (previous === undefined) delete process.env.BUN_INSTALL_CACHE_DIR;
       else process.env.BUN_INSTALL_CACHE_DIR = previous;
     }
+  });
+
+  test('records one blocked result for every explicit target when host preflight cannot continue', () => {
+    expect(
+      preflightBlockedEntries(['infra-r2', 'reader'], 'HOST_ENVIRONMENT_TIMEOUT: frozen install'),
+    ).toEqual([
+      expect.objectContaining({
+        repository: 'infra-r2',
+        status: 'BLOCKED',
+        planning: 'BLOCKED',
+      }),
+      expect.objectContaining({
+        repository: 'reader',
+        status: 'BLOCKED',
+        planning: 'BLOCKED',
+      }),
+    ]);
+  });
+
+  test('keeps timeout, signal, and bounded command diagnostics distinct in preflight evidence', () => {
+    const command = {
+      command: 'bun install --frozen-lockfile',
+      code: 143,
+      output: 'partial stdout\npartial stderr',
+      signal: 'SIGTERM',
+      stdout: 'partial stdout\n',
+      stderr: 'partial stderr',
+      timedOut: true,
+    } as const;
+    expect(preflightFailureReason('representative frozen install', command)).toContain(
+      'HOST_ENVIRONMENT_TIMEOUT',
+    );
+    expect(
+      preflightFailureReason('representative frozen install', { ...command, timedOut: false }),
+    ).toContain('terminated by SIGTERM');
   });
 
   test('rejects multiline acceptance, service, environment, condition, and release losses', () => {
