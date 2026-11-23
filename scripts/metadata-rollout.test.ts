@@ -22,6 +22,7 @@ import {
   successfulCheckEvidence,
   serializeDoctorResolution,
   parseOptions,
+  selectApprovedApplicableRepositories,
   selectRepositories,
 } from './metadata-rollout.js';
 
@@ -55,6 +56,47 @@ jobs:
 `;
 
 describe('metadata rollout safety contracts', () => {
+  test('enrolls connection and social in the 94-applicable inventory and preserves eight exclusions', () => {
+    const included = [
+      'connection',
+      'social',
+      ...Array.from({ length: 92 }, (_, index) => `approved-${index}`),
+    ];
+    const excluded = [
+      'ankhorage4',
+      'graph-neo4j',
+      'goldkind',
+      'osx',
+      'release-wave-e2e-consumer',
+      'release-wave-e2e-control',
+      'release-wave-e2e-publisher',
+      'types',
+    ];
+    const repositories = [...included, ...excluded].map((name) => ({
+      name,
+      archived: false,
+      default_branch: 'main',
+    }));
+    expect(selectApprovedApplicableRepositories(repositories).map(({ name }) => name)).toEqual(
+      included,
+    );
+    expect(() => selectApprovedApplicableRepositories(repositories.slice(1))).toThrow(
+      'missing newly enrolled: connection',
+    );
+    expect(() =>
+      selectApprovedApplicableRepositories([
+        ...repositories.filter(({ name }) => name !== 'social'),
+        { name: 'unapproved-replacement', archived: false, default_branch: 'main' },
+      ]),
+    ).toThrow('missing newly enrolled: social');
+    expect(() =>
+      selectApprovedApplicableRepositories([
+        ...repositories,
+        { name: 'unexpected-new-repo', archived: false, default_branch: 'main' },
+      ]),
+    ).toThrow('expected 94 applicable repositories');
+  });
+
   test('limits mutating execution to explicit applicable repositories', () => {
     expect(
       parseOptions(['--apply', '--repositories', 'reader,infra-r2,reader']).repositories,
