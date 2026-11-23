@@ -146,14 +146,7 @@ export const runRollout = async (
     });
     const devtoolsVersion = await readDevtoolsVersion();
     const repositories = await listRepositories();
-    const applicable = repositories.filter(
-      (repository) => !APPROVED_EXCLUSIONS.has(repository.name),
-    );
-    if (applicable.length !== 92) {
-      throw new Error(
-        `Approved inventory mismatch: expected 92 applicable repositories, received ${applicable.length}.`,
-      );
-    }
+    const applicable = selectApprovedApplicableRepositories(repositories);
     const selected = selectRepositories(applicable, options.repositories);
     const entries = await mapBounded(selected, 8, (repository) =>
       inspectRepositorySafely(repository, options, devtoolsVersion),
@@ -321,6 +314,25 @@ export const parseOptions = (argv: readonly string[]) => {
   if (repositoriesIndex !== -1 && repositories.length === 0)
     throw new Error('--repositories requires at least one repository.');
   return { mode: mode as Mode, reportDirectory, repositories };
+};
+
+const EXPECTED_APPLICABLE_REPOSITORY_COUNT = 94;
+const NEWLY_ENROLLED_REPOSITORIES = ['connection', 'social'] as const;
+
+/*** Validate the approved complete inventory and enroll both November package repositories. */
+export const selectApprovedApplicableRepositories = (
+  repositories: readonly Repository[],
+): Repository[] => {
+  const applicable = repositories.filter(({ name }) => !APPROVED_EXCLUSIONS.has(name));
+  const missing = NEWLY_ENROLLED_REPOSITORIES.filter(
+    (name) => !applicable.some((repository) => repository.name === name),
+  );
+  if (applicable.length !== EXPECTED_APPLICABLE_REPOSITORY_COUNT || missing.length > 0) {
+    throw new Error(
+      `Approved inventory mismatch: expected ${EXPECTED_APPLICABLE_REPOSITORY_COUNT} applicable repositories including connection and social, received ${applicable.length}; missing newly enrolled: ${missing.join(', ') || 'none'}.`,
+    );
+  }
+  return applicable;
 };
 
 /*** Restrict a mutating rollout to explicitly approved inventory members. */
