@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'bun:test';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { describe, expect, spyOn, test } from 'bun:test';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -13,7 +13,11 @@ import {
   unchangedPublishedManagedWorkflow,
   loadInstructions,
   MANAGED_PATHS,
+  preflightBlockedEntries,
+  preflightFailureReason,
   prepareCandidateBranch,
+  run,
+  runRollout,
   requiredCheckState,
   successfulCheckEvidence,
   serializeDoctorResolution,
@@ -75,6 +79,102 @@ describe('metadata rollout safety contracts', () => {
     } finally {
       if (previous === undefined) delete process.env.BUN_INSTALL_CACHE_DIR;
       else process.env.BUN_INSTALL_CACHE_DIR = previous;
+    }
+  });
+
+  test('records one blocked result for every explicit target when host preflight cannot continue', () => {
+    expect(
+      preflightBlockedEntries(['infra-r2', 'reader'], 'HOST_ENVIRONMENT_TIMEOUT: frozen install'),
+    ).toEqual([
+      expect.objectContaining({
+        repository: 'infra-r2',
+        status: 'BLOCKED',
+        planning: 'BLOCKED',
+      }),
+      expect.objectContaining({
+        repository: 'reader',
+        status: 'BLOCKED',
+        planning: 'BLOCKED',
+      }),
+    ]);
+  });
+
+  test('keeps timeout, signal, and bounded command diagnostics distinct in preflight evidence', () => {
+    const command = {
+      command: 'bun install --frozen-lockfile',
+      code: 143,
+      output: 'partial stdout\npartial stderr',
+      signal: 'SIGTERM',
+      stdout: 'partial stdout\n',
+      stderr: 'partial stderr',
+      timedOut: true,
+    } as const;
+    expect(preflightFailureReason('representative frozen install', command)).toContain(
+      'HOST_ENVIRONMENT_TIMEOUT',
+    );
+    expect(
+      preflightFailureReason('representative frozen install', { ...command, timedOut: false }),
+    ).toContain('terminated by SIGTERM');
+  });
+
+  test('persists blocked evidence before an actual timed-out preflight child can end the rollout', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'metadata-rollout-timeout-'));
+    const previousExitCode = process.exitCode;
+    try {
+      await runRollout(
+        parseOptions(['--report-dir', directory, '--repositories', 'infra-r2,reader']),
+        async (reportDirectory) => {
+          const initial = JSON.parse(
+            await readFile(join(reportDirectory, 'metadata-rollout-checkpoint.json'), 'utf8'),
+          ) as { entries: readonly { repository: string; status: string }[] };
+          expect(initial.entries.map(({ repository, status }) => ({ repository, status }))).toEqual(
+            [
+              { repository: 'infra-r2', status: 'BLOCKED' },
+              { repository: 'reader', status: 'BLOCKED' },
+            ],
+          );
+          const command = await run(
+            'bun',
+            ['-e', 'await new Promise(() => {})'],
+            undefined,
+            undefined,
+            25,
+          );
+          expect(command.timedOut).toBe(true);
+          return {
+            evidence: {
+              cachePaths: null,
+              checkout: null,
+              checkoutSha: null,
+              commands: [command],
+              root: null,
+              stage: 'representative frozen install',
+              status: 'BLOCKED' as const,
+            },
+            reason: preflightFailureReason('representative frozen install', command),
+          };
+        },
+      );
+      const persisted = JSON.parse(
+        await readFile(join(directory, 'metadata-rollout-checkpoint.json'), 'utf8'),
+      ) as { globalBlocker: string; preflight: { commands: readonly { timedOut: boolean }[] } };
+      expect(persisted.globalBlocker).toContain('HOST_ENVIRONMENT_TIMEOUT');
+      expect(persisted.preflight.commands).toEqual([expect.objectContaining({ timedOut: true })]);
+    } finally {
+      process.exitCode = previousExitCode ?? 0;
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  test('clears a short command deadline after spawn rejects', async () => {
+    const clearTimeoutSpy = spyOn(globalThis, 'clearTimeout');
+    try {
+      await expect(
+        run('definitely-not-an-executable', [], undefined, undefined, 25),
+      ).rejects.toThrow();
+      expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      clearTimeoutSpy.mockRestore();
     }
   });
 

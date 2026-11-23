@@ -1,15 +1,37 @@
-import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { parseDocument } from 'yaml';
 
 type Mode = 'dry-run' | 'apply' | 'verify' | 'resume';
 type RolloutStatus = 'VERIFIED' | 'EXEMPT' | 'PENDING' | 'BLOCKED' | 'FAILED';
-type CommandResult = { readonly code: number; readonly output: string };
+export type CommandResult = {
+  readonly command: string;
+  readonly code: number;
+  readonly output: string;
+  readonly signal: string | null;
+  readonly stderr: string;
+  readonly stdout: string;
+  readonly timedOut: boolean;
+};
 type BunEnvironment = Readonly<
   Record<'TMPDIR' | 'BUN_INSTALL_CACHE_DIR' | 'XDG_CACHE_HOME', string>
 >;
-type BunPreflight = { readonly environment: BunEnvironment; readonly root: string };
+type PreflightEvidence = {
+  readonly cachePaths: BunEnvironment | null;
+  readonly checkout: string | null;
+  readonly checkoutSha: string | null;
+  readonly commands: readonly CommandResult[];
+  readonly root: string | null;
+  readonly stage: string;
+  readonly status: 'PASSED' | 'BLOCKED';
+};
+type BunPreflight = {
+  readonly environment: BunEnvironment;
+  readonly evidence: PreflightEvidence;
+  readonly root: string;
+};
+type PreflightFailure = { readonly evidence: PreflightEvidence; readonly reason: string };
 type Repository = {
   readonly name: string;
   readonly archived: boolean;
@@ -42,6 +64,8 @@ export const serializeDoctorResolution = <T>(action: () => Promise<T>): Promise<
 
 const ORGANIZATION = 'ankhorage';
 const UMBRELLA = 'ankhorage/rules-repository#14';
+const COMMAND_TIMEOUT_MS = 300_000;
+const COMMAND_MAX_OUTPUT_BYTES = 4_194_304;
 const APPROVED_EXCLUSIONS = new Set([
   'ankhorage4',
   'graph-neo4j',
@@ -77,21 +101,49 @@ export const MANAGED_PATHS = new Set([
   'bun.lock',
 ]);
 
-const main = async (): Promise<void> => {
-  const options = parseOptions(process.argv.slice(2));
-  const preflight = await prepareBunEnvironment(options.reportDirectory);
-  if (typeof preflight === 'string') {
-    await writeReport(options.reportDirectory, {
+const main = async (): Promise<void> => runRollout(parseOptions(process.argv.slice(2)));
+
+/*** Persist interruption-safe evidence around every rollout stage that can execute child processes. */
+export const runRollout = async (
+  options: ReturnType<typeof parseOptions>,
+  prepare = prepareBunEnvironment,
+): Promise<void> => {
+  const initialReason =
+    'ROLLOUT_INCOMPLETE: attempt interrupted before representative preflight completion.';
+  await writeCheckpoint(options.reportDirectory, {
+    generatedAt: new Date().toISOString(),
+    mode: options.mode,
+    globalBlocker: initialReason,
+    preflight: incompletePreflightEvidence(
+      'attempt checkpoint persisted before representative preflight',
+    ),
+    entries: preflightBlockedEntries(options.repositories, initialReason),
+  });
+  const preflight = await prepare(options.reportDirectory).catch(preflightException);
+  if ('reason' in preflight) {
+    const report = {
       generatedAt: new Date().toISOString(),
       mode: options.mode,
-      globalBlocker: preflight,
-      entries: [],
-    });
+      globalBlocker: preflight.reason,
+      preflight: preflight.evidence,
+      entries: preflightBlockedEntries(options.repositories, preflight.reason),
+    };
+    await writeCheckpoint(options.reportDirectory, report);
+    await writeReport(options.reportDirectory, report);
     process.exitCode = 1;
     return;
   }
   try {
     Object.assign(process.env, preflight.environment);
+    const selectedWorkReason =
+      'ROLLOUT_INCOMPLETE: attempt interrupted before selected repository inspection completion.';
+    await writeCheckpoint(options.reportDirectory, {
+      generatedAt: new Date().toISOString(),
+      mode: options.mode,
+      globalBlocker: selectedWorkReason,
+      preflight: preflight.evidence,
+      entries: preflightBlockedEntries(options.repositories, selectedWorkReason),
+    });
     const devtoolsVersion = await readDevtoolsVersion();
     const repositories = await listRepositories();
     const applicable = repositories.filter(
@@ -113,6 +165,7 @@ const main = async (): Promise<void> => {
       generatedAt: new Date().toISOString(),
       mode: options.mode,
       devtoolsVersion,
+      preflight: preflight.evidence,
       inventory: {
         total: repositories.length,
         applicable: applicable.length,
@@ -123,20 +176,44 @@ const main = async (): Promise<void> => {
         left.repository.localeCompare(right.repository),
       ),
     };
+    await writeCheckpoint(options.reportDirectory, report);
     await writeReport(options.reportDirectory, report);
     const incomplete = report.entries.some(
       (entry) => !['VERIFIED', 'EXEMPT'].includes(entry.status),
     );
     process.exitCode = incomplete ? 1 : 0;
+  } catch (error) {
+    const reason = `ROLLOUT_EXECUTION_FAILURE: ${error instanceof Error ? firstLine(error.message) : String(error)}`;
+    const report = {
+      generatedAt: new Date().toISOString(),
+      mode: options.mode,
+      globalBlocker: reason,
+      preflight: preflight.evidence,
+      entries: preflightBlockedEntries(options.repositories, reason),
+    };
+    await writeCheckpoint(options.reportDirectory, report);
+    await writeReport(options.reportDirectory, report);
+    process.exitCode = 1;
   } finally {
     await rm(preflight.root, { recursive: true, force: true });
   }
 };
 
+/*** Describe the durable incomplete state before the first child process can begin. */
+const incompletePreflightEvidence = (stage: string): PreflightEvidence => ({
+  cachePaths: null,
+  checkout: null,
+  checkoutSha: null,
+  commands: [],
+  root: null,
+  stage,
+  status: 'BLOCKED',
+});
+
 /*** Prove Bun can complete one unchanged frozen install before the rollout fans out to repository clones. */
 export const prepareBunEnvironment = async (
   reportDirectory: string,
-): Promise<BunPreflight | string> => {
+): Promise<BunPreflight | PreflightFailure> => {
   const root = await mkdtemp(join(resolve(reportDirectory, '..'), '.metadata-rollout-host-'));
   const checkout = join(root, 'ai');
   const environment = {
@@ -159,15 +236,50 @@ export const prepareBunEnvironment = async (
       checkout,
     ]);
     if (clone.code !== 0)
-      return `HOST_ENVIRONMENT_FAILURE: representative checkout failed: ${firstLine(clone.output)}`;
+      return preflightFailure('representative checkout', root, checkout, environment, null, [
+        clone,
+      ]);
+    const sha = await run('git', ['rev-parse', 'HEAD'], checkout, environment);
+    if (sha.code !== 0)
+      return preflightFailure('representative checkout SHA', root, checkout, environment, null, [
+        clone,
+        sha,
+      ]);
+    const checkoutSha = sha.stdout.trim();
     const install = await run('bun', ['install', '--frozen-lockfile'], checkout, environment);
     if (install.code !== 0)
-      return `${install.output.includes('EPERM') ? 'HOST_TEMP_EPERM' : 'HOST_ENVIRONMENT_FAILURE'}: representative frozen install failed: ${firstLine(install.output)}`;
+      return preflightFailure(
+        'representative frozen install',
+        root,
+        checkout,
+        environment,
+        checkoutSha,
+        [clone, sha, install],
+      );
     const unchanged = await run('git', ['diff', '--exit-code', '--', 'bun.lock'], checkout);
     if (unchanged.code !== 0)
-      return 'HOST_ENVIRONMENT_FAILURE: representative frozen install modified bun.lock.';
+      return preflightFailure(
+        'representative lockfile verification',
+        root,
+        checkout,
+        environment,
+        checkoutSha,
+        [clone, sha, install, unchanged],
+      );
     completed = true;
-    return { environment, root };
+    return {
+      environment,
+      evidence: {
+        cachePaths: environment,
+        checkout,
+        checkoutSha,
+        commands: [clone, sha, install, unchanged],
+        root,
+        stage: 'representative preflight completed',
+        status: 'PASSED',
+      },
+      root,
+    };
   } finally {
     if (!completed) await rm(root, { recursive: true, force: true });
   }
@@ -1153,7 +1265,81 @@ const blocked = (entry: Omit<ReportEntry, 'status' | 'reason'>, reason: string):
   planning: 'BLOCKED',
   reason,
 });
-const firstLine = (text: string): string => text.trim().split('\n')[0] || 'no diagnostic output';
+/*** Preserve scoped rollout intent when the mandatory host preflight blocks before inventory access. */
+export const preflightBlockedEntries = (
+  repositories: readonly string[],
+  reason: string,
+): readonly ReportEntry[] =>
+  repositories.map((repository) => ({
+    repository,
+    status: 'BLOCKED',
+    defaultBranch: 'unverified',
+    defaultSha: null,
+    metadata: 'unverified',
+    ci: 'unverified',
+    changes: [],
+    validations: [],
+    prUrl: null,
+    planning: 'BLOCKED',
+    reason,
+  }));
+
+/*** Build durable, bounded host-preflight evidence for a failed representative command. */
+const preflightFailure = (
+  stage: string,
+  root: string,
+  checkout: string,
+  environment: BunEnvironment,
+  checkoutSha: string | null,
+  commands: readonly CommandResult[],
+): PreflightFailure => {
+  const command = commands.at(-1);
+  const reason = preflightFailureReason(stage, command);
+  return {
+    evidence: {
+      cachePaths: environment,
+      checkout,
+      checkoutSha,
+      commands,
+      root,
+      stage,
+      status: 'BLOCKED',
+    },
+    reason,
+  };
+};
+
+/*** Classify an unsuccessful preflight command without hiding timeouts, signals, or host faults. */
+export const preflightFailureReason = (
+  stage: string,
+  command: CommandResult | undefined,
+): string => {
+  if (command === undefined) return `HOST_ENVIRONMENT_FAILURE: ${stage} did not start.`;
+  if (command.timedOut)
+    return `HOST_ENVIRONMENT_TIMEOUT: ${stage} exceeded ${COMMAND_TIMEOUT_MS}ms: ${firstLine(command.output)}`;
+  if (command.signal !== null)
+    return `HOST_ENVIRONMENT_FAILURE: ${stage} terminated by ${command.signal}: ${firstLine(command.output)}`;
+  const classification = command.output.includes('EPERM')
+    ? 'HOST_TEMP_EPERM'
+    : 'HOST_ENVIRONMENT_FAILURE';
+  return `${classification}: ${stage} failed with exit ${command.code}: ${firstLine(command.output)}`;
+};
+
+/*** Convert setup exceptions into reportable host-preflight evidence instead of abandoning the rollout silently. */
+const preflightException = (error: unknown): PreflightFailure => ({
+  evidence: {
+    cachePaths: null,
+    checkout: null,
+    checkoutSha: null,
+    commands: [],
+    root: null,
+    stage: 'representative preflight initialization',
+    status: 'BLOCKED',
+  },
+  reason: `HOST_ENVIRONMENT_FAILURE: representative preflight initialization failed: ${error instanceof Error ? error.message : String(error)}`,
+});
+const firstLine = (text: string): string =>
+  text.trim().split('\n')[0]?.slice(0, 1024) || 'no diagnostic output';
 const isNotFound = (output: string): boolean =>
   output.includes('HTTP 404') || output.includes('"status":404');
 const exists = async (path: string): Promise<boolean> => {
@@ -1181,37 +1367,65 @@ const mapBounded = async <Input, Output>(
   await Promise.all(workers);
   return output;
 };
-const run = async (
+export const run = async (
   command: string,
   arguments_: readonly string[],
   cwd?: string,
   environment?: Record<string, string>,
+  timeoutMs = COMMAND_TIMEOUT_MS,
 ): Promise<CommandResult> => {
-  const child = Bun.spawn([command, ...arguments_], {
-    cwd,
-    env: childEnvironment(environment),
-    stdout: 'pipe',
-    stderr: 'pipe',
-  });
-  const [stdout, stderr, code] = await Promise.all([
-    new Response(child.stdout).text(),
-    new Response(child.stderr).text(),
-    child.exited,
-  ]);
-  return { code, output: `${stdout}${stderr}` };
+  const controller = new AbortController();
+  const deadline = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const child = Bun.spawn([command, ...arguments_], {
+      cwd,
+      env: childEnvironment(environment),
+      signal: controller.signal,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      maxBuffer: COMMAND_MAX_OUTPUT_BYTES,
+    });
+    const [stdout, stderr, code] = await Promise.all([
+      new Response(child.stdout).text(),
+      new Response(child.stderr).text(),
+      child.exited,
+    ]);
+    return {
+      command: [command, ...arguments_].join(' '),
+      code,
+      output: `${stdout}${stderr}`,
+      signal: child.signalCode,
+      stderr,
+      stdout,
+      timedOut: controller.signal.aborted,
+    };
+  } finally {
+    clearTimeout(deadline);
+  }
 };
 
 /*** Materialize the current rollout environment because Bun.spawn does not observe later process.env mutations by default. */
 export const childEnvironment = (
   environment?: Record<string, string>,
 ): Record<string, string | undefined> => ({ ...process.env, ...environment });
+/*** Atomically replace the durable current report before advancing a rollout stage. */
+export const writeCheckpoint = async (
+  directory: string,
+  report: { readonly entries: readonly ReportEntry[] } & Record<string, unknown>,
+): Promise<void> => {
+  await mkdir(directory, { recursive: true });
+  await writeAtomic(
+    join(directory, 'metadata-rollout-checkpoint.json'),
+    `${JSON.stringify(report, null, 2)}\n`,
+  );
+};
 const writeReport = async (
   directory: string,
   report: { readonly entries: readonly ReportEntry[] } & Record<string, unknown>,
 ): Promise<void> => {
   await mkdir(directory, { recursive: true });
   const stamp = new Date().toISOString().replaceAll(':', '-');
-  await writeFile(
+  await writeAtomic(
     join(directory, `metadata-rollout-${stamp}.json`),
     `${JSON.stringify(report, null, 2)}\n`,
   );
@@ -1221,10 +1435,16 @@ const writeReport = async (
         `| ${entry.repository} | ${entry.status} | ${entry.planning} | ${entry.ci} | ${entry.metadata} | ${entry.prUrl ?? ''} | ${entry.reason.replaceAll('|', '\\|')} |`,
     )
     .join('\n');
-  await writeFile(
+  await writeAtomic(
     join(directory, `metadata-rollout-${stamp}.md`),
     `# Metadata rollout report\n\n| Repository | Status | Plan | CI | Metadata | PR | Reason |\n| --- | --- | --- | --- | --- | --- | --- |\n${rows}\n`,
   );
+};
+/*** Replace one report artifact without exposing a partially written file to an interrupted host. */
+const writeAtomic = async (path: string, contents: string): Promise<void> => {
+  const temporary = `${path}.${process.pid}.tmp`;
+  await writeFile(temporary, contents);
+  await rename(temporary, path);
 };
 
 if (import.meta.main) void main();
