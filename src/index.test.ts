@@ -69,9 +69,9 @@ function assertCompatibleBunTypes(): void {
   }
 }
 
-/*** Verify another Bun line, an obsolete patch, and a non-caret range remain invalid. */
+/*** Verify noncanonical, incompatible, obsolete, and non-caret ranges remain invalid. */
 function assertUnsupportedBunTypes(): void {
-  for (const typesRange of ['^1.4.1', '^1.5.0', '~1.4.5']) {
+  for (const typesRange of ['^1.4.02', '^1.4.1', '^1.5.0', '~1.4.5']) {
     const result = evaluateRepository(contextWithBunTypesRange(typesRange));
     expect(result.findings.map(({ ruleId }) => ruleId)).toContain(
       'package.dependencies.types-bun.policy',

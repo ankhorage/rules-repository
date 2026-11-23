@@ -5,7 +5,7 @@ import { REPOSITORY_RULE_IDS } from '../../../../constants/repositoryRuleIds.js'
 import type { RepositoryRuleContext } from '../../../../types/repository.js';
 import { repositoryRuleSupport } from '../../utils/repositoryRuleSupport.js';
 
-const BUN_TYPES_COMPATIBLE_RANGE = /^\^1\.4\.(\d+)$/u;
+const BUN_TYPES_COMPATIBLE_RANGE = /^\^1\.4\.(0|[1-9]\d*)$/u;
 const BUN_TYPES_MINIMUM_PATCH = 2;
 
 /*** Create canonical Bun runtime and workflow rules. */
@@ -97,7 +97,7 @@ function bunTypesRule(): Rule<RepositoryRuleContext> {
   );
 }
 
-/*** Match the supported Bun 1.4 caret declarations without accepting another runtime line. */
+/*** Match canonical SemVer Bun 1.4 caret declarations without accepting another runtime line. */
 function isCompatibleBunTypesRange(range: string | undefined): boolean {
   const match = range?.match(BUN_TYPES_COMPATIBLE_RANGE);
   return match !== undefined && match !== null && Number(match[1]) >= BUN_TYPES_MINIMUM_PATCH;
