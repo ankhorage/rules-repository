@@ -17,7 +17,7 @@ export interface DecodedValue<Value> {
   readonly value: Value | undefined;
 }
 
-interface JsonProperty {
+export interface JsonProperty {
   readonly exists: boolean;
   readonly value: unknown;
 }
