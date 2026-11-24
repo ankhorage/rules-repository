@@ -72,7 +72,7 @@
     "modulePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
     "sourceLocation": {
       "filePath": "src/features/metadata/domain/decodeRepositoryMetadata.ts",
-      "line": 57,
+      "line": 59,
       "column": 1
     },
     "exportPaths": [

@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.6.0
+
+### Minor Changes
+
+- c2de01b: Accept and structurally validate declarative repository metadata build targets.
+
 ## 0.5.0
 
 ### Minor Changes

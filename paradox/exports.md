@@ -30,7 +30,7 @@ Create canonical repository, package, runtime, dependency, and CLI compliance ru
 
 Kind: `function`
 Module: `src/features/metadata/domain/decodeRepositoryMetadata.ts`
-Source: `src/features/metadata/domain/decodeRepositoryMetadata.ts:57:1`
+Source: `src/features/metadata/domain/decodeRepositoryMetadata.ts:59:1`
 
 Decode untrusted parsed JSON into canonical RepositoryMetadata v1.
 
