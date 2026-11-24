@@ -4,6 +4,7 @@ import type {
   RepositoryMetadataDecodeDiagnostic,
   RepositoryMetadataDecodeResult,
 } from '../../../types/repository.js';
+import { decodeOptionalBuild } from './repositoryMetadataBuildDecoder.js';
 import {
   type DecodedValue,
   type JsonObject,
@@ -24,6 +25,7 @@ const DOCUMENT_PROPERTIES = new Set([
   'architecture',
   'audience',
   'boundaries',
+  'build',
   'constraints',
   'domain',
   'implements',
@@ -137,6 +139,9 @@ function decodeOptionalDocumentFields(value: JsonObject): DecodedValue<OptionalD
   const architecture = repositoryMetadataDecoderSupport.decodeOptionalArchitecture(
     repositoryMetadataDecoderSupport.readOwnProperty(value, 'architecture'),
   );
+  const build = decodeOptionalBuild(
+    repositoryMetadataDecoderSupport.readOwnProperty(value, 'build'),
+  );
   const implementsReferences =
     repositoryMetadataDecoderSupport.decodeOptionalImplementationReferences(
       repositoryMetadataDecoderSupport.readOwnProperty(value, 'implements'),
@@ -153,12 +158,20 @@ function decodeOptionalDocumentFields(value: JsonObject): DecodedValue<OptionalD
     architecture,
     implementsReferences,
     constraints,
+    build,
   ].flatMap(({ diagnostics: fieldDiagnostics }) => fieldDiagnostics);
   return diagnostics.length > 0
     ? { diagnostics, value: undefined }
     : {
         diagnostics: [],
-        value: optionalDocumentValue(domain, text, architecture, implementsReferences, constraints),
+        value: optionalDocumentValue(
+          domain,
+          text,
+          architecture,
+          build,
+          implementsReferences,
+          constraints,
+        ),
       };
 }
 
@@ -189,6 +202,7 @@ function optionalDocumentValue(
   domain: DecodedValue<string>,
   text: OptionalTextFields,
   architecture: ReturnType<typeof repositoryMetadataDecoderSupport.decodeOptionalArchitecture>,
+  build: ReturnType<typeof decodeOptionalBuild>,
   implementsReferences: ReturnType<
     typeof repositoryMetadataDecoderSupport.decodeOptionalImplementationReferences
   >,
@@ -198,6 +212,7 @@ function optionalDocumentValue(
     ...(architecture.value === undefined ? {} : { architecture: architecture.value }),
     ...(text.audience.value === undefined ? {} : { audience: text.audience.value }),
     ...(text.boundaries.value === undefined ? {} : { boundaries: text.boundaries.value }),
+    ...(build.value === undefined ? {} : { build: build.value }),
     ...(constraints.value === undefined ? {} : { constraints: constraints.value }),
     ...(domain.value === undefined ? {} : { domain: domain.value }),
     ...(implementsReferences.value === undefined ? {} : { implements: implementsReferences.value }),

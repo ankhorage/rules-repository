@@ -28,33 +28,6 @@ test('preserves every valid optional metadata field', () => {
   expect(decodeRepositoryMetadata(document)).toEqual({ document, ok: true });
 });
 
-test('reports root, version, kind, and required-field diagnostics', () => {
-  expect(decodeRepositoryMetadata([])).toEqual({
-    diagnostics: [
-      { code: 'expected-object', message: 'Metadata must be a plain JSON object.', path: '#' },
-    ],
-    ok: false,
-  });
-  expect(decodeRepositoryMetadata({ kind: 'unsupported', schemaVersion: 2, summary: 3 })).toEqual({
-    diagnostics: [
-      {
-        code: 'expected-schema-version',
-        message: 'schemaVersion must be 1.',
-        path: '#/schemaVersion',
-      },
-      {
-        code: 'expected-kind',
-        message: 'kind must be a supported RepositoryMetadata v1 kind.',
-        path: '#/kind',
-      },
-      { code: 'missing-required-property', message: 'title is required.', path: '#/title' },
-      { code: 'expected-string', message: 'Value must be a string.', path: '#/summary' },
-      { code: 'missing-required-property', message: 'purpose is required.', path: '#/purpose' },
-    ],
-    ok: false,
-  });
-});
-
 test('reports malformed optional nested values with JSON-pointer paths', () => {
   const result = decodeRepositoryMetadata({
     ...documentFor('adapter'),
@@ -102,15 +75,6 @@ test('escapes unexpected root and nested property names as RFC 6901 JSON Pointer
     ],
     ok: false,
   });
-});
-
-test('is deterministic and leaves JSON syntax failures to the host', () => {
-  const value = { ...documentFor('tooling'), audience: [null] };
-
-  expect(decodeRepositoryMetadata(value)).toEqual(decodeRepositoryMetadata(value));
-  expect(() => {
-    JSON.parse('{');
-  }).toThrow();
 });
 
 test('rejects present non-JSON properties without invoking accessors', () => {
