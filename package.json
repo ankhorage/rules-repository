@@ -1,6 +1,6 @@
 {
   "name": "@ankhorage/rules-repository",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Repository, package, and tooling rule provider for Ankhorage projects.",
   "keywords": [
     "ankhorage",

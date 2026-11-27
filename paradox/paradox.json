@@ -14,7 +14,7 @@
     {
       "id": "npm",
       "label": "npm",
-      "value": "v0.6.0",
+      "value": "v0.6.1",
       "color": "cb3837"
     },
     {
@@ -1453,7 +1453,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
-        "line": 9,
+        "line": 12,
         "column": 1
       }
     },
@@ -1464,7 +1464,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
-        "line": 20,
+        "line": 23,
         "column": 1
       }
     },
@@ -1475,7 +1475,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
-        "line": 39,
+        "line": 42,
         "column": 1
       }
     },
@@ -1486,18 +1486,29 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
-        "line": 58,
+        "line": 61,
         "column": 1
       }
     },
     {
       "name": "bunTypesRule",
-      "description": "Require the canonical @types/bun dependency range.",
+      "description": "Require an @types/bun caret range compatible with the managed Bun 1.4 policy.",
       "see": [],
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
-        "line": 77,
+        "line": 80,
+        "column": 1
+      }
+    },
+    {
+      "name": "isCompatibleBunTypesRange",
+      "description": "Match canonical SemVer Bun 1.4 caret declarations without accepting another runtime line.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "line": 101,
         "column": 1
       }
     },
@@ -1508,7 +1519,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
-        "line": 98,
+        "line": 107,
         "column": 1
       }
     },
@@ -2140,13 +2151,35 @@
       }
     },
     {
+      "name": "assertCompatibleBunTypes",
+      "description": "Verify the current and predecessor Bun type ranges remain semver-compatible.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 63,
+        "column": 1
+      }
+    },
+    {
+      "name": "assertUnsupportedBunTypes",
+      "description": "Verify noncanonical, incompatible, obsolete, and non-caret ranges remain invalid.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 73,
+        "column": 1
+      }
+    },
+    {
       "name": "assertAtlasAuditContract",
       "description": "Verify that generated consumers receive only the canonical Atlas audit metadata.",
       "see": [],
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 59,
+        "line": 83,
         "column": 1
       }
     },
@@ -2157,7 +2190,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 73,
+        "line": 97,
         "column": 1
       }
     },
@@ -2168,7 +2201,18 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 82,
+        "line": 106,
+        "column": 1
+      }
+    },
+    {
+      "name": "contextWithBunTypesRange",
+      "description": "Build canonical facts with one explicit @types/bun declaration.",
+      "see": [],
+      "security": [],
+      "sourceLocation": {
+        "filePath": "src/index.test.ts",
+        "line": 129,
         "column": 1
       }
     },
@@ -2179,7 +2223,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 105,
+        "line": 143,
         "column": 1
       }
     },
@@ -2190,7 +2234,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 120,
+        "line": 158,
         "column": 1
       }
     },
@@ -2201,7 +2245,7 @@
       "security": [],
       "sourceLocation": {
         "filePath": "src/index.test.ts",
-        "line": 139,
+        "line": 177,
         "column": 1
       }
     },
@@ -2881,6 +2925,42 @@
         "sourcePath": "src/index.test.ts"
       },
       {
+        "fromSymbol": "assertCompatibleBunTypes",
+        "toSymbol": "evaluateRepository",
+        "callExpression": "evaluateRepository",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "assertCompatibleBunTypes",
+        "toSymbol": "contextWithBunTypesRange",
+        "callExpression": "contextWithBunTypesRange",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "assertCompatibleBunTypes",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "assertUnsupportedBunTypes",
+        "toSymbol": "evaluateRepository",
+        "callExpression": "evaluateRepository",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "assertUnsupportedBunTypes",
+        "toSymbol": "contextWithBunTypesRange",
+        "callExpression": "contextWithBunTypesRange",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "assertUnsupportedBunTypes",
+        "toSymbol": "expect",
+        "callExpression": "expect",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
         "fromSymbol": "assertAtlasAuditContract",
         "toSymbol": "expect",
         "callExpression": "expect",
@@ -2920,6 +3000,12 @@
         "fromSymbol": "createCanonicalContext",
         "toSymbol": "canonicalScripts",
         "callExpression": "canonicalScripts",
+        "sourcePath": "src/index.test.ts"
+      },
+      {
+        "fromSymbol": "contextWithBunTypesRange",
+        "toSymbol": "createCanonicalContext",
+        "callExpression": "createCanonicalContext",
         "sourcePath": "src/index.test.ts"
       },
       {
@@ -4186,6 +4272,12 @@
         "fromSymbol": "bunTypesRule",
         "toSymbol": "createRule",
         "callExpression": "repositoryRuleSupport.createRule",
+        "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
+      },
+      {
+        "fromSymbol": "src/features/evaluation/domain/rules/createRuntimeRules.ts",
+        "toSymbol": "isCompatibleBunTypesRange",
+        "callExpression": "isCompatibleBunTypesRange",
         "sourcePath": "src/features/evaluation/domain/rules/createRuntimeRules.ts"
       },
       {

@@ -1,5 +1,11 @@
 # @ankhorage/rules-repository
 
+## 0.6.1
+
+### Patch Changes
+
+- e259427: Update the canonical Bun types policy for non-downgraded managed consumers.
+
 ## 0.6.0
 
 ### Minor Changes

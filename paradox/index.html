@@ -164,7 +164,7 @@
   </li><li>
     <button class="nav-button" type="button" data-target="src/features/evaluation/domain/rules/createRuntimeRules.ts">
       src/features/evaluation/domain/rules/createRuntimeRules.ts
-      <small>6 functions</small>
+      <small>7 functions</small>
     </button>
   </li><li>
     <button class="nav-button" type="button" data-target="src/features/evaluation/domain/rules/createScriptRules.ts">
@@ -214,7 +214,7 @@
   </li><li>
     <button class="nav-button" type="button" data-target="src/index.test.ts">
       src/index.test.ts
-      <small>6 functions</small>
+      <small>9 functions</small>
     </button>
   </li><li>
     <button class="nav-button" type="button" data-target="src/metadataPreflight.test.ts">
@@ -1757,32 +1757,37 @@
       <h2>src/features/evaluation/domain/rules/createRuntimeRules.ts</h2>
       <article class="item" data-search="createRuntimeRules src/features/evaluation/domain/rules/createRuntimeRules.ts Create canonical Bun runtime and workflow rules.">
     <h3>createRuntimeRules</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:9:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:12:1</code></p>
     <p>Create canonical Bun runtime and workflow rules.</p>
     
   </article><article class="item" data-search="packageManagerRequiredRule src/features/evaluation/domain/rules/createRuntimeRules.ts Require a packageManager declaration.">
     <h3>packageManagerRequiredRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:20:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:23:1</code></p>
     <p>Require a packageManager declaration.</p>
     
   </article><article class="item" data-search="packageManagerBunRule src/features/evaluation/domain/rules/createRuntimeRules.ts Require Bun as the declared package manager.">
     <h3>packageManagerBunRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:39:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:42:1</code></p>
     <p>Require Bun as the declared package manager.</p>
     
   </article><article class="item" data-search="packageManagerExactRule src/features/evaluation/domain/rules/createRuntimeRules.ts Require the exact canonical Bun runtime version.">
     <h3>packageManagerExactRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:58:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:61:1</code></p>
     <p>Require the exact canonical Bun runtime version.</p>
     
-  </article><article class="item" data-search="bunTypesRule src/features/evaluation/domain/rules/createRuntimeRules.ts Require the canonical @types/bun dependency range.">
+  </article><article class="item" data-search="bunTypesRule src/features/evaluation/domain/rules/createRuntimeRules.ts Require an @types/bun caret range compatible with the managed Bun 1.4 policy.">
     <h3>bunTypesRule</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:77:1</code></p>
-    <p>Require the canonical @types/bun dependency range.</p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:80:1</code></p>
+    <p>Require an @types/bun caret range compatible with the managed Bun 1.4 policy.</p>
+    
+  </article><article class="item" data-search="isCompatibleBunTypesRange src/features/evaluation/domain/rules/createRuntimeRules.ts Match canonical SemVer Bun 1.4 caret declarations without accepting another runtime line.">
+    <h3>isCompatibleBunTypesRange</h3>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:101:1</code></p>
+    <p>Match canonical SemVer Bun 1.4 caret declarations without accepting another runtime line.</p>
     
   </article><article class="item" data-search="workflowBunRules src/features/evaluation/domain/rules/createRuntimeRules.ts Require canonical Bun versions in managed CI and release workflows.">
     <h3>workflowBunRules</h3>
-    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:98:1</code></p>
+    <p class="muted"><code>src/features/evaluation/domain/rules/createRuntimeRules.ts:107:1</code></p>
     <p>Require canonical Bun versions in managed CI and release workflows.</p>
     
   </article>
@@ -2127,34 +2132,49 @@ selects them through its separately approved enforcement policy.</p>
   </section><section id="view-src-index-test-ts" class="view" data-view="src/index.test.ts" hidden>
     <section class="panel">
       <h2>src/index.test.ts</h2>
-      <article class="item" data-search="assertAtlasAuditContract src/index.test.ts Verify that generated consumers receive only the canonical Atlas audit metadata.">
+      <article class="item" data-search="assertCompatibleBunTypes src/index.test.ts Verify the current and predecessor Bun type ranges remain semver-compatible.">
+    <h3>assertCompatibleBunTypes</h3>
+    <p class="muted"><code>src/index.test.ts:63:1</code></p>
+    <p>Verify the current and predecessor Bun type ranges remain semver-compatible.</p>
+    
+  </article><article class="item" data-search="assertUnsupportedBunTypes src/index.test.ts Verify noncanonical, incompatible, obsolete, and non-caret ranges remain invalid.">
+    <h3>assertUnsupportedBunTypes</h3>
+    <p class="muted"><code>src/index.test.ts:73:1</code></p>
+    <p>Verify noncanonical, incompatible, obsolete, and non-caret ranges remain invalid.</p>
+    
+  </article><article class="item" data-search="assertAtlasAuditContract src/index.test.ts Verify that generated consumers receive only the canonical Atlas audit metadata.">
     <h3>assertAtlasAuditContract</h3>
-    <p class="muted"><code>src/index.test.ts:59:1</code></p>
+    <p class="muted"><code>src/index.test.ts:83:1</code></p>
     <p>Verify that generated consumers receive only the canonical Atlas audit metadata.</p>
     
   </article><article class="item" data-search="assertMissingFacts src/index.test.ts Verify the generic evaluator fails closed without repository facts.">
     <h3>assertMissingFacts</h3>
-    <p class="muted"><code>src/index.test.ts:73:1</code></p>
+    <p class="muted"><code>src/index.test.ts:97:1</code></p>
     <p>Verify the generic evaluator fails closed without repository facts.</p>
     
   </article><article class="item" data-search="createCanonicalContext src/index.test.ts Build one canonical package and repository fact fixture.">
     <h3>createCanonicalContext</h3>
-    <p class="muted"><code>src/index.test.ts:82:1</code></p>
+    <p class="muted"><code>src/index.test.ts:106:1</code></p>
     <p>Build one canonical package and repository fact fixture.</p>
+    
+  </article><article class="item" data-search="contextWithBunTypesRange src/index.test.ts Build canonical facts with one explicit @types/bun declaration.">
+    <h3>contextWithBunTypesRange</h3>
+    <p class="muted"><code>src/index.test.ts:129:1</code></p>
+    <p>Build canonical facts with one explicit @types/bun declaration.</p>
     
   </article><article class="item" data-search="canonicalDependencies src/index.test.ts Build canonical direct dependency facts.">
     <h3>canonicalDependencies</h3>
-    <p class="muted"><code>src/index.test.ts:105:1</code></p>
+    <p class="muted"><code>src/index.test.ts:143:1</code></p>
     <p>Build canonical direct dependency facts.</p>
     
   </article><article class="item" data-search="canonicalFields src/index.test.ts Build canonical required package fields.">
     <h3>canonicalFields</h3>
-    <p class="muted"><code>src/index.test.ts:120:1</code></p>
+    <p class="muted"><code>src/index.test.ts:158:1</code></p>
     <p>Build canonical required package fields.</p>
     
   </article><article class="item" data-search="canonicalScripts src/index.test.ts Build canonical required package scripts.">
     <h3>canonicalScripts</h3>
-    <p class="muted"><code>src/index.test.ts:139:1</code></p>
+    <p class="muted"><code>src/index.test.ts:177:1</code></p>
     <p>Build canonical required package scripts.</p>
     
   </article>
