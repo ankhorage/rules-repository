@@ -1,7 +1,7 @@
 import { REPOSITORY_RULE_IDS as rules } from './repositoryRuleIds.js';
 
 const BUN_VERSION = '1.4.2';
-const BUN_TYPES_VERSION = '1.4.2';
+const BUN_TYPES_VERSION = '1.4.5';
 
 /*** Canonical repository metadata used by validators and managed-file renderers. */
 export const REPOSITORY_RULE_METADATA = {
